@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+// Msg defines the Msg service.
+service Msg {}

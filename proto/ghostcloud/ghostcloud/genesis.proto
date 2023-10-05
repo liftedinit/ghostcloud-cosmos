@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+import "gogoproto/gogo.proto";
+import "ghostcloud/ghostcloud/params.proto";
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+// GenesisState defines the ghostcloud module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
