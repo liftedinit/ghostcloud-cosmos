@@ -1,7 +1,39 @@
 syntax = "proto3";
+
 package ghostcloud.ghostcloud;
+
+import "ghostcloud/ghostcloud/deployment.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateDeployment (MsgCreateDeployment) returns (MsgCreateDeploymentResponse);
+  rpc UpdateDeployment (MsgUpdateDeployment) returns (MsgUpdateDeploymentResponse);
+  rpc DeleteDeployment (MsgDeleteDeployment) returns (MsgDeleteDeploymentResponse);
+}
+
+
+message MsgCreateDeployment {
+  string creator      = 1;
+  Meta meta           = 2;
+  repeated File files = 3;
+}
+
+message MsgCreateDeploymentResponse {}
+
+message MsgUpdateDeployment {
+  string creator     = 1;
+  Meta meta          = 2;
+  repeated File files = 3;
+}
+
+message MsgUpdateDeploymentResponse {}
+
+message MsgDeleteDeployment {
+  string creator = 1;
+  string name    = 2;
+}
+
+message MsgDeleteDeploymentResponse {}
+

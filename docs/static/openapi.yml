@@ -34923,6 +34923,263 @@ paths:
           format: int64
       tags:
         - Query
+  /ghostcloud/ghostcloud/deployment:
+    get:
+      operationId: GhostcloudGhostcloudDeploymentAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              deployment:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    creator:
+                      type: string
+                    meta:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        domain:
+                          type: string
+                        memo:
+                          type: string
+                    files:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          content:
+                            type: string
+                            format: byte
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName}:
+    get:
+      operationId: GhostcloudGhostcloudDeploymentFile
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              file:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  content:
+                    type: string
+                    format: byte
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
+        - name: siteName
+          in: path
+          required: true
+          type: string
+        - name: fileName
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ghostcloud/ghostcloud/deployment/{name}:
+    get:
+      summary: Queries a list of Deployment items.
+      operationId: GhostcloudGhostcloudDeployment
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              deployment:
+                type: object
+                properties:
+                  creator:
+                    type: string
+                  meta:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      domain:
+                        type: string
+                      memo:
+                        type: string
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        content:
+                          type: string
+                          format: byte
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: name
+          in: path
+          required: true
+          type: string
+        - name: creator
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /ghostcloud/ghostcloud/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -70567,9 +70824,157 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
+  ghostcloud.ghostcloud.Deployment:
+    type: object
+    properties:
+      creator:
+        type: string
+      meta:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          domain:
+            type: string
+          memo:
+            type: string
+      files:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            content:
+              type: string
+              format: byte
+  ghostcloud.ghostcloud.File:
+    type: object
+    properties:
+      name:
+        type: string
+      content:
+        type: string
+        format: byte
+  ghostcloud.ghostcloud.Meta:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      domain:
+        type: string
+      memo:
+        type: string
+  ghostcloud.ghostcloud.MsgCreateDeploymentResponse:
+    type: object
+  ghostcloud.ghostcloud.MsgDeleteDeploymentResponse:
+    type: object
+  ghostcloud.ghostcloud.MsgUpdateDeploymentResponse:
+    type: object
   ghostcloud.ghostcloud.Params:
     type: object
     description: Params defines the parameters for the module.
+  ghostcloud.ghostcloud.QueryAllDeploymentResponse:
+    type: object
+    properties:
+      deployment:
+        type: array
+        items:
+          type: object
+          properties:
+            creator:
+              type: string
+            meta:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                domain:
+                  type: string
+                memo:
+                  type: string
+            files:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  content:
+                    type: string
+                    format: byte
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  ghostcloud.ghostcloud.QueryGetDeploymentFileResponse:
+    type: object
+    properties:
+      file:
+        type: object
+        properties:
+          name:
+            type: string
+          content:
+            type: string
+            format: byte
+  ghostcloud.ghostcloud.QueryGetDeploymentResponse:
+    type: object
+    properties:
+      deployment:
+        type: object
+        properties:
+          creator:
+            type: string
+          meta:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              domain:
+                type: string
+              memo:
+                type: string
+          files:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                content:
+                  type: string
+                  format: byte
   ghostcloud.ghostcloud.QueryParamsResponse:
     type: object
     properties:

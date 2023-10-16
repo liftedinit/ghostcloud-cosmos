@@ -1,26 +1,73 @@
 syntax = "proto3";
+
 package ghostcloud.ghostcloud;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "ghostcloud/ghostcloud/params.proto";
+import "ghostcloud/ghostcloud/deployment.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/params";
+  
+  }
+  
+  // Queries a list of Deployment items.
+  rpc Deployment    (QueryGetDeploymentRequest) returns (QueryGetDeploymentResponse) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{name}";
+  
+  }
+  rpc DeploymentAll (QueryAllDeploymentRequest) returns (QueryAllDeploymentResponse) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment";
+  }
+
+  rpc DeploymentFile (QueryGetDeploymentFileRequest) returns (QueryGetDeploymentFileResponse) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName}";
+
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetDeploymentRequest {
+  string name = 1;
+  string creator = 2;
+}
+
+message QueryGetDeploymentResponse {
+  Deployment deployment = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDeploymentRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDeploymentResponse {
+  repeated Deployment                             deployment = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDeploymentFileRequest {
+  string siteName = 1;
+  string creator = 2;
+  string fileName = 3;
+}
+
+message QueryGetDeploymentFileResponse {
+  File file = 1;
+}
+
