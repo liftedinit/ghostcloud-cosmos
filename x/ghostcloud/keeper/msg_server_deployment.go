@@ -49,7 +49,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	// Check if the value exists
 	valFound, isFound := k.GetDeployment(
 		ctx,
-		types.CreateAccountStorePrefix(addr),
+		addr,
 		msg.Meta.Name,
 	)
 	if !isFound {
@@ -64,6 +64,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	var deployment = types.Deployment{
 		Creator: msg.Creator,
 		Meta:    msg.Meta,
+		Files:   msg.Files,
 	}
 
 	k.SetDeployment(ctx, deployment)
@@ -81,7 +82,7 @@ func (k msgServer) DeleteDeployment(goCtx context.Context, msg *types.MsgDeleteD
 	// Check if the value exists
 	valFound, isFound := k.GetDeployment(
 		ctx,
-		types.CreateAccountStorePrefix(addr),
+		addr,
 		msg.Name,
 	)
 	if !isFound {

@@ -98,7 +98,7 @@ func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-deployment [name] [description] [domain] [memo] [website-root]",
 		Short: "Update a deployment",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexName := args[0]
