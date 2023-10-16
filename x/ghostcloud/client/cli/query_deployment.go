@@ -77,10 +77,10 @@ func CmdShowDeployment() *cobra.Command {
 	return cmd
 }
 
-func CmdShowDeploymentFile() *cobra.Command {
+func CmdShowDeploymentFileContent() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-deployment-file [site-name] [owner] [file-name]",
-		Short: "shows a deployment file",
+		Use:   "show-deployment-file-content [site-name] [creator] [file-name]",
+		Short: "shows a deployment file content",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -94,18 +94,18 @@ func CmdShowDeploymentFile() *cobra.Command {
 			argCreator := args[1]
 			argFileName := args[2]
 
-			params := &types.QueryGetDeploymentFileRequest{
+			params := &types.QueryGetDeploymentFileContentRequest{
 				SiteName: argSiteName,
 				Creator:  argCreator,
 				FileName: argFileName,
 			}
 
-			res, err := queryClient.DeploymentFile(cmd.Context(), params)
+			res, err := queryClient.DeploymentFileContent(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
 
-			return clientCtx.PrintProto(res)
+			return clientCtx.PrintBytes(res.Content)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)

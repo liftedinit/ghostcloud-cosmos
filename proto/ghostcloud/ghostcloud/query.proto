@@ -16,7 +16,7 @@ service Query {
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/params";
-  
+
   }
   
   // Queries a list of Deployment items.
@@ -24,11 +24,14 @@ service Query {
     option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{name}";
   
   }
+
+  // Queries a list of all Deployment.
   rpc DeploymentAll (QueryAllDeploymentRequest) returns (QueryAllDeploymentResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/deployment";
   }
 
-  rpc DeploymentFile (QueryGetDeploymentFileRequest) returns (QueryGetDeploymentFileResponse) {
+  // Queries a deployment file content.
+  rpc DeploymentFileContent (QueryGetDeploymentFileContentRequest) returns (QueryGetDeploymentFileContentResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName}";
 
   }
@@ -61,13 +64,12 @@ message QueryAllDeploymentResponse {
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetDeploymentFileRequest {
+message QueryGetDeploymentFileContentRequest {
   string siteName = 1;
   string creator = 2;
   string fileName = 3;
 }
 
-message QueryGetDeploymentFileResponse {
-  File file = 1;
+message QueryGetDeploymentFileContentResponse {
+  bytes content = 1;
 }
-

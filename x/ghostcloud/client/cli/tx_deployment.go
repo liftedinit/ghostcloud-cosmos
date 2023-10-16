@@ -94,6 +94,8 @@ func CmdCreateDeployment() *cobra.Command {
 	return cmd
 }
 
+// TODO: Create commands to update meta/files only
+
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-deployment [name] [description] [domain] [memo] [website-root]",

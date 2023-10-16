@@ -62,7 +62,7 @@ func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentR
 	return &types.QueryGetDeploymentResponse{Deployment: val}, nil
 }
 
-func (k Keeper) DeploymentFile(goCtx context.Context, req *types.QueryGetDeploymentFileRequest) (*types.QueryGetDeploymentFileResponse, error) {
+func (k Keeper) DeploymentFileContent(goCtx context.Context, req *types.QueryGetDeploymentFileContentRequest) (*types.QueryGetDeploymentFileContentResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -72,7 +72,7 @@ func (k Keeper) DeploymentFile(goCtx context.Context, req *types.QueryGetDeploym
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	val, found := k.GetDeploymentFile(
+	val, found := k.GetDeploymentFileContent(
 		ctx,
 		addr,
 		req.SiteName,
@@ -82,5 +82,5 @@ func (k Keeper) DeploymentFile(goCtx context.Context, req *types.QueryGetDeploym
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetDeploymentFileResponse{File: val}, nil
+	return &types.QueryGetDeploymentFileContentResponse{Content: val}, nil
 }

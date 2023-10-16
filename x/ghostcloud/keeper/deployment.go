@@ -56,6 +56,29 @@ func (k Keeper) GetDeploymentFile(ctx sdk.Context,
 	return nil, false
 }
 
+func (k Keeper) GetDeploymentFileContent(ctx sdk.Context,
+	addr sdk.AccAddress,
+	siteName string,
+	fileName string) (val []byte, found bool) {
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentKeyPrefix)
+	b := store.Get(types.DeploymentKey(addr, siteName))
+	if b == nil {
+		return val, false
+	}
+
+	var deployment types.Deployment
+	k.cdc.MustUnmarshal(b, &deployment)
+
+	for _, file := range deployment.Files {
+		if file.Name == fileName {
+			return file.Content, true
+		}
+	}
+
+	return nil, false
+}
+
 // RemoveDeployment removes a deployment from the store
 func (k Keeper) RemoveDeployment(
 	ctx sdk.Context,

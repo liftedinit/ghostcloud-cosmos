@@ -34925,6 +34925,7 @@ paths:
         - Query
   /ghostcloud/ghostcloud/deployment:
     get:
+      summary: Queries a list of all Deployment.
       operationId: GhostcloudGhostcloudDeploymentAll
       responses:
         '200':
@@ -35067,21 +35068,17 @@ paths:
         - Query
   /ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName}:
     get:
-      operationId: GhostcloudGhostcloudDeploymentFile
+      summary: Queries a deployment file content.
+      operationId: GhostcloudGhostcloudDeploymentFileContent
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              file:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  content:
-                    type: string
-                    format: byte
+              content:
+                type: string
+                format: byte
         default:
           description: An unexpected error response.
           schema:
@@ -70935,17 +70932,12 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  ghostcloud.ghostcloud.QueryGetDeploymentFileResponse:
+  ghostcloud.ghostcloud.QueryGetDeploymentFileContentResponse:
     type: object
     properties:
-      file:
-        type: object
-        properties:
-          name:
-            type: string
-          content:
-            type: string
-            format: byte
+      content:
+        type: string
+        format: byte
   ghostcloud.ghostcloud.QueryGetDeploymentResponse:
     type: object
     properties:
