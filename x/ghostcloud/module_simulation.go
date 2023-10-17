@@ -53,7 +53,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 					Name:        "0",
 					Description: "0 desc",
 					Domain:      "0 domain",
-					Memo:        "0 memo",
 				},
 				Files: []*types.File{{
 					Name:    "0 file",
@@ -66,7 +65,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 					Name:        "1",
 					Description: "1 desc",
 					Domain:      "1 domain",
-					Memo:        "1 memo",
 				},
 				Files: []*types.File{{
 					Name:    "1 file",

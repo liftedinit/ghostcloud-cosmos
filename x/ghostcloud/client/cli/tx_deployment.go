@@ -47,9 +47,9 @@ func ReadWebsiteRoot(path string) ([]*types.File, error) {
 
 func CmdCreateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-deployment [name] [description] [domain] [memo] [website-root]",
+		Use:   "create-deployment name [description] [domain] website-root",
 		Short: "Create a new deployment",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexName := args[0]
@@ -57,8 +57,7 @@ func CmdCreateDeployment() *cobra.Command {
 			// Get value arguments
 			argDescription := args[1]
 			argDomain := args[2]
-			argMemo := args[3]
-			argWebsiteRoot := args[4]
+			argWebsiteRoot := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -74,7 +73,6 @@ func CmdCreateDeployment() *cobra.Command {
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,
-				Memo:        argMemo,
 			}
 
 			msg := types.NewMsgCreateDeployment(
@@ -98,9 +96,9 @@ func CmdCreateDeployment() *cobra.Command {
 
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-deployment [name] [description] [domain] [memo] [website-root]",
+		Use:   "update-deployment name [description] [domain] website-root",
 		Short: "Update a deployment",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexName := args[0]
@@ -108,8 +106,7 @@ func CmdUpdateDeployment() *cobra.Command {
 			// Get value arguments
 			argDescription := args[1]
 			argDomain := args[2]
-			argMemo := args[3]
-			argWebsiteRoot := args[4]
+			argWebsiteRoot := args[3]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -125,7 +122,6 @@ func CmdUpdateDeployment() *cobra.Command {
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,
-				Memo:        argMemo,
 			}
 
 			msg := types.NewMsgUpdateDeployment(
@@ -147,7 +143,7 @@ func CmdUpdateDeployment() *cobra.Command {
 
 func CmdDeleteDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-deployment [name]",
+		Use:   "delete-deployment name",
 		Short: "Delete a deployment",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

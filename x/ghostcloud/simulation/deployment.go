@@ -31,7 +31,6 @@ func SimulateMsgCreateDeployment(
 			Name:        iStr,
 			Description: "",
 			Domain:      "",
-			Memo:        "",
 		}
 		msg := &types.MsgCreateDeployment{
 			Creator: simAccount.Address.String(),

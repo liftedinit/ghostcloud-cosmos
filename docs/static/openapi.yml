@@ -34949,8 +34949,6 @@ paths:
                           type: string
                         domain:
                           type: string
-                        memo:
-                          type: string
                     files:
                       type: array
                       items:
@@ -35066,52 +35064,6 @@ paths:
           type: boolean
       tags:
         - Query
-  /ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName}:
-    get:
-      summary: Queries a deployment file content.
-      operationId: GhostcloudGhostcloudDeploymentFileContent
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              content:
-                type: string
-                format: byte
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: creator
-          in: path
-          required: true
-          type: string
-        - name: siteName
-          in: path
-          required: true
-          type: string
-        - name: fileName
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   /ghostcloud/ghostcloud/deployment/{name}:
     get:
       summary: Queries a list of Deployment items.
@@ -35135,8 +35087,6 @@ paths:
                       description:
                         type: string
                       domain:
-                        type: string
-                      memo:
                         type: string
                   files:
                     type: array
@@ -35211,6 +35161,52 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /{creator}/{siteName}/{fileName}:
+    get:
+      summary: Queries a deployment file content.
+      operationId: GhostcloudGhostcloudDeploymentFileContent
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+                format: byte
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
+        - name: siteName
+          in: path
+          required: true
+          type: string
+        - name: fileName
+          in: path
+          required: true
+          type: string
       tags:
         - Query
   /ibc/apps/interchain_accounts/controller/v1/owners/{owner}/connections/{connection_id}:
@@ -70835,8 +70831,6 @@ definitions:
             type: string
           domain:
             type: string
-          memo:
-            type: string
       files:
         type: array
         items:
@@ -70863,8 +70857,6 @@ definitions:
       description:
         type: string
       domain:
-        type: string
-      memo:
         type: string
   ghostcloud.ghostcloud.MsgCreateDeploymentResponse:
     type: object
@@ -70893,8 +70885,6 @@ definitions:
                 description:
                   type: string
                 domain:
-                  type: string
-                memo:
                   type: string
             files:
               type: array
@@ -70954,8 +70944,6 @@ definitions:
               description:
                 type: string
               domain:
-                type: string
-              memo:
                 type: string
           files:
             type: array

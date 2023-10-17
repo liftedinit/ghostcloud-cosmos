@@ -12,7 +12,6 @@ message Meta {
   string name        = 1;
   string description = 2;
   string domain      = 3;
-  string memo        = 4;
 }
 
 message Deployment {
