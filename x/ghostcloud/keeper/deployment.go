@@ -33,29 +33,6 @@ func (k Keeper) GetDeployment(
 	return val, true
 }
 
-func (k Keeper) GetDeploymentFile(ctx sdk.Context,
-	addr sdk.AccAddress,
-	siteName string,
-	fileName string) (val *types.File, found bool) {
-
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentKeyPrefix)
-	b := store.Get(types.DeploymentKey(addr, siteName))
-	if b == nil {
-		return val, false
-	}
-
-	var deployment types.Deployment
-	k.cdc.MustUnmarshal(b, &deployment)
-
-	for _, file := range deployment.Files {
-		if file.Name == fileName {
-			return file, true
-		}
-	}
-
-	return nil, false
-}
-
 func (k Keeper) GetDeploymentFileContent(ctx sdk.Context,
 	addr sdk.AccAddress,
 	siteName string,
