@@ -11,6 +11,17 @@ import (
 	"path/filepath"
 )
 
+const (
+	FlagDescription = "description"
+	FlagDomain      = "domain"
+)
+
+func addDeploymentFlags(cmd *cobra.Command) {
+	f := cmd.Flags()
+	f.String(FlagDescription, "", "Description of the deployment")
+	f.String(FlagDomain, "", "Custom domain of the deployment")
+}
+
 func ReadWebsiteRoot(path string) ([]*types.File, error) {
 	// Walk through the directory and process each file
 	var files []*types.File
@@ -47,17 +58,13 @@ func ReadWebsiteRoot(path string) ([]*types.File, error) {
 
 func CmdCreateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-deployment name [description] [domain] website-root",
+		Use:   "create-deployment name website-root",
 		Short: "Create a new deployment",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexName := args[0]
-
-			// Get value arguments
-			argDescription := args[1]
-			argDomain := args[2]
-			argWebsiteRoot := args[3]
+			argWebsiteRoot := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -68,6 +75,9 @@ func CmdCreateDeployment() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			argDescription := cmd.Flag(FlagDescription).Value.String()
+			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.Meta{
 				Name:        indexName,
@@ -87,6 +97,8 @@ func CmdCreateDeployment() *cobra.Command {
 		},
 	}
 
+	addDeploymentFlags(cmd)
+
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
@@ -96,17 +108,13 @@ func CmdCreateDeployment() *cobra.Command {
 
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-deployment name [description] [domain] website-root",
+		Use:   "update-deployment name website-root",
 		Short: "Update a deployment",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexName := args[0]
-
-			// Get value arguments
-			argDescription := args[1]
-			argDomain := args[2]
-			argWebsiteRoot := args[3]
+			argWebsiteRoot := args[1]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -117,6 +125,9 @@ func CmdUpdateDeployment() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			argDescription := cmd.Flag(FlagDescription).Value.String()
+			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.Meta{
 				Name:        indexName,
@@ -135,6 +146,8 @@ func CmdUpdateDeployment() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	addDeploymentFlags(cmd)
 
 	flags.AddTxFlagsToCmd(cmd)
 

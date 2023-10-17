@@ -46,7 +46,7 @@ func CmdListDeployment() *cobra.Command {
 
 func CmdShowDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-deployment [name]",
+		Use:   "show-deployment name",
 		Short: "shows a deployment",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -79,7 +79,7 @@ func CmdShowDeployment() *cobra.Command {
 
 func CmdShowDeploymentFileContent() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-deployment-file-content [site-name] [creator] [file-name]",
+		Use:   "show-deployment-file-content site-name creator file-name",
 		Short: "shows a deployment file content",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
