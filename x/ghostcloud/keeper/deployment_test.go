@@ -6,8 +6,6 @@ import (
 
 	keepertest "ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/nullify"
-	"ghostcloud/x/ghostcloud/keeper"
-	"ghostcloud/x/ghostcloud/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
@@ -15,22 +13,15 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func createNDeployment(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Deployment {
-	items := make([]types.Deployment, n)
-	for i := range items {
-		items[i].Name = strconv.Itoa(i)
-
-		keeper.SetDeployment(ctx, items[i])
-	}
-	return items
-}
-
 func TestDeploymentGet(t *testing.T) {
-	keeper, ctx := keepertest.GhostcloudKeeper(t)
-	items := createNDeployment(keeper, ctx, 10)
+	k, ctx := keepertest.GhostcloudKeeper(t)
+	items := keepertest.CreateNDeployment(k, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetDeployment(ctx,
-			item.Name,
+		addr, err := sdk.AccAddressFromBech32(item.Creator)
+		require.NoError(t, err)
+		rst, found := k.GetDeployment(ctx,
+			addr,
+			item.Meta.Name,
 		)
 		require.True(t, found)
 		require.Equal(t,
@@ -40,24 +31,28 @@ func TestDeploymentGet(t *testing.T) {
 	}
 }
 func TestDeploymentRemove(t *testing.T) {
-	keeper, ctx := keepertest.GhostcloudKeeper(t)
-	items := createNDeployment(keeper, ctx, 10)
+	k, ctx := keepertest.GhostcloudKeeper(t)
+	items := keepertest.CreateNDeployment(k, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveDeployment(ctx,
-			item.Name,
+		addr, err := sdk.AccAddressFromBech32(item.Creator)
+		require.NoError(t, err)
+		k.RemoveDeployment(ctx,
+			addr,
+			item.Meta.Name,
 		)
-		_, found := keeper.GetDeployment(ctx,
-			item.Name,
+		_, found := k.GetDeployment(ctx,
+			addr,
+			item.Meta.Name,
 		)
 		require.False(t, found)
 	}
 }
 
 func TestDeploymentGetAll(t *testing.T) {
-	keeper, ctx := keepertest.GhostcloudKeeper(t)
-	items := createNDeployment(keeper, ctx, 10)
+	k, ctx := keepertest.GhostcloudKeeper(t)
+	items := keepertest.CreateNDeployment(k, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllDeployment(ctx)),
+		nullify.Fill(k.GetAllDeployment(ctx)),
 	)
 }

@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"ghostcloud/testutil/sample"
 	"math/rand"
 	"strconv"
 
@@ -26,19 +27,10 @@ func SimulateMsgCreateDeployment(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Int()
-		iStr := strconv.Itoa(i)
-		meta := types.DeploymentMeta{
-			Name:        iStr,
-			Description: "",
-			Domain:      "",
-		}
 		msg := &types.MsgCreateDeployment{
 			Creator: simAccount.Address.String(),
-			Meta:    &meta,
-			Files: []*types.File{{
-				Meta:    &types.FileMeta{Name: strconv.Itoa(i)},
-				Content: []byte(iStr),
-			}},
+			Meta:    sample.GetDeploymentMeta(i),
+			Files:   sample.GetDeploymentFiles(i),
 		}
 
 		_, found := k.GetDeployment(ctx, simAccount.Address, msg.Meta.Name)

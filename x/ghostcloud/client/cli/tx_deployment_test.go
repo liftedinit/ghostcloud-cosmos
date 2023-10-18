@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"testing"
 
@@ -24,7 +25,19 @@ func TestCreateDeployment(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz", "xyz", "xyz"}
+	file, err := os.CreateTemp("", "test-website-*.html")
+	if err != nil {
+		t.Error(err)
+	}
+
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			t.Error(err)
+		}
+	}(file.Name())
+
+	fields := []string{file.Name()}
 	tests := []struct {
 		desc   string
 		idName string
@@ -42,6 +55,8 @@ func TestCreateDeployment(t *testing.T) {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", cli.FlagDescription, strconv.Itoa(0)),
+				fmt.Sprintf("--%s=%s", cli.FlagDomain, strconv.Itoa(0)),
 			},
 		},
 	}
@@ -73,19 +88,33 @@ func TestUpdateDeployment(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"xyz", "xyz", "xyz"}
+	file, err := os.CreateTemp("", "test-website-*.html")
+	if err != nil {
+		t.Error(err)
+	}
+
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			t.Error(err)
+		}
+	}(file.Name())
+
+	fields := []string{file.Name()}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", cli.FlagDescription, strconv.Itoa(0)),
+		fmt.Sprintf("--%s=%s", cli.FlagDomain, strconv.Itoa(0)),
 	}
 	args := []string{
 		"0",
 	}
 	args = append(args, fields...)
 	args = append(args, common...)
-	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
+	_, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
 	require.NoError(t, err)
 
 	tests := []struct {
@@ -138,8 +167,19 @@ func TestDeleteDeployment(t *testing.T) {
 
 	val := net.Validators[0]
 	ctx := val.ClientCtx
+	file, err := os.CreateTemp("", "test-website-*.html")
+	if err != nil {
+		t.Error(err)
+	}
 
-	fields := []string{"xyz", "xyz", "xyz"}
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			t.Error(err)
+		}
+	}(file.Name())
+
+	fields := []string{file.Name()}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -151,7 +191,7 @@ func TestDeleteDeployment(t *testing.T) {
 	}
 	args = append(args, fields...)
 	args = append(args, common...)
-	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
+	_, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
 	require.NoError(t, err)
 
 	tests := []struct {

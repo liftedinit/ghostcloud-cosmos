@@ -1,6 +1,7 @@
 package ghostcloud_test
 
 import (
+	"ghostcloud/testutil/sample"
 	"testing"
 
 	keepertest "ghostcloud/testutil/keeper"
@@ -16,10 +17,14 @@ func TestGenesis(t *testing.T) {
 
 		DeploymentList: []types.Deployment{
 			{
-				Name: "0",
+				Creator: sample.AccAddress(),
+				Meta:    sample.GetDeploymentMeta(0),
+				Files:   sample.GetDeploymentFiles(0),
 			},
 			{
-				Name: "1",
+				Creator: sample.AccAddress(),
+				Meta:    sample.GetDeploymentMeta(1),
+				Files:   sample.GetDeploymentFiles(1),
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state

@@ -1,9 +1,10 @@
 package types_test
 
 import (
+	"ghostcloud/testutil/sample"
+	"ghostcloud/x/ghostcloud/types"
 	"testing"
 
-	"ghostcloud/x/ghostcloud/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,14 +23,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				DeploymentList: []types.Deployment{
-					{
-						Name: "0",
-					},
-					{
-						Name: "1",
-					},
-				},
+				DeploymentList: sample.GetDeploymentList(2),
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -37,14 +31,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated deployment",
 			genState: &types.GenesisState{
-				DeploymentList: []types.Deployment{
-					{
-						Name: "0",
-					},
-					{
-						Name: "0",
-					},
-				},
+				DeploymentList: sample.GetDuplicatedDeploymentList(),
 			},
 			valid: false,
 		},

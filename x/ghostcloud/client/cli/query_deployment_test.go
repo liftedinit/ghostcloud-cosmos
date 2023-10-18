@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"fmt"
+	"ghostcloud/testutil/sample"
 	"strconv"
 	"testing"
 
@@ -27,7 +28,9 @@ func networkWithDeploymentObjects(t *testing.T, n int) (*network.Network, []type
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		deployment := types.Deployment{
-			Name: strconv.Itoa(i),
+			Creator: sample.AccAddress(),
+			Meta:    sample.GetDeploymentMeta(i),
+			Files:   sample.GetDeploymentFiles(i),
 		}
 		nullify.Fill(&deployment)
 		state.DeploymentList = append(state.DeploymentList, deployment)
@@ -46,23 +49,26 @@ func TestShowDeployment(t *testing.T) {
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 	tests := []struct {
-		desc   string
-		idName string
+		desc      string
+		idName    string
+		idCreator string
 
 		args []string
 		err  error
 		obj  types.Deployment
 	}{
 		{
-			desc:   "found",
-			idName: objs[0].Name,
+			desc:      "found",
+			idCreator: objs[0].Creator,
+			idName:    objs[0].Meta.Name,
 
 			args: common,
 			obj:  objs[0],
 		},
 		{
-			desc:   "not found",
-			idName: strconv.Itoa(100000),
+			desc:      "not found",
+			idName:    strconv.Itoa(100000),
+			idCreator: "B",
 
 			args: common,
 			err:  status.Error(codes.NotFound, "not found"),
@@ -72,6 +78,7 @@ func TestShowDeployment(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
 				tc.idName,
+				tc.idCreator,
 			}
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowDeployment(), args)

@@ -21,7 +21,7 @@ var _ = strconv.IntSize
 func TestDeploymentQuerySingle(t *testing.T) {
 	keeper, ctx := keepertest.GhostcloudKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNDeployment(keeper, ctx, 2)
+	msgs := keepertest.CreateNDeployment(keeper, ctx, 2)
 	tests := []struct {
 		desc     string
 		request  *types.QueryGetDeploymentRequest
@@ -31,21 +31,24 @@ func TestDeploymentQuerySingle(t *testing.T) {
 		{
 			desc: "First",
 			request: &types.QueryGetDeploymentRequest{
-				Name: msgs[0].Name,
+				Name:    msgs[0].Meta.Name,
+				Creator: msgs[0].Creator,
 			},
 			response: &types.QueryGetDeploymentResponse{Deployment: msgs[0]},
 		},
 		{
 			desc: "Second",
 			request: &types.QueryGetDeploymentRequest{
-				Name: msgs[1].Name,
+				Name:    msgs[1].Meta.Name,
+				Creator: msgs[1].Creator,
 			},
 			response: &types.QueryGetDeploymentResponse{Deployment: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
 			request: &types.QueryGetDeploymentRequest{
-				Name: strconv.Itoa(100000),
+				Name:    strconv.Itoa(100000),
+				Creator: msgs[0].Creator,
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},
@@ -73,7 +76,7 @@ func TestDeploymentQuerySingle(t *testing.T) {
 func TestDeploymentQueryPaginated(t *testing.T) {
 	keeper, ctx := keepertest.GhostcloudKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNDeployment(keeper, ctx, 5)
+	msgs := keepertest.CreateNDeployment(keeper, ctx, 5)
 
 	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllDeploymentRequest {
 		return &types.QueryAllDeploymentRequest{

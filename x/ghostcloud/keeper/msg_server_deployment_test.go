@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"ghostcloud/testutil/sample"
 	"strconv"
 	"testing"
 
@@ -20,15 +21,19 @@ func TestDeploymentMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	creator := "A"
+	creator := sample.AccAddress()
 	for i := 0; i < 5; i++ {
 		expected := &types.MsgCreateDeployment{Creator: creator,
-			Name: strconv.Itoa(i),
+			Meta:  sample.GetDeploymentMeta(i),
+			Files: sample.GetDeploymentFiles(i),
 		}
 		_, err := srv.CreateDeployment(wctx, expected)
 		require.NoError(t, err)
+		addr, err := sdk.AccAddressFromBech32(expected.Creator)
+		require.NoError(t, err)
 		rst, found := k.GetDeployment(ctx,
-			expected.Name,
+			addr,
+			expected.Meta.Name,
 		)
 		require.True(t, found)
 		require.Equal(t, expected.Creator, rst.Creator)
@@ -36,7 +41,8 @@ func TestDeploymentMsgServerCreate(t *testing.T) {
 }
 
 func TestDeploymentMsgServerUpdate(t *testing.T) {
-	creator := "A"
+	creator := sample.AccAddress()
+	otherCreator := sample.AccAddress()
 
 	tests := []struct {
 		desc    string
@@ -46,20 +52,23 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 		{
 			desc: "Completed",
 			request: &types.MsgUpdateDeployment{Creator: creator,
-				Name: strconv.Itoa(0),
+				Meta:  sample.GetDeploymentMeta(0),
+				Files: sample.GetDeploymentFiles(0),
 			},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgUpdateDeployment{Creator: "B",
-				Name: strconv.Itoa(0),
+			desc: "KeyNotFound - Other Creator",
+			request: &types.MsgUpdateDeployment{Creator: otherCreator,
+				Meta:  sample.GetDeploymentMeta(0),
+				Files: sample.GetDeploymentFiles(0),
 			},
-			err: sdkerrors.ErrUnauthorized,
+			err: sdkerrors.ErrKeyNotFound,
 		},
 		{
-			desc: "KeyNotFound",
+			desc: "KeyNotFound - Other Meta",
 			request: &types.MsgUpdateDeployment{Creator: creator,
-				Name: strconv.Itoa(100000),
+				Meta:  sample.GetDeploymentMeta(1000000),
+				Files: sample.GetDeploymentFiles(1000000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -70,7 +79,8 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 			expected := &types.MsgCreateDeployment{Creator: creator,
-				Name: strconv.Itoa(0),
+				Meta:  sample.GetDeploymentMeta(0),
+				Files: sample.GetDeploymentFiles(0),
 			}
 			_, err := srv.CreateDeployment(wctx, expected)
 			require.NoError(t, err)
@@ -80,8 +90,11 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
+				addr, err := sdk.AccAddressFromBech32(expected.Creator)
+				require.NoError(t, err)
 				rst, found := k.GetDeployment(ctx,
-					expected.Name,
+					addr,
+					expected.Meta.Name,
 				)
 				require.True(t, found)
 				require.Equal(t, expected.Creator, rst.Creator)
@@ -91,7 +104,8 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 }
 
 func TestDeploymentMsgServerDelete(t *testing.T) {
-	creator := "A"
+	creator := sample.AccAddress()
+	otherCreator := sample.AccAddress()
 
 	tests := []struct {
 		desc    string
@@ -105,14 +119,14 @@ func TestDeploymentMsgServerDelete(t *testing.T) {
 			},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgDeleteDeployment{Creator: "B",
+			desc: "KeyNotFound - Other Creator",
+			request: &types.MsgDeleteDeployment{Creator: otherCreator,
 				Name: strconv.Itoa(0),
 			},
-			err: sdkerrors.ErrUnauthorized,
+			err: sdkerrors.ErrKeyNotFound,
 		},
 		{
-			desc: "KeyNotFound",
+			desc: "KeyNotFound - Other Meta",
 			request: &types.MsgDeleteDeployment{Creator: creator,
 				Name: strconv.Itoa(100000),
 			},
@@ -126,7 +140,8 @@ func TestDeploymentMsgServerDelete(t *testing.T) {
 			wctx := sdk.WrapSDKContext(ctx)
 
 			_, err := srv.CreateDeployment(wctx, &types.MsgCreateDeployment{Creator: creator,
-				Name: strconv.Itoa(0),
+				Meta:  sample.GetDeploymentMeta(0),
+				Files: sample.GetDeploymentFiles(0),
 			})
 			require.NoError(t, err)
 			_, err = srv.DeleteDeployment(wctx, tc.request)
@@ -134,7 +149,10 @@ func TestDeploymentMsgServerDelete(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
+				addr, err := sdk.AccAddressFromBech32(tc.request.Creator)
+				require.NoError(t, err)
 				_, found := k.GetDeployment(ctx,
+					addr,
 					tc.request.Name,
 				)
 				require.False(t, found)
