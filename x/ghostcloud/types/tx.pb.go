@@ -219,6 +219,94 @@ func (m *MsgUpdateDeploymentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateDeploymentResponse proto.InternalMessageInfo
 
+type MsgUpdateDeploymentMeta struct {
+	Creator string          `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Meta    *DeploymentMeta `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
+}
+
+func (m *MsgUpdateDeploymentMeta) Reset()         { *m = MsgUpdateDeploymentMeta{} }
+func (m *MsgUpdateDeploymentMeta) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDeploymentMeta) ProtoMessage()    {}
+func (*MsgUpdateDeploymentMeta) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dad6ede0eb448cbc, []int{4}
+}
+func (m *MsgUpdateDeploymentMeta) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateDeploymentMeta) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateDeploymentMeta.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateDeploymentMeta) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDeploymentMeta.Merge(m, src)
+}
+func (m *MsgUpdateDeploymentMeta) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateDeploymentMeta) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDeploymentMeta.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateDeploymentMeta proto.InternalMessageInfo
+
+func (m *MsgUpdateDeploymentMeta) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUpdateDeploymentMeta) GetMeta() *DeploymentMeta {
+	if m != nil {
+		return m.Meta
+	}
+	return nil
+}
+
+type MsgUpdateDeploymentMetaResponse struct {
+}
+
+func (m *MsgUpdateDeploymentMetaResponse) Reset()         { *m = MsgUpdateDeploymentMetaResponse{} }
+func (m *MsgUpdateDeploymentMetaResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDeploymentMetaResponse) ProtoMessage()    {}
+func (*MsgUpdateDeploymentMetaResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_dad6ede0eb448cbc, []int{5}
+}
+func (m *MsgUpdateDeploymentMetaResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateDeploymentMetaResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateDeploymentMetaResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateDeploymentMetaResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDeploymentMetaResponse.Merge(m, src)
+}
+func (m *MsgUpdateDeploymentMetaResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateDeploymentMetaResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDeploymentMetaResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateDeploymentMetaResponse proto.InternalMessageInfo
+
 type MsgDeleteDeployment struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -228,7 +316,7 @@ func (m *MsgDeleteDeployment) Reset()         { *m = MsgDeleteDeployment{} }
 func (m *MsgDeleteDeployment) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteDeployment) ProtoMessage()    {}
 func (*MsgDeleteDeployment) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dad6ede0eb448cbc, []int{4}
+	return fileDescriptor_dad6ede0eb448cbc, []int{6}
 }
 func (m *MsgDeleteDeployment) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -278,7 +366,7 @@ func (m *MsgDeleteDeploymentResponse) Reset()         { *m = MsgDeleteDeployment
 func (m *MsgDeleteDeploymentResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDeleteDeploymentResponse) ProtoMessage()    {}
 func (*MsgDeleteDeploymentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_dad6ede0eb448cbc, []int{5}
+	return fileDescriptor_dad6ede0eb448cbc, []int{7}
 }
 func (m *MsgDeleteDeploymentResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -312,6 +400,8 @@ func init() {
 	proto.RegisterType((*MsgCreateDeploymentResponse)(nil), "ghostcloud.ghostcloud.MsgCreateDeploymentResponse")
 	proto.RegisterType((*MsgUpdateDeployment)(nil), "ghostcloud.ghostcloud.MsgUpdateDeployment")
 	proto.RegisterType((*MsgUpdateDeploymentResponse)(nil), "ghostcloud.ghostcloud.MsgUpdateDeploymentResponse")
+	proto.RegisterType((*MsgUpdateDeploymentMeta)(nil), "ghostcloud.ghostcloud.MsgUpdateDeploymentMeta")
+	proto.RegisterType((*MsgUpdateDeploymentMetaResponse)(nil), "ghostcloud.ghostcloud.MsgUpdateDeploymentMetaResponse")
 	proto.RegisterType((*MsgDeleteDeployment)(nil), "ghostcloud.ghostcloud.MsgDeleteDeployment")
 	proto.RegisterType((*MsgDeleteDeploymentResponse)(nil), "ghostcloud.ghostcloud.MsgDeleteDeploymentResponse")
 }
@@ -319,7 +409,7 @@ func init() {
 func init() { proto.RegisterFile("ghostcloud/ghostcloud/tx.proto", fileDescriptor_dad6ede0eb448cbc) }
 
 var fileDescriptor_dad6ede0eb448cbc = []byte{
-	// 318 bytes of a gzipped FileDescriptorProto
+	// 354 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4b, 0xcf, 0xc8, 0x2f,
 	0x2e, 0x49, 0xce, 0xc9, 0x2f, 0x4d, 0xd1, 0x47, 0x62, 0x96, 0x54, 0xe8, 0x15, 0x14, 0xe5, 0x97,
 	0xe4, 0x0b, 0x89, 0x22, 0x04, 0xf5, 0x10, 0x4c, 0x29, 0x35, 0xec, 0xda, 0x52, 0x52, 0x0b, 0x72,
@@ -330,16 +420,19 @@ var fileDescriptor_dad6ede0eb448cbc = []byte{
 	0x46, 0xf9, 0xa6, 0x96, 0x24, 0x06, 0x81, 0xb5, 0x08, 0x19, 0x72, 0xb1, 0xa6, 0x65, 0xe6, 0xa4,
 	0x16, 0x4b, 0x30, 0x2b, 0x30, 0x6b, 0x70, 0x1b, 0x49, 0xe3, 0xd0, 0xeb, 0x96, 0x99, 0x93, 0x1a,
 	0x04, 0x51, 0xa9, 0x24, 0xcb, 0x25, 0x8d, 0xc5, 0x79, 0x41, 0xa9, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
-	0xa9, 0x30, 0xe7, 0x87, 0x16, 0xa4, 0x0c, 0x66, 0xe7, 0xa3, 0x3b, 0x0f, 0xee, 0x7c, 0x67, 0xb0,
-	0xeb, 0x5d, 0x52, 0x73, 0x52, 0x89, 0x74, 0xbd, 0x10, 0x17, 0x4b, 0x5e, 0x62, 0x6e, 0x2a, 0xd8,
-	0xf5, 0x9c, 0x41, 0x60, 0x36, 0xd4, 0x0e, 0x74, 0x43, 0x60, 0x76, 0x18, 0x3d, 0x64, 0xe2, 0x62,
-	0xf6, 0x2d, 0x4e, 0x17, 0x2a, 0xe2, 0x12, 0xc0, 0x88, 0x65, 0x2d, 0x1c, 0x5e, 0xc0, 0x12, 0xe4,
-	0x52, 0x46, 0xc4, 0xab, 0x85, 0xd9, 0x0d, 0xb2, 0x13, 0x23, 0x6a, 0xf0, 0xd8, 0x89, 0xae, 0x16,
-	0x9f, 0x9d, 0xb8, 0xc2, 0x14, 0x64, 0x27, 0x46, 0x80, 0xe2, 0xb1, 0x13, 0x5d, 0x2d, 0x3e, 0x3b,
-	0x71, 0x85, 0xb1, 0x93, 0xf9, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24,
-	0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44, 0xc9,
-	0x22, 0x65, 0xbe, 0x0a, 0x94, 0x0c, 0x5c, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0xce, 0x85, 0xc6,
-	0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb8, 0x0e, 0x7b, 0x8d, 0xe6, 0x03, 0x00, 0x00,
+	0xa9, 0x30, 0xe7, 0x87, 0x16, 0xa4, 0x0c, 0x66, 0xe7, 0xa3, 0x3b, 0x0f, 0xee, 0xfc, 0x3c, 0x2e,
+	0x71, 0x2c, 0xd2, 0x20, 0x2b, 0x69, 0xe2, 0x03, 0x25, 0x45, 0x2e, 0x79, 0x1c, 0xf6, 0xc1, 0x9d,
+	0xe4, 0x0c, 0x0e, 0x50, 0x97, 0xd4, 0x9c, 0x54, 0x22, 0x03, 0x54, 0x88, 0x8b, 0x25, 0x2f, 0x31,
+	0x37, 0x15, 0xec, 0x1c, 0xce, 0x20, 0x30, 0x1b, 0xea, 0x6d, 0x74, 0x43, 0x60, 0x76, 0x18, 0x3d,
+	0x64, 0xe6, 0x62, 0xf6, 0x2d, 0x4e, 0x17, 0x2a, 0xe2, 0x12, 0xc0, 0x48, 0x78, 0x5a, 0x38, 0xfc,
+	0x83, 0x25, 0x15, 0x48, 0x19, 0x11, 0xaf, 0x16, 0x66, 0x37, 0xc8, 0x4e, 0x8c, 0xd4, 0x82, 0xc7,
+	0x4e, 0x74, 0xb5, 0xf8, 0xec, 0xc4, 0x15, 0xcd, 0x42, 0x75, 0x5c, 0x22, 0x58, 0xe3, 0x58, 0x8f,
+	0x78, 0xb3, 0x40, 0xea, 0xa5, 0xcc, 0x48, 0x53, 0x8f, 0xec, 0x67, 0x8c, 0x08, 0xc5, 0xe3, 0x67,
+	0x74, 0xb5, 0xf8, 0xfc, 0x8c, 0x2b, 0x8e, 0x9d, 0xcc, 0x4f, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48,
+	0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1,
+	0x58, 0x8e, 0x21, 0x4a, 0x16, 0xa9, 0x3c, 0xaa, 0x40, 0x29, 0xd3, 0x2a, 0x0b, 0x52, 0x8b, 0x93,
+	0xd8, 0xc0, 0x05, 0x93, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0xe8, 0x8c, 0xff, 0xd1, 0xf9, 0x04,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -356,6 +449,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	CreateDeployment(ctx context.Context, in *MsgCreateDeployment, opts ...grpc.CallOption) (*MsgCreateDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *MsgUpdateDeployment, opts ...grpc.CallOption) (*MsgUpdateDeploymentResponse, error)
+	UpdateDeploymentMeta(ctx context.Context, in *MsgUpdateDeploymentMeta, opts ...grpc.CallOption) (*MsgUpdateDeploymentMetaResponse, error)
 	DeleteDeployment(ctx context.Context, in *MsgDeleteDeployment, opts ...grpc.CallOption) (*MsgDeleteDeploymentResponse, error)
 }
 
@@ -385,6 +479,15 @@ func (c *msgClient) UpdateDeployment(ctx context.Context, in *MsgUpdateDeploymen
 	return out, nil
 }
 
+func (c *msgClient) UpdateDeploymentMeta(ctx context.Context, in *MsgUpdateDeploymentMeta, opts ...grpc.CallOption) (*MsgUpdateDeploymentMetaResponse, error) {
+	out := new(MsgUpdateDeploymentMetaResponse)
+	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Msg/UpdateDeploymentMeta", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) DeleteDeployment(ctx context.Context, in *MsgDeleteDeployment, opts ...grpc.CallOption) (*MsgDeleteDeploymentResponse, error) {
 	out := new(MsgDeleteDeploymentResponse)
 	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Msg/DeleteDeployment", in, out, opts...)
@@ -398,6 +501,7 @@ func (c *msgClient) DeleteDeployment(ctx context.Context, in *MsgDeleteDeploymen
 type MsgServer interface {
 	CreateDeployment(context.Context, *MsgCreateDeployment) (*MsgCreateDeploymentResponse, error)
 	UpdateDeployment(context.Context, *MsgUpdateDeployment) (*MsgUpdateDeploymentResponse, error)
+	UpdateDeploymentMeta(context.Context, *MsgUpdateDeploymentMeta) (*MsgUpdateDeploymentMetaResponse, error)
 	DeleteDeployment(context.Context, *MsgDeleteDeployment) (*MsgDeleteDeploymentResponse, error)
 }
 
@@ -410,6 +514,9 @@ func (*UnimplementedMsgServer) CreateDeployment(ctx context.Context, req *MsgCre
 }
 func (*UnimplementedMsgServer) UpdateDeployment(ctx context.Context, req *MsgUpdateDeployment) (*MsgUpdateDeploymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeployment not implemented")
+}
+func (*UnimplementedMsgServer) UpdateDeploymentMeta(ctx context.Context, req *MsgUpdateDeploymentMeta) (*MsgUpdateDeploymentMetaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeploymentMeta not implemented")
 }
 func (*UnimplementedMsgServer) DeleteDeployment(ctx context.Context, req *MsgDeleteDeployment) (*MsgDeleteDeploymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDeployment not implemented")
@@ -455,6 +562,24 @@ func _Msg_UpdateDeployment_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateDeploymentMeta_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDeploymentMeta)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateDeploymentMeta(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ghostcloud.ghostcloud.Msg/UpdateDeploymentMeta",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateDeploymentMeta(ctx, req.(*MsgUpdateDeploymentMeta))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_DeleteDeployment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgDeleteDeployment)
 	if err := dec(in); err != nil {
@@ -484,6 +609,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDeployment",
 			Handler:    _Msg_UpdateDeployment_Handler,
+		},
+		{
+			MethodName: "UpdateDeploymentMeta",
+			Handler:    _Msg_UpdateDeploymentMeta_Handler,
 		},
 		{
 			MethodName: "DeleteDeployment",
@@ -652,6 +781,71 @@ func (m *MsgUpdateDeploymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdateDeploymentMeta) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateDeploymentMeta) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateDeploymentMeta) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Meta != nil {
+		{
+			size, err := m.Meta.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateDeploymentMetaResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateDeploymentMetaResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateDeploymentMetaResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgDeleteDeployment) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -779,6 +973,32 @@ func (m *MsgUpdateDeployment) Size() (n int) {
 }
 
 func (m *MsgUpdateDeploymentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateDeploymentMeta) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Meta != nil {
+		l = m.Meta.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateDeploymentMetaResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1200,6 +1420,174 @@ func (m *MsgUpdateDeploymentResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUpdateDeploymentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateDeploymentMeta) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateDeploymentMeta: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateDeploymentMeta: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Meta == nil {
+				m.Meta = &DeploymentMeta{}
+			}
+			if err := m.Meta.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateDeploymentMetaResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateDeploymentMetaResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateDeploymentMetaResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

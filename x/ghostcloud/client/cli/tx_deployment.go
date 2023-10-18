@@ -104,8 +104,6 @@ func CmdCreateDeployment() *cobra.Command {
 	return cmd
 }
 
-// TODO: Create commands to update meta/files only
-
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-deployment name website-root",
@@ -148,6 +146,44 @@ func CmdUpdateDeployment() *cobra.Command {
 	}
 
 	addDeploymentFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdUpdateDeploymentMeta() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-deployment-meta name description domain",
+		Short: "Update a deployment's meta",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			// Get indexes
+			indexName := args[0]
+			argDescription := args[1]
+			argDomain := args[2]
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			meta := types.DeploymentMeta{
+				Name:        indexName,
+				Description: argDescription,
+				Domain:      argDomain,
+			}
+
+			msg := types.NewMsgUpdateDeploymentMeta(
+				clientCtx.GetFromAddress().String(),
+				&meta,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 
 	flags.AddTxFlagsToCmd(cmd)
 

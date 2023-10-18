@@ -72,6 +72,29 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	return &types.MsgUpdateDeploymentResponse{}, nil
 }
 
+func (k msgServer) UpdateDeploymentMeta(goCtx context.Context, msg *types.MsgUpdateDeploymentMeta) (*types.MsgUpdateDeploymentMetaResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+
+	deployment, isFound := k.GetDeployment(
+		ctx,
+		addr,
+		msg.Meta.Name,
+	)
+	if !isFound {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+	}
+
+	deployment.Meta = msg.Meta
+
+	k.SetDeployment(ctx, deployment)
+
+	return &types.MsgUpdateDeploymentMetaResponse{}, nil
+}
+
 func (k msgServer) DeleteDeployment(goCtx context.Context, msg *types.MsgDeleteDeployment) (*types.MsgDeleteDeploymentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
