@@ -34,6 +34,13 @@ func CmdListDeployment() *cobra.Command {
 				return err
 			}
 
+			// Do not print the file content as it can be large
+			for _, deployment := range res.Deployment {
+				for _, file := range deployment.Files {
+					file.Content = nil
+				}
+			}
+
 			return clientCtx.PrintProto(res)
 		},
 	}
@@ -46,9 +53,9 @@ func CmdListDeployment() *cobra.Command {
 
 func CmdShowDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-deployment name",
+		Use:   "show-deployment name creator",
 		Short: "shows a deployment",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -58,14 +65,20 @@ func CmdShowDeployment() *cobra.Command {
 			queryClient := types.NewQueryClient(clientCtx)
 
 			argName := args[0]
+			argCreator := args[1]
 
 			params := &types.QueryGetDeploymentRequest{
-				Name: argName,
+				Name:    argName,
+				Creator: argCreator,
 			}
 
 			res, err := queryClient.Deployment(cmd.Context(), params)
 			if err != nil {
 				return err
+			}
+
+			for _, file := range res.Deployment.Files {
+				file.Content = nil
 			}
 
 			return clientCtx.PrintProto(res)

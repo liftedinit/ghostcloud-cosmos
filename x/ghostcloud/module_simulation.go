@@ -49,25 +49,25 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		DeploymentList: []types.Deployment{
 			{
 				Creator: sample.AccAddress(),
-				Meta: &types.Meta{
+				Meta: &types.DeploymentMeta{
 					Name:        "0",
 					Description: "0 desc",
 					Domain:      "0 domain",
 				},
 				Files: []*types.File{{
-					Name:    "0 file",
+					Meta:    &types.FileMeta{Name: "0 file"},
 					Content: []byte{0x00},
 				}},
 			},
 			{
 				Creator: sample.AccAddress(),
-				Meta: &types.Meta{
+				Meta: &types.DeploymentMeta{
 					Name:        "1",
 					Description: "1 desc",
 					Domain:      "1 domain",
 				},
 				Files: []*types.File{{
-					Name:    "1 file",
+					Meta:    &types.FileMeta{Name: "1 file"},
 					Content: []byte{0x01},
 				}},
 			},

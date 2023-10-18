@@ -52,7 +52,7 @@ func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentR
 
 	val, found := k.GetDeployment(
 		ctx,
-		types.CreateAccountStorePrefix(addr),
+		addr,
 		req.Name,
 	)
 	if !found {

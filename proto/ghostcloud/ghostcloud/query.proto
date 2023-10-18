@@ -21,7 +21,7 @@ service Query {
   
   // Queries a list of Deployment items.
   rpc Deployment    (QueryGetDeploymentRequest) returns (QueryGetDeploymentResponse) {
-    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{name}";
+    option (google.api.http).get = "/{creator}/{name}";
   
   }
 

@@ -16,15 +16,15 @@ service Msg {
 
 message MsgCreateDeployment {
   string creator      = 1;
-  Meta meta           = 2;
+  DeploymentMeta meta = 2;
   repeated File files = 3;
 }
 
 message MsgCreateDeploymentResponse {}
 
 message MsgUpdateDeployment {
-  string creator     = 1;
-  Meta meta          = 2;
+  string creator      = 1;
+  DeploymentMeta meta = 2;
   repeated File files = 3;
 }
 

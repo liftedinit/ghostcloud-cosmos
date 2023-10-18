@@ -39,7 +39,7 @@ func ReadWebsiteRoot(path string) ([]*types.File, error) {
 			return err
 		}
 		files = append(files, &types.File{
-			Name:    info.Name(),
+			Meta:    &types.FileMeta{Name: info.Name()},
 			Content: fileBytes,
 		})
 
@@ -79,7 +79,7 @@ func CmdCreateDeployment() *cobra.Command {
 			argDescription := cmd.Flag(FlagDescription).Value.String()
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 
-			meta := types.Meta{
+			meta := types.DeploymentMeta{
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,
@@ -129,7 +129,7 @@ func CmdUpdateDeployment() *cobra.Command {
 			argDescription := cmd.Flag(FlagDescription).Value.String()
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 
-			meta := types.Meta{
+			meta := types.DeploymentMeta{
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,

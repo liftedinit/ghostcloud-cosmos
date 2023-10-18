@@ -15,7 +15,7 @@ var _ sdk.Msg = &MsgCreateDeployment{}
 
 func NewMsgCreateDeployment(
 	creator string,
-	meta *Meta,
+	meta *DeploymentMeta,
 	files []*File,
 
 ) *MsgCreateDeployment {
@@ -59,7 +59,7 @@ var _ sdk.Msg = &MsgUpdateDeployment{}
 
 func NewMsgUpdateDeployment(
 	creator string,
-	meta *Meta,
+	meta *DeploymentMeta,
 	files []*File,
 
 ) *MsgUpdateDeployment {

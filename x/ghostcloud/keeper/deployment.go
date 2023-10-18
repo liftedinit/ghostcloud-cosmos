@@ -48,7 +48,7 @@ func (k Keeper) GetDeploymentFileContent(ctx sdk.Context,
 	k.cdc.MustUnmarshal(b, &deployment)
 
 	for _, file := range deployment.Files {
-		if file.Name == fileName {
+		if file.Meta.Name == fileName {
 			return file.Content, true
 		}
 	}

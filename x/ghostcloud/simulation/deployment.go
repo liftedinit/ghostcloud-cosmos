@@ -27,7 +27,7 @@ func SimulateMsgCreateDeployment(
 
 		i := r.Int()
 		iStr := strconv.Itoa(i)
-		meta := types.Meta{
+		meta := types.DeploymentMeta{
 			Name:        iStr,
 			Description: "",
 			Domain:      "",
@@ -36,7 +36,7 @@ func SimulateMsgCreateDeployment(
 			Creator: simAccount.Address.String(),
 			Meta:    &meta,
 			Files: []*types.File{{
-				Name:    strconv.Itoa(i),
+				Meta:    &types.FileMeta{Name: strconv.Itoa(i)},
 				Content: []byte(iStr),
 			}},
 		}

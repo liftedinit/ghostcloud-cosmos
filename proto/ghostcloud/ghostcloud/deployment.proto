@@ -4,11 +4,15 @@ package ghostcloud.ghostcloud;
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 message File {
-  string name   = 1;
+  FileMeta meta = 1;
   bytes content = 2;
 }
 
-message Meta {
+message FileMeta {
+  string name = 1;
+}
+
+message DeploymentMeta {
   string name        = 1;
   string description = 2;
   string domain      = 3;
@@ -16,6 +20,6 @@ message Meta {
 
 message Deployment {
   string creator      = 1;
-  Meta meta           = 2;
+  DeploymentMeta meta = 2;
   repeated File files = 3;
 }
