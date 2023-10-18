@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+import "ghostcloud/ghostcloud/file_meta.proto";
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+message File {
+  FileMeta meta = 1;
+  bytes content = 2;
+}

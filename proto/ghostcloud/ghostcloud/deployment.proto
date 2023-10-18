@@ -1,22 +1,11 @@
 syntax = "proto3";
+
 package ghostcloud.ghostcloud;
 
+import "ghostcloud/ghostcloud/file.proto";
+import "ghostcloud/ghostcloud/deployment_meta.proto";
+
 option go_package = "ghostcloud/x/ghostcloud/types";
-
-message File {
-  FileMeta meta = 1;
-  bytes content = 2;
-}
-
-message FileMeta {
-  string name = 1;
-}
-
-message DeploymentMeta {
-  string name        = 1;
-  string description = 2;
-  string domain      = 3;
-}
 
 message Deployment {
   string creator      = 1;

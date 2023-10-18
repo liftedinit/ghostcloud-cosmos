@@ -3,6 +3,8 @@ syntax = "proto3";
 package ghostcloud.ghostcloud;
 
 import "ghostcloud/ghostcloud/deployment.proto";
+import "ghostcloud/ghostcloud/deployment_meta.proto";
+import "ghostcloud/ghostcloud/file.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
