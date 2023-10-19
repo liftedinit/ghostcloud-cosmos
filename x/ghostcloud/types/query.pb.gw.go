@@ -486,11 +486,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1}, []string{"ghostcloud", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_Deployment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{1, 0, 4, 1, 5, 0, 1, 0, 4, 1, 5, 1}, []string{"creator", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Deployment_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"ghostcloud", "deployment", "creator", "name"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_DeploymentAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1}, []string{"ghostcloud", "deployment"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_DeploymentFileContent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{1, 0, 4, 1, 5, 0, 1, 0, 4, 1, 5, 1, 1, 0, 4, 1, 5, 2}, []string{"creator", "siteName", "fileName"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DeploymentFileContent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4}, []string{"ghostcloud", "deployment", "creator", "siteName", "fileName"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
