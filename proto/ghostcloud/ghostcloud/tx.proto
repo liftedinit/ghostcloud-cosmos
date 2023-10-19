@@ -10,31 +10,31 @@ option go_package = "ghostcloud/x/ghostcloud/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateDeployment (MsgCreateDeployment) returns (MsgCreateDeploymentResponse);
-  rpc UpdateDeployment (MsgUpdateDeployment) returns (MsgUpdateDeploymentResponse);
-  rpc UpdateDeploymentMeta (MsgUpdateDeploymentMeta) returns (MsgUpdateDeploymentMetaResponse);
-  rpc DeleteDeployment (MsgDeleteDeployment) returns (MsgDeleteDeploymentResponse);
+  rpc CreateDeployment        (MsgCreateDeployment       ) returns (MsgCreateDeploymentResponse       );
+  rpc UpdateDeployment        (MsgUpdateDeployment       ) returns (MsgUpdateDeploymentResponse       );
+  rpc UpdateDeploymentMeta    (MsgUpdateDeploymentMeta   ) returns (MsgUpdateDeploymentMetaResponse   );
+  rpc DeleteDeployment        (MsgDeleteDeployment       ) returns (MsgDeleteDeploymentResponse       );
+  rpc CreateDeploymentArchive (MsgCreateDeploymentArchive) returns (MsgCreateDeploymentArchiveResponse);
 }
-
 message MsgCreateDeployment {
-  string creator      = 1;
-  DeploymentMeta meta = 2;
-  repeated File files = 3;
+           string         creator = 1;
+           DeploymentMeta meta    = 2;
+  repeated File           files   = 3;
 }
 
 message MsgCreateDeploymentResponse {}
 
 message MsgUpdateDeployment {
-  string creator      = 1;
-  DeploymentMeta meta = 2;
-  repeated File files = 3;
+           string         creator = 1;
+           DeploymentMeta meta    = 2;
+  repeated File           files   = 3;
 }
 
 message MsgUpdateDeploymentResponse {}
 
 message MsgUpdateDeploymentMeta {
-  string creator      = 1;
-  DeploymentMeta meta = 2;
+  string         creator = 1;
+  DeploymentMeta meta    = 2;
 }
 
 message MsgUpdateDeploymentMetaResponse {}
@@ -45,4 +45,12 @@ message MsgDeleteDeployment {
 }
 
 message MsgDeleteDeploymentResponse {}
+
+message MsgCreateDeploymentArchive {
+  string creator       = 1;
+  DeploymentMeta meta  = 2;
+  bytes websiteArchive = 3;
+}
+
+message MsgCreateDeploymentArchiveResponse {}
 

@@ -5,6 +5,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const (
+	DefaultMaxArchiveSize int64 = 5242880
+)
+
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 // ParamKeyTable the param key table for launch module
@@ -14,7 +18,9 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{}
+	return Params{
+		MaxArchiveSize: DefaultMaxArchiveSize,
+	}
 }
 
 // DefaultParams returns a default set of parameters
@@ -29,6 +35,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	// TODO: Validate MaxArchiveSize is < BlockSize / TxBodySize
 	return nil
 }
 

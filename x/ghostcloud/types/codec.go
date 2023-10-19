@@ -11,6 +11,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateDeployment{}, "ghostcloud/CreateDeployment", nil)
 	cdc.RegisterConcrete(&MsgUpdateDeployment{}, "ghostcloud/UpdateDeployment", nil)
 	cdc.RegisterConcrete(&MsgDeleteDeployment{}, "ghostcloud/DeleteDeployment", nil)
+	cdc.RegisterConcrete(&MsgCreateDeploymentArchive{}, "ghostcloud/CreateDeploymentArchive", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -19,6 +20,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreateDeployment{},
 		&MsgUpdateDeployment{},
 		&MsgDeleteDeployment{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateDeploymentArchive{},
 	)
 	// this line is used by starport scaffolding # 3
 

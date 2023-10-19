@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"archive/zip"
+	"bytes"
 	"fmt"
 	"ghostcloud/x/ghostcloud/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -97,6 +99,79 @@ func CmdCreateDeployment() *cobra.Command {
 		},
 	}
 
+	addDeploymentFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdCreateDeploymentArchive() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-deployment-archive [name] [website-archive]",
+		Short: "Broadcast message create-deployment-archive",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			argName := args[0]
+			argWebsiteArchive := args[1]
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			//Check for file size
+			fileInfo, err := os.Stat(argWebsiteArchive)
+			if err != nil {
+				return err
+			}
+			if fileInfo.Size() > types.DefaultMaxArchiveSize {
+				return fmt.Errorf("website archive is too big")
+			}
+
+			// Read website archive
+			websiteArchiveBytes, err := os.ReadFile(argWebsiteArchive)
+			if err != nil {
+				return err
+			}
+
+			r := bytes.NewReader(websiteArchiveBytes)
+			zipReader, err := zip.NewReader(r, int64(len(websiteArchiveBytes)))
+			if err != nil {
+				return err
+			}
+
+			found := false
+			for _, f := range zipReader.File {
+				if f.Name == "index.html" {
+					found = true
+				}
+			}
+
+			if !found {
+				return fmt.Errorf("website archive does not contain index.html")
+			}
+
+			argDescription := cmd.Flag(FlagDescription).Value.String()
+			argDomain := cmd.Flag(FlagDomain).Value.String()
+
+			meta := types.DeploymentMeta{
+				Name:        argName,
+				Description: argDescription,
+				Domain:      argDomain,
+			}
+
+			msg := types.NewMsgCreateDeploymentArchive(
+				clientCtx.GetFromAddress().String(),
+				&meta,
+				websiteArchiveBytes,
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 	addDeploymentFlags(cmd)
 
 	flags.AddTxFlagsToCmd(cmd)
