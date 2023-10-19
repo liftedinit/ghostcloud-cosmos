@@ -1,6 +1,8 @@
 package app
 
 import (
+	"archive/zip"
+	"compress/bzip2"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -203,6 +205,12 @@ func init() {
 	}
 
 	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
+
+	// TODO: 12 == zip.BZIP2
+	zip.RegisterDecompressor(12, func(r io.Reader) io.ReadCloser {
+		// The bzip2 package does not have a Close method, so we wrap it in an NopCloser
+		return io.NopCloser(bzip2.NewReader(r))
+	})
 }
 
 // App extends an ABCI application, but with most of its parameters exported.
