@@ -33,7 +33,7 @@ func GetDeploymentFiles(i int) []*types.File {
 	return []*types.File{
 		{
 			Meta:    &types.FileMeta{Name: strconv.Itoa(i)},
-			Content: []byte(strconv.Itoa(i)),
+			Content: []byte{byte(i)},
 		},
 	}
 }

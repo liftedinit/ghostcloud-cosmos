@@ -117,7 +117,7 @@ func CmdShowDeploymentFileContent() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintBytes(res.Content)
+			return clientCtx.PrintProto(res)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)

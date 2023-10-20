@@ -32,7 +32,6 @@ func networkWithDeploymentObjects(t *testing.T, n int) (*network.Network, []type
 			Meta:    sample.GetDeploymentMeta(i),
 			Files:   sample.GetDeploymentFiles(i),
 		}
-		nullify.Fill(&deployment)
 		state.DeploymentList = append(state.DeploymentList, deployment)
 	}
 	buf, err := cfg.Codec.MarshalJSON(&state)
@@ -94,6 +93,69 @@ func TestShowDeployment(t *testing.T) {
 				require.Equal(t,
 					nullify.Fill(&tc.obj),
 					nullify.Fill(&resp.Deployment),
+				)
+			}
+		})
+	}
+}
+
+func TestShowDeploymentFileContent(t *testing.T) {
+	net, objs := networkWithDeploymentObjects(t, 2)
+
+	ctx := net.Validators[0].ClientCtx
+	common := []string{
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+	}
+	tests := []struct {
+		desc       string
+		idName     string
+		idCreator  string
+		idFileName string
+
+		args []string
+		err  error
+		obj  types.Deployment
+	}{
+		{
+			desc:       "found",
+			idCreator:  objs[0].Creator,
+			idName:     objs[0].Meta.Name,
+			idFileName: objs[0].Files[0].Meta.Name,
+
+			args: common,
+			obj:  objs[0],
+		},
+		{
+			desc:       "not found",
+			idName:     strconv.Itoa(100000),
+			idCreator:  "B",
+			idFileName: "",
+
+			args: common,
+			err:  status.Error(codes.NotFound, "not found"),
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			args := []string{
+				tc.idName,
+				tc.idCreator,
+				tc.idFileName,
+			}
+			args = append(args, tc.args...)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowDeploymentFileContent(), args)
+			if tc.err != nil {
+				stat, ok := status.FromError(tc.err)
+				require.True(t, ok)
+				require.ErrorIs(t, stat.Err(), tc.err)
+			} else {
+				require.NoError(t, err)
+				var resp types.QueryGetDeploymentFileContentResponse
+				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
+				require.NotNil(t, resp.Content)
+				require.Equal(t,
+					&tc.obj.Files[0].Content,
+					&resp.Content,
 				)
 			}
 		})

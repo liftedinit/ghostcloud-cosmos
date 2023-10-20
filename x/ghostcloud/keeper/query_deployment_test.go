@@ -73,6 +73,64 @@ func TestDeploymentQuerySingle(t *testing.T) {
 	}
 }
 
+func TestDeploymentQuerySingleFileContent(t *testing.T) {
+	keeper, ctx := keepertest.GhostcloudKeeper(t)
+	wctx := sdk.WrapSDKContext(ctx)
+	msgs := keepertest.CreateNDeployment(keeper, ctx, 2)
+	tests := []struct {
+		desc     string
+		request  *types.QueryGetDeploymentFileContentRequest
+		response *types.QueryGetDeploymentFileContentResponse
+		err      error
+	}{
+		{
+			desc: "First",
+			request: &types.QueryGetDeploymentFileContentRequest{
+				Creator:  msgs[0].Creator,
+				SiteName: msgs[0].Meta.Name,
+				FileName: msgs[0].Files[0].Meta.Name,
+			},
+			response: &types.QueryGetDeploymentFileContentResponse{Content: msgs[0].Files[0].Content},
+		},
+		{
+			desc: "Second",
+			request: &types.QueryGetDeploymentFileContentRequest{
+				Creator:  msgs[1].Creator,
+				SiteName: msgs[1].Meta.Name,
+				FileName: msgs[1].Files[0].Meta.Name,
+			},
+			response: &types.QueryGetDeploymentFileContentResponse{Content: msgs[1].Files[0].Content},
+		},
+		{
+			desc: "KeyNotFound",
+			request: &types.QueryGetDeploymentFileContentRequest{
+				Creator:  msgs[0].Creator,
+				SiteName: strconv.Itoa(100000),
+				FileName: "",
+			},
+			err: status.Error(codes.NotFound, "not found"),
+		},
+		{
+			desc: "InvalidRequest",
+			err:  status.Error(codes.InvalidArgument, "invalid request"),
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			response, err := keeper.DeploymentFileContent(wctx, tc.request)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t,
+					nullify.Fill(tc.response),
+					nullify.Fill(response),
+				)
+			}
+		})
+	}
+}
+
 func TestDeploymentQueryPaginated(t *testing.T) {
 	keeper, ctx := keepertest.GhostcloudKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
