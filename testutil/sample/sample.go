@@ -29,6 +29,14 @@ func GetDeploymentMeta(i int) *types.DeploymentMeta {
 	}
 }
 
+func GetDeploymentNameMeta(name string, i int) *types.DeploymentMeta {
+	return &types.DeploymentMeta{
+		Name:        name,
+		Description: strconv.Itoa(i),
+		Domain:      strconv.Itoa(i),
+	}
+}
+
 func GetDeploymentFiles(i int) []*types.File {
 	return []*types.File{
 		{

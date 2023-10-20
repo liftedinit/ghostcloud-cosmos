@@ -126,6 +126,67 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 	}
 }
 
+func TestDeploymentMsgServerUpdateMeta(t *testing.T) {
+	creator := sample.AccAddress()
+	otherCreator := sample.AccAddress()
+
+	tests := []struct {
+		desc    string
+		request *types.MsgUpdateDeploymentMeta
+		err     error
+	}{
+		{
+			desc: "Completed",
+			request: &types.MsgUpdateDeploymentMeta{Creator: creator,
+				Meta: sample.GetDeploymentNameMeta("0", 1),
+			},
+		},
+		{
+			desc: "KeyNotFound - Other Creator",
+			request: &types.MsgUpdateDeploymentMeta{Creator: otherCreator,
+				Meta: sample.GetDeploymentNameMeta("0", 1),
+			},
+			err: sdkerrors.ErrKeyNotFound,
+		},
+		{
+			desc: "KeyNotFound - Other Meta",
+			request: &types.MsgUpdateDeploymentMeta{Creator: creator,
+				Meta: sample.GetDeploymentMeta(1000000),
+			},
+			err: sdkerrors.ErrKeyNotFound,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			k, ctx := keepertest.GhostcloudKeeper(t)
+			srv := keeper.NewMsgServerImpl(*k)
+			wctx := sdk.WrapSDKContext(ctx)
+			expected := &types.MsgCreateDeployment{Creator: creator,
+				Meta:  sample.GetDeploymentMeta(0),
+				Files: sample.GetDeploymentFiles(0),
+			}
+			_, err := srv.CreateDeployment(wctx, expected)
+			require.NoError(t, err)
+
+			_, err = srv.UpdateDeploymentMeta(wctx, tc.request)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				addr, err := sdk.AccAddressFromBech32(expected.Creator)
+				require.NoError(t, err)
+				rst, found := k.GetDeployment(ctx,
+					addr,
+					expected.Meta.Name,
+				)
+				require.True(t, found)
+				require.Equal(t, expected.Creator, rst.Creator)
+				require.Equal(t, tc.request.Meta, rst.Meta)
+			}
+		})
+	}
+}
+
 func TestDeploymentMsgServerDelete(t *testing.T) {
 	creator := sample.AccAddress()
 	otherCreator := sample.AccAddress()
