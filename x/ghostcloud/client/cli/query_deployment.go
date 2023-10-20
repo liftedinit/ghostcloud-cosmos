@@ -8,6 +8,9 @@ import (
 	"ghostcloud/x/ghostcloud/types"
 )
 
+// TODO: Add query command to retrieve the file list of a deployment
+
+// CmdListDeployment - TODO: Split Meta and Files. We don't want to unmarshal the files content when we query the deployment list.
 func CmdListDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list-deployment",
@@ -35,10 +38,8 @@ func CmdListDeployment() *cobra.Command {
 			}
 
 			// Do not print the file content as it can be large
-			for _, deployment := range res.Deployment {
-				for _, file := range deployment.Files {
-					file.Content = nil
-				}
+			for i := range res.Deployment {
+				res.Deployment[i].Files = nil
 			}
 
 			return clientCtx.PrintProto(res)
@@ -77,9 +78,7 @@ func CmdShowDeployment() *cobra.Command {
 				return err
 			}
 
-			for _, file := range res.Deployment.Files {
-				file.Content = nil
-			}
+			res.Deployment.Files = nil
 
 			return clientCtx.PrintProto(res)
 		},
