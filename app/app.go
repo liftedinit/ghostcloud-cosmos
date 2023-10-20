@@ -198,6 +198,10 @@ var (
 	_ servertypes.Application = (*App)(nil)
 )
 
+const (
+	BZIP2 = 12 // bzip2 ID
+)
+
 func init() {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -206,8 +210,7 @@ func init() {
 
 	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
 
-	// TODO: 12 == zip.BZIP2
-	zip.RegisterDecompressor(12, func(r io.Reader) io.ReadCloser {
+	zip.RegisterDecompressor(BZIP2, func(r io.Reader) io.ReadCloser {
 		// The bzip2 package does not have a Close method, so we wrap it in an NopCloser
 		return io.NopCloser(bzip2.NewReader(r))
 	})
