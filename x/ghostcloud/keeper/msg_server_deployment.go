@@ -1,7 +1,10 @@
 package keeper
 
 import (
+	"archive/zip"
+	"bytes"
 	"context"
+	"io"
 
 	"ghostcloud/x/ghostcloud/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -37,6 +40,78 @@ func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateD
 		deployment,
 	)
 	return &types.MsgCreateDeploymentResponse{}, nil
+}
+
+// filesFromArchiveBytes returns a list of files from an archive byte slice.
+func filesFromArchiveBytes(archive []byte) ([]*types.File, error) {
+	r := bytes.NewReader(archive)
+	zipReader, err := zip.NewReader(r, int64(len(archive)))
+	if err != nil {
+		return nil, err
+	}
+
+	files := make([]*types.File, 0)
+	for _, file := range zipReader.File {
+		rc, err := file.Open()
+		if err != nil {
+			return nil, err
+		}
+		content, err := io.ReadAll(rc)
+		if err != nil {
+			cerr := rc.Close()
+			if cerr != nil {
+				return nil, cerr
+			}
+			return nil, err
+		}
+		err = rc.Close()
+		if err != nil {
+			return nil, err
+		}
+
+		files = append(files, &types.File{
+			Meta: &types.FileMeta{
+				Name: file.Name,
+			},
+			Content: content,
+		})
+	}
+
+	return files, nil
+}
+
+func (k msgServer) CreateDeploymentArchive(goCtx context.Context, msg *types.MsgCreateDeploymentArchive) (*types.MsgCreateDeploymentArchiveResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+
+	// Check if the value exists
+	_, isFound := k.GetDeployment(
+		ctx,
+		addr,
+		msg.Meta.Name,
+	)
+	if isFound {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+	}
+
+	files, err := filesFromArchiveBytes(msg.WebsiteArchive)
+	if err != nil {
+		return nil, err
+	}
+
+	var deployment = types.Deployment{
+		Creator: msg.Creator,
+		Meta:    msg.Meta,
+		Files:   files,
+	}
+
+	k.SetDeployment(ctx, deployment)
+
+	return &types.MsgCreateDeploymentArchiveResponse{}, nil
 }
 
 func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateDeployment) (*types.MsgUpdateDeploymentResponse, error) {
