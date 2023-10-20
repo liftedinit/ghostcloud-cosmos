@@ -40,6 +40,29 @@ func TestDeploymentMsgServerCreate(t *testing.T) {
 	}
 }
 
+func TestDeploymentMsgServerCreateArchive(t *testing.T) {
+	k, ctx := keepertest.GhostcloudKeeper(t)
+	srv := keeper.NewMsgServerImpl(*k)
+	wctx := sdk.WrapSDKContext(ctx)
+	creator := sample.AccAddress()
+	for i := 0; i < 5; i++ {
+		expected := &types.MsgCreateDeploymentArchive{Creator: creator,
+			Meta:           sample.GetDeploymentMeta(i),
+			WebsiteArchive: sample.CreateZipWithHTML(),
+		}
+		_, err := srv.CreateDeploymentArchive(wctx, expected)
+		require.NoError(t, err)
+		addr, err := sdk.AccAddressFromBech32(expected.Creator)
+		require.NoError(t, err)
+		rst, found := k.GetDeployment(ctx,
+			addr,
+			expected.Meta.Name,
+		)
+		require.True(t, found)
+		require.Equal(t, expected.Creator, rst.Creator)
+	}
+}
+
 func TestDeploymentMsgServerUpdate(t *testing.T) {
 	creator := sample.AccAddress()
 	otherCreator := sample.AccAddress()

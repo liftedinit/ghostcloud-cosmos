@@ -1,27 +1,20 @@
 package simulation
 
 import (
-	"archive/zip"
-	"bytes"
-	"ghostcloud/testutil/sample"
-	"io"
-	"math/rand"
-	"strconv"
-	"time"
-
 	simappparams "cosmossdk.io/simapp/params"
+	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/keeper"
 	"ghostcloud/x/ghostcloud/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"math/rand"
+	"strconv"
 )
 
 // Prevent strconv unused error
 var _ = strconv.IntSize
-
-const KB = 1024
 
 func SimulateMsgCreateDeployment(
 	ak types.AccountKeeper,
@@ -62,44 +55,6 @@ func SimulateMsgCreateDeployment(
 	}
 }
 
-// generateRandomData generates a string with random data.
-func generateRandomData(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
-}
-
-// CreateZipWithHTML returns a []byte of a zip archive containing an index.html with random data.
-func createZipWithHTML() []byte {
-	var buf bytes.Buffer
-	zipWriter := zip.NewWriter(&buf)
-
-	// Add index.html to zip
-	f, err := zipWriter.Create("index.html")
-	if err != nil {
-		panic(err)
-	}
-
-	// Write some random data to index.html
-	randomData := generateRandomData(1 + rand.Intn(KB))
-	_, err = io.WriteString(f, randomData)
-	if err != nil {
-		panic(err)
-	}
-
-	// Close the zip writer to finish the zip creation
-	err = zipWriter.Close()
-	if err != nil {
-		panic(err)
-	}
-
-	return buf.Bytes()
-}
-
 func SimulateMsgCreateDeploymentArchive(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -111,7 +66,7 @@ func SimulateMsgCreateDeploymentArchive(
 		msg := &types.MsgCreateDeploymentArchive{
 			Creator:        simAccount.Address.String(),
 			Meta:           sample.GetDeploymentMeta(r.Int()),
-			WebsiteArchive: createZipWithHTML(),
+			WebsiteArchive: sample.CreateZipWithHTML(),
 		}
 
 		_, found := k.GetDeployment(ctx, simAccount.Address, msg.Meta.Name)

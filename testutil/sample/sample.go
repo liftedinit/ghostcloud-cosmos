@@ -1,11 +1,18 @@
 package sample
 
 import (
+	"archive/zip"
+	"bytes"
 	"ghostcloud/x/ghostcloud/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"io"
+	"math/rand"
 	"strconv"
+	"time"
 )
+
+const KB = 1024
 
 // AccAddress returns a sample account address
 func AccAddress() string {
@@ -50,4 +57,42 @@ func GetDeploymentList(i int) []types.Deployment {
 func GetDuplicatedDeploymentList() []types.Deployment {
 	elem := GetDeployment(0)
 	return []types.Deployment{elem, elem}
+}
+
+// generateRandomData generates a string with random data.
+func generateRandomData(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	seededRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
+// CreateZipWithHTML returns a []byte of a zip archive containing an index.html with random data.
+func CreateZipWithHTML() []byte {
+	var buf bytes.Buffer
+	zipWriter := zip.NewWriter(&buf)
+
+	// Add index.html to zip
+	f, err := zipWriter.Create("index.html")
+	if err != nil {
+		panic(err)
+	}
+
+	// Write some random data to index.html
+	randomData := generateRandomData(1 + rand.Intn(KB))
+	_, err = io.WriteString(f, randomData)
+	if err != nil {
+		panic(err)
+	}
+
+	// Close the zip writer to finish the zip creation
+	err = zipWriter.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	return buf.Bytes()
 }
