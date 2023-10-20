@@ -12,9 +12,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const InvalidRequest = "invalid request"
+
 func (k Keeper) DeploymentAll(goCtx context.Context, req *types.QueryAllDeploymentRequest) (*types.QueryAllDeploymentResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
 	}
 
 	var deployments []types.Deployment
@@ -42,7 +44,7 @@ func (k Keeper) DeploymentAll(goCtx context.Context, req *types.QueryAllDeployme
 
 func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentRequest) (*types.QueryGetDeploymentResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(req.Creator)
@@ -64,7 +66,7 @@ func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentR
 
 func (k Keeper) DeploymentFileContent(goCtx context.Context, req *types.QueryGetDeploymentFileContentRequest) (*types.QueryGetDeploymentFileContentResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(req.Creator)

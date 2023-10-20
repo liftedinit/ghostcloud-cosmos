@@ -1,12 +1,17 @@
 package types
 
+// NOTE: We can't use testutil/sample here because it imports types and we can't have circular imports in tests
+
 import (
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
-	"ghostcloud/testutil/sample"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )
+
+var addr1 = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
 
 func TestMsgCreateDeployment_ValidateBasic(t *testing.T) {
 	tests := []struct {
@@ -23,7 +28,7 @@ func TestMsgCreateDeployment_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCreateDeployment{
-				Creator: sample.AccAddress(),
+				Creator: addr1,
 			},
 		},
 	}
@@ -54,7 +59,7 @@ func TestMsgCreateDeploymentArchive_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgCreateDeploymentArchive{
-				Creator: sample.AccAddress(),
+				Creator: addr1,
 			},
 		},
 	}
@@ -85,7 +90,7 @@ func TestMsgUpdateDeployment_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgUpdateDeployment{
-				Creator: sample.AccAddress(),
+				Creator: addr1,
 			},
 		},
 	}
@@ -116,7 +121,7 @@ func TestMsgDeleteDeployment_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg: MsgDeleteDeployment{
-				Creator: sample.AccAddress(),
+				Creator: addr1,
 			},
 		},
 	}

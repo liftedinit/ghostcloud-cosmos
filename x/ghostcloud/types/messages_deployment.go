@@ -11,6 +11,8 @@ const (
 	TypeMsgUpdateDeploymentMeta    = "update_deployment_meta"
 	TypeMsgDeleteDeployment        = "delete_deployment"
 	TypeMsgCreateDeploymentArchive = "create_deployment_archive"
+
+	InvalidCreatorAddress = "invalid creator address (%s)"
 )
 
 var _ sdk.Msg = &MsgCreateDeployment{}
@@ -52,7 +54,7 @@ func (msg *MsgCreateDeployment) GetSignBytes() []byte {
 func (msg *MsgCreateDeployment) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 	return nil
 }
@@ -91,7 +93,7 @@ func (msg *MsgCreateDeploymentArchive) GetSignBytes() []byte {
 func (msg *MsgCreateDeploymentArchive) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 	return nil
 }
@@ -135,7 +137,7 @@ func (msg *MsgUpdateDeployment) GetSignBytes() []byte {
 func (msg *MsgUpdateDeployment) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 	return nil
 }
@@ -177,7 +179,7 @@ func (msg *MsgUpdateDeploymentMeta) GetSignBytes() []byte {
 func (msg *MsgUpdateDeploymentMeta) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 	return nil
 }
@@ -218,7 +220,7 @@ func (msg *MsgDeleteDeployment) GetSignBytes() []byte {
 func (msg *MsgDeleteDeployment) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 	return nil
 }

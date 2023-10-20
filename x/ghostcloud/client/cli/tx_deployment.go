@@ -106,6 +106,39 @@ func CmdCreateDeployment() *cobra.Command {
 	return cmd
 }
 
+// checkAndLoadWebsiteArchive checks if the website archive is valid and loads it into memory
+func checkAndLoadWebsiteArchive(argWebsiteArchive string) (bool, []byte, error) {
+	fileInfo, err := os.Stat(argWebsiteArchive)
+	if err != nil {
+		return false, nil, err
+	}
+	if fileInfo.Size() > types.DefaultMaxArchiveSize {
+		return false, nil, fmt.Errorf("website archive is too big")
+	}
+
+	// Read website archive
+	websiteArchiveBytes, err := os.ReadFile(argWebsiteArchive)
+	if err != nil {
+		return false, nil, err
+	}
+
+	r := bytes.NewReader(websiteArchiveBytes)
+	zipReader, err := zip.NewReader(r, int64(len(websiteArchiveBytes)))
+	if err != nil {
+		return false, nil, err
+	}
+
+	found := false
+	for _, f := range zipReader.File {
+		if f.Name == "index.html" {
+			found = true
+		}
+	}
+
+	return found, websiteArchiveBytes, nil
+
+}
+
 func CmdCreateDeploymentArchive() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-deployment-archive [name] [website-archive]",
@@ -120,32 +153,9 @@ func CmdCreateDeploymentArchive() *cobra.Command {
 				return err
 			}
 
-			//Check for file size
-			fileInfo, err := os.Stat(argWebsiteArchive)
+			found, websiteArchiveBytes, err := checkAndLoadWebsiteArchive(argWebsiteArchive)
 			if err != nil {
 				return err
-			}
-			if fileInfo.Size() > types.DefaultMaxArchiveSize {
-				return fmt.Errorf("website archive is too big")
-			}
-
-			// Read website archive
-			websiteArchiveBytes, err := os.ReadFile(argWebsiteArchive)
-			if err != nil {
-				return err
-			}
-
-			r := bytes.NewReader(websiteArchiveBytes)
-			zipReader, err := zip.NewReader(r, int64(len(websiteArchiveBytes)))
-			if err != nil {
-				return err
-			}
-
-			found := false
-			for _, f := range zipReader.File {
-				if f.Name == "index.html" {
-					found = true
-				}
 			}
 
 			if !found {

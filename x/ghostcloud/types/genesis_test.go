@@ -1,14 +1,33 @@
 package types_test
 
+// NOTE: We can't use testutil/sample here because it imports types and we can't have circular imports in tests
+
 import (
-	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 )
 
+var addr1 = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
+
 func TestGenesisState_Validate(t *testing.T) {
+	deployment := types.Deployment{
+		Creator: addr1,
+		Meta: &types.DeploymentMeta{
+			Name:        "name",
+			Description: "description",
+			Domain:      "domain",
+		},
+		Files: []*types.File{
+			{
+				Meta:    &types.FileMeta{Name: "name"},
+				Content: []byte{1},
+			},
+		},
+	}
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
@@ -23,7 +42,9 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				DeploymentList: sample.GetDeploymentList(2),
+				DeploymentList: []types.Deployment{
+					deployment,
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -31,7 +52,9 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated deployment",
 			genState: &types.GenesisState{
-				DeploymentList: sample.GetDuplicatedDeploymentList(),
+				DeploymentList: []types.Deployment{
+					deployment, deployment,
+				},
 			},
 			valid: false,
 		},

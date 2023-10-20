@@ -16,6 +16,8 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
+const DeploymentCreatorNotFound = "deployment creator not found"
+
 func SimulateMsgCreateDeployment(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
@@ -114,7 +116,7 @@ func SimulateMsgUpdateDeployment(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "deployment creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), DeploymentCreatorNotFound), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Meta = sample.GetDeploymentNameMeta(deployment.Meta.Name, r.Int())
@@ -160,7 +162,7 @@ func SimulateMsgUpdateDeploymentMeta(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "deployment creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), DeploymentCreatorNotFound), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Meta = sample.GetDeploymentNameMeta(deployment.Meta.Name, r.Int())
@@ -205,7 +207,7 @@ func SimulateMsgDeleteDeployment(
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "deployment creator not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), DeploymentCreatorNotFound), nil, nil
 		}
 		msg.Creator = simAccount.Address.String()
 		msg.Name = deployment.Meta.Name

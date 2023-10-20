@@ -11,12 +11,15 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+const IdxNotSet = "index not set"
+const InvalidCreatorAddr = "invalid creator address (%s)"
+
 func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateDeployment) (*types.MsgCreateDeploymentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	// Check if the value already exists
@@ -85,7 +88,7 @@ func (k msgServer) CreateDeploymentArchive(goCtx context.Context, msg *types.Msg
 
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	// Check if the value exists
@@ -118,7 +121,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	// Check if the value exists
@@ -128,7 +131,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 		msg.Meta.Name,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, IdxNotSet)
 	}
 
 	// Checks if the the msg creator is the same as the current owner
@@ -151,7 +154,7 @@ func (k msgServer) UpdateDeploymentMeta(goCtx context.Context, msg *types.MsgUpd
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	deployment, isFound := k.GetDeployment(
@@ -160,7 +163,7 @@ func (k msgServer) UpdateDeploymentMeta(goCtx context.Context, msg *types.MsgUpd
 		msg.Meta.Name,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, IdxNotSet)
 	}
 
 	deployment.Meta = msg.Meta
@@ -174,7 +177,7 @@ func (k msgServer) DeleteDeployment(goCtx context.Context, msg *types.MsgDeleteD
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	addr, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	// Check if the value exists
@@ -184,7 +187,7 @@ func (k msgServer) DeleteDeployment(goCtx context.Context, msg *types.MsgDeleteD
 		msg.Name,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, IdxNotSet)
 	}
 
 	// Checks if the the msg creator is the same as the current owner
