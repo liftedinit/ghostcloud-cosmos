@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"fmt"
+	"ghostcloud/testutil/sample"
 	"os"
 	"strconv"
 	"testing"
@@ -70,6 +71,74 @@ func TestCreateDeployment(t *testing.T) {
 			args = append(args, fields...)
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+				return
+			}
+			require.NoError(t, err)
+
+			var resp sdk.TxResponse
+			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
+			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
+		})
+	}
+}
+
+func TestCreateDeploymentArchive(t *testing.T) {
+	net := network.New(t)
+	val := net.Validators[0]
+	ctx := val.ClientCtx
+	file, err := os.CreateTemp("", "test-website-*.zip")
+	if err != nil {
+		t.Error(err)
+	}
+
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			t.Error(err)
+		}
+	}(file.Name())
+
+	webArchive := sample.CreateZipWithHTML()
+	_, err = file.Write(webArchive)
+	if err != nil {
+		t.Error(err)
+	}
+
+	fields := []string{file.Name()}
+	tests := []struct {
+		desc   string
+		idName string
+
+		args []string
+		err  error
+		code uint32
+	}{
+		{
+			idName: strconv.Itoa(0),
+
+			desc: "valid",
+			args: []string{
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", cli.FlagDescription, strconv.Itoa(0)),
+				fmt.Sprintf("--%s=%s", cli.FlagDomain, strconv.Itoa(0)),
+			},
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			require.NoError(t, net.WaitForNextBlock())
+
+			args := []string{
+				tc.idName,
+			}
+			args = append(args, fields...)
+			args = append(args, tc.args...)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeploymentArchive(), args)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 				return
