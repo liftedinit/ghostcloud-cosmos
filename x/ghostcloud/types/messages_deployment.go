@@ -8,6 +8,7 @@ import (
 const (
 	TypeMsgCreateDeployment        = "create_deployment"
 	TypeMsgUpdateDeployment        = "update_deployment"
+	TypeMsgUpdateDeploymentMeta    = "update_deployment_meta"
 	TypeMsgDeleteDeployment        = "delete_deployment"
 	TypeMsgCreateDeploymentArchive = "create_deployment_archive"
 )
@@ -157,7 +158,7 @@ func (msg *MsgUpdateDeploymentMeta) Route() string {
 }
 
 func (msg *MsgUpdateDeploymentMeta) Type() string {
-	return TypeMsgUpdateDeployment
+	return TypeMsgUpdateDeploymentMeta
 }
 
 func (msg *MsgUpdateDeploymentMeta) GetSigners() []sdk.AccAddress {

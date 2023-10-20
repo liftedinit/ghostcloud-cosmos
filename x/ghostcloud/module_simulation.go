@@ -31,6 +31,10 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgUpdateDeployment int = 100
 
+	opWeightMsgUpdateDeploymentMeta = "op_weight_msg_deployment"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateDeploymentMeta int = 100
+
 	opWeightMsgDeleteDeployment = "op_weight_msg_deployment"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteDeployment int = 100
@@ -99,6 +103,17 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgUpdateDeployment,
 		ghostcloudsimulation.SimulateMsgUpdateDeployment(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateDeploymentMeta int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDeploymentMeta, &weightMsgUpdateDeploymentMeta, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateDeploymentMeta = defaultWeightMsgUpdateDeploymentMeta
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateDeploymentMeta,
+		ghostcloudsimulation.SimulateMsgUpdateDeploymentMeta(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	var weightMsgDeleteDeployment int
