@@ -10,8 +10,7 @@ import (
 func CreateNDeployment(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Deployment {
 	items := make([]types.Deployment, n)
 	for i := range items {
-		items[i].Creator = sample.AccAddress()
-		items[i].Meta = sample.GetDeploymentMeta(i)
+		items[i].Meta = sample.GetDeploymentMeta(sample.AccAddress(), i)
 		items[i].Files = sample.GetDeploymentFiles(i)
 
 		keeper.SetDeployment(ctx, items[i])

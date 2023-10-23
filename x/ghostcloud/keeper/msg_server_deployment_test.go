@@ -23,20 +23,20 @@ func TestDeploymentMsgServerCreate(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	creator := sample.AccAddress()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateDeployment{Creator: creator,
-			Meta:  sample.GetDeploymentMeta(i),
+		expected := &types.MsgCreateDeployment{
+			Meta:  sample.GetDeploymentMeta(creator, i),
 			Files: sample.GetDeploymentFiles(i),
 		}
 		_, err := srv.CreateDeployment(wctx, expected)
 		require.NoError(t, err)
-		addr, err := sdk.AccAddressFromBech32(expected.Creator)
+		addr, err := sdk.AccAddressFromBech32(expected.Meta.Creator)
 		require.NoError(t, err)
 		rst, found := k.GetDeployment(ctx,
 			addr,
 			expected.Meta.Name,
 		)
 		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Creator)
+		require.Equal(t, expected.Meta, rst.Meta)
 	}
 }
 
@@ -46,27 +46,26 @@ func TestDeploymentMsgServerCreateArchive(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	creator := sample.AccAddress()
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateDeploymentArchive{Creator: creator,
-			Meta:           sample.GetDeploymentMeta(i),
+		expected := &types.MsgCreateDeploymentArchive{
+			Meta:           sample.GetDeploymentMeta(creator, i),
 			WebsiteArchive: sample.CreateZipWithHTML(),
 		}
 		_, err := srv.CreateDeploymentArchive(wctx, expected)
 		require.NoError(t, err)
-		addr, err := sdk.AccAddressFromBech32(expected.Creator)
+		addr, err := sdk.AccAddressFromBech32(expected.Meta.Creator)
 		require.NoError(t, err)
 		rst, found := k.GetDeployment(ctx,
 			addr,
 			expected.Meta.Name,
 		)
 		require.True(t, found)
-		require.Equal(t, expected.Creator, rst.Creator)
+		require.Equal(t, expected.Meta, rst.Meta)
 	}
 }
 
 func TestDeploymentMsgServerUpdate(t *testing.T) {
 	creator := sample.AccAddress()
 	otherCreator := sample.AccAddress()
-
 	tests := []struct {
 		desc    string
 		request *types.MsgUpdateDeployment
@@ -74,23 +73,23 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateDeployment{Creator: creator,
-				Meta:  sample.GetDeploymentMeta(0),
+			request: &types.MsgUpdateDeployment{
+				Meta:  sample.GetDeploymentMeta(creator, 0),
 				Files: sample.GetDeploymentFiles(0),
 			},
 		},
 		{
 			desc: "KeyNotFound - Other Creator",
-			request: &types.MsgUpdateDeployment{Creator: otherCreator,
-				Meta:  sample.GetDeploymentMeta(0),
+			request: &types.MsgUpdateDeployment{
+				Meta:  sample.GetDeploymentMeta(otherCreator, 0),
 				Files: sample.GetDeploymentFiles(0),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
 		{
 			desc: "KeyNotFound - Other Meta",
-			request: &types.MsgUpdateDeployment{Creator: creator,
-				Meta:  sample.GetDeploymentMeta(1000000),
+			request: &types.MsgUpdateDeployment{
+				Meta:  sample.GetDeploymentMeta(creator, 1000000),
 				Files: sample.GetDeploymentFiles(1000000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
@@ -101,8 +100,8 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.GhostcloudKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateDeployment{Creator: creator,
-				Meta:  sample.GetDeploymentMeta(0),
+			expected := &types.MsgCreateDeployment{
+				Meta:  sample.GetDeploymentMeta(creator, 0),
 				Files: sample.GetDeploymentFiles(0),
 			}
 			_, err := srv.CreateDeployment(wctx, expected)
@@ -113,14 +112,14 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				addr, err := sdk.AccAddressFromBech32(expected.Creator)
+				addr, err := sdk.AccAddressFromBech32(expected.Meta.Creator)
 				require.NoError(t, err)
 				rst, found := k.GetDeployment(ctx,
 					addr,
 					expected.Meta.Name,
 				)
 				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Creator)
+				require.Equal(t, expected.Meta, rst.Meta)
 			}
 		})
 	}
@@ -137,21 +136,21 @@ func TestDeploymentMsgServerUpdateMeta(t *testing.T) {
 	}{
 		{
 			desc: "Completed",
-			request: &types.MsgUpdateDeploymentMeta{Creator: creator,
-				Meta: sample.GetDeploymentNameMeta("0", 1),
+			request: &types.MsgUpdateDeploymentMeta{
+				Meta: sample.GetDeploymentNameMeta(creator, "0", 1),
 			},
 		},
 		{
 			desc: "KeyNotFound - Other Creator",
-			request: &types.MsgUpdateDeploymentMeta{Creator: otherCreator,
-				Meta: sample.GetDeploymentNameMeta("0", 1),
+			request: &types.MsgUpdateDeploymentMeta{
+				Meta: sample.GetDeploymentNameMeta(otherCreator, "0", 1),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
 		{
 			desc: "KeyNotFound - Other Meta",
-			request: &types.MsgUpdateDeploymentMeta{Creator: creator,
-				Meta: sample.GetDeploymentMeta(1000000),
+			request: &types.MsgUpdateDeploymentMeta{
+				Meta: sample.GetDeploymentMeta(creator, 1000000),
 			},
 			err: sdkerrors.ErrKeyNotFound,
 		},
@@ -161,8 +160,8 @@ func TestDeploymentMsgServerUpdateMeta(t *testing.T) {
 			k, ctx := keepertest.GhostcloudKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateDeployment{Creator: creator,
-				Meta:  sample.GetDeploymentMeta(0),
+			expected := &types.MsgCreateDeployment{
+				Meta:  sample.GetDeploymentNameMeta(creator, "0", 0),
 				Files: sample.GetDeploymentFiles(0),
 			}
 			_, err := srv.CreateDeployment(wctx, expected)
@@ -173,14 +172,13 @@ func TestDeploymentMsgServerUpdateMeta(t *testing.T) {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
-				addr, err := sdk.AccAddressFromBech32(expected.Creator)
+				addr, err := sdk.AccAddressFromBech32(expected.Meta.Creator)
 				require.NoError(t, err)
 				rst, found := k.GetDeployment(ctx,
 					addr,
 					expected.Meta.Name,
 				)
 				require.True(t, found)
-				require.Equal(t, expected.Creator, rst.Creator)
 				require.Equal(t, tc.request.Meta, rst.Meta)
 			}
 		})
@@ -223,8 +221,8 @@ func TestDeploymentMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateDeployment(wctx, &types.MsgCreateDeployment{Creator: creator,
-				Meta:  sample.GetDeploymentMeta(0),
+			_, err := srv.CreateDeployment(wctx, &types.MsgCreateDeployment{
+				Meta:  sample.GetDeploymentMeta(creator, 0),
 				Files: sample.GetDeploymentFiles(0),
 			})
 			require.NoError(t, err)

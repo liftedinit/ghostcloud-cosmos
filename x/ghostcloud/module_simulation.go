@@ -56,14 +56,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		Params: types.DefaultParams(),
 		DeploymentList: []types.Deployment{
 			{
-				Creator: sample.AccAddress(),
-				Meta:    sample.GetDeploymentMeta(0),
-				Files:   sample.GetDeploymentFiles(0),
+				Meta:  sample.GetDeploymentMeta(sample.AccAddress(), 0),
+				Files: sample.GetDeploymentFiles(0),
 			},
 			{
-				Creator: sample.AccAddress(),
-				Meta:    sample.GetDeploymentMeta(1),
-				Files:   sample.GetDeploymentFiles(1),
+				Meta:  sample.GetDeploymentMeta(sample.AccAddress(), 1),
+				Files: sample.GetDeploymentFiles(1),
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState

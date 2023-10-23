@@ -18,15 +18,13 @@ const (
 var _ sdk.Msg = &MsgCreateDeployment{}
 
 func NewMsgCreateDeployment(
-	creator string,
 	meta *DeploymentMeta,
 	files []*File,
 
 ) *MsgCreateDeployment {
 	return &MsgCreateDeployment{
-		Creator: creator,
-		Meta:    meta,
-		Files:   files,
+		Meta:  meta,
+		Files: files,
 	}
 }
 
@@ -39,7 +37,7 @@ func (msg *MsgCreateDeployment) Type() string {
 }
 
 func (msg *MsgCreateDeployment) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +50,7 @@ func (msg *MsgCreateDeployment) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateDeployment) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
@@ -61,9 +59,8 @@ func (msg *MsgCreateDeployment) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgCreateDeploymentArchive{}
 
-func NewMsgCreateDeploymentArchive(creator string, meta *DeploymentMeta, websiteArchive []byte) *MsgCreateDeploymentArchive {
+func NewMsgCreateDeploymentArchive(meta *DeploymentMeta, websiteArchive []byte) *MsgCreateDeploymentArchive {
 	return &MsgCreateDeploymentArchive{
-		Creator:        creator,
 		Meta:           meta,
 		WebsiteArchive: websiteArchive,
 	}
@@ -78,7 +75,7 @@ func (msg *MsgCreateDeploymentArchive) Type() string {
 }
 
 func (msg *MsgCreateDeploymentArchive) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -91,7 +88,7 @@ func (msg *MsgCreateDeploymentArchive) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateDeploymentArchive) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
@@ -101,15 +98,13 @@ func (msg *MsgCreateDeploymentArchive) ValidateBasic() error {
 var _ sdk.Msg = &MsgUpdateDeployment{}
 
 func NewMsgUpdateDeployment(
-	creator string,
 	meta *DeploymentMeta,
 	files []*File,
 
 ) *MsgUpdateDeployment {
 	return &MsgUpdateDeployment{
-		Creator: creator,
-		Meta:    meta,
-		Files:   files,
+		Meta:  meta,
+		Files: files,
 	}
 }
 
@@ -122,7 +117,7 @@ func (msg *MsgUpdateDeployment) Type() string {
 }
 
 func (msg *MsgUpdateDeployment) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -135,7 +130,7 @@ func (msg *MsgUpdateDeployment) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateDeployment) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
@@ -150,8 +145,7 @@ func NewMsgUpdateDeploymentMeta(
 
 ) *MsgUpdateDeploymentMeta {
 	return &MsgUpdateDeploymentMeta{
-		Creator: creator,
-		Meta:    meta,
+		Meta: meta,
 	}
 }
 
@@ -164,7 +158,7 @@ func (msg *MsgUpdateDeploymentMeta) Type() string {
 }
 
 func (msg *MsgUpdateDeploymentMeta) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
+	creator, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		panic(err)
 	}
@@ -177,7 +171,7 @@ func (msg *MsgUpdateDeploymentMeta) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateDeploymentMeta) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	_, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}

@@ -3,12 +3,18 @@ syntax = "proto3";
 package ghostcloud.ghostcloud;
 
 import "ghostcloud/ghostcloud/file.proto";
+import "ghostcloud/ghostcloud/file_meta.proto";
 import "ghostcloud/ghostcloud/deployment_meta.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 message Deployment {
+  DeploymentMeta meta = 1;
+  repeated File files = 2;
+}
+
+message DeploymentView {
   string creator      = 1;
-  DeploymentMeta meta = 2;
-  repeated File files = 3;
+  DeploymentMeta deploymentMeta = 2;
+  repeated FileMeta filesMeta = 3;
 }

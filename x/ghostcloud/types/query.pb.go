@@ -114,8 +114,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 }
 
 type QueryGetDeploymentRequest struct {
-	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Creator string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Name    string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (m *QueryGetDeploymentRequest) Reset()         { *m = QueryGetDeploymentRequest{} }
@@ -151,13 +151,6 @@ func (m *QueryGetDeploymentRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryGetDeploymentRequest proto.InternalMessageInfo
 
-func (m *QueryGetDeploymentRequest) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
 func (m *QueryGetDeploymentRequest) GetCreator() string {
 	if m != nil {
 		return m.Creator
@@ -165,8 +158,16 @@ func (m *QueryGetDeploymentRequest) GetCreator() string {
 	return ""
 }
 
+func (m *QueryGetDeploymentRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
 type QueryGetDeploymentResponse struct {
-	Deployment Deployment `protobuf:"bytes,1,opt,name=deployment,proto3" json:"deployment"`
+	DeploymentMeta DeploymentMeta `protobuf:"bytes,1,opt,name=deploymentMeta,proto3" json:"deploymentMeta"`
+	FileMeta       []*FileMeta    `protobuf:"bytes,2,rep,name=fileMeta,proto3" json:"fileMeta,omitempty"`
 }
 
 func (m *QueryGetDeploymentResponse) Reset()         { *m = QueryGetDeploymentResponse{} }
@@ -202,29 +203,36 @@ func (m *QueryGetDeploymentResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryGetDeploymentResponse proto.InternalMessageInfo
 
-func (m *QueryGetDeploymentResponse) GetDeployment() Deployment {
+func (m *QueryGetDeploymentResponse) GetDeploymentMeta() DeploymentMeta {
 	if m != nil {
-		return m.Deployment
+		return m.DeploymentMeta
 	}
-	return Deployment{}
+	return DeploymentMeta{}
 }
 
-type QueryAllDeploymentRequest struct {
+func (m *QueryGetDeploymentResponse) GetFileMeta() []*FileMeta {
+	if m != nil {
+		return m.FileMeta
+	}
+	return nil
+}
+
+type QueryAllDeploymentMetaRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllDeploymentRequest) Reset()         { *m = QueryAllDeploymentRequest{} }
-func (m *QueryAllDeploymentRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllDeploymentRequest) ProtoMessage()    {}
-func (*QueryAllDeploymentRequest) Descriptor() ([]byte, []int) {
+func (m *QueryAllDeploymentMetaRequest) Reset()         { *m = QueryAllDeploymentMetaRequest{} }
+func (m *QueryAllDeploymentMetaRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllDeploymentMetaRequest) ProtoMessage()    {}
+func (*QueryAllDeploymentMetaRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1eaa93c58141bbd6, []int{4}
 }
-func (m *QueryAllDeploymentRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllDeploymentMetaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllDeploymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllDeploymentMetaRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllDeploymentRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllDeploymentMetaRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -234,42 +242,42 @@ func (m *QueryAllDeploymentRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *QueryAllDeploymentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllDeploymentRequest.Merge(m, src)
+func (m *QueryAllDeploymentMetaRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllDeploymentMetaRequest.Merge(m, src)
 }
-func (m *QueryAllDeploymentRequest) XXX_Size() int {
+func (m *QueryAllDeploymentMetaRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllDeploymentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllDeploymentRequest.DiscardUnknown(m)
+func (m *QueryAllDeploymentMetaRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllDeploymentMetaRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllDeploymentRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllDeploymentMetaRequest proto.InternalMessageInfo
 
-func (m *QueryAllDeploymentRequest) GetPagination() *query.PageRequest {
+func (m *QueryAllDeploymentMetaRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-type QueryAllDeploymentResponse struct {
-	Deployment []Deployment        `protobuf:"bytes,1,rep,name=deployment,proto3" json:"deployment"`
-	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+type QueryAllDeploymentMetaResponse struct {
+	DeploymentMeta []DeploymentMeta    `protobuf:"bytes,1,rep,name=deploymentMeta,proto3" json:"deploymentMeta"`
+	Pagination     *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllDeploymentResponse) Reset()         { *m = QueryAllDeploymentResponse{} }
-func (m *QueryAllDeploymentResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllDeploymentResponse) ProtoMessage()    {}
-func (*QueryAllDeploymentResponse) Descriptor() ([]byte, []int) {
+func (m *QueryAllDeploymentMetaResponse) Reset()         { *m = QueryAllDeploymentMetaResponse{} }
+func (m *QueryAllDeploymentMetaResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllDeploymentMetaResponse) ProtoMessage()    {}
+func (*QueryAllDeploymentMetaResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1eaa93c58141bbd6, []int{5}
 }
-func (m *QueryAllDeploymentResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryAllDeploymentMetaResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllDeploymentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryAllDeploymentMetaResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllDeploymentResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryAllDeploymentMetaResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -279,26 +287,138 @@ func (m *QueryAllDeploymentResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *QueryAllDeploymentResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllDeploymentResponse.Merge(m, src)
+func (m *QueryAllDeploymentMetaResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllDeploymentMetaResponse.Merge(m, src)
 }
-func (m *QueryAllDeploymentResponse) XXX_Size() int {
+func (m *QueryAllDeploymentMetaResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllDeploymentResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllDeploymentResponse.DiscardUnknown(m)
+func (m *QueryAllDeploymentMetaResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllDeploymentMetaResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllDeploymentResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryAllDeploymentMetaResponse proto.InternalMessageInfo
 
-func (m *QueryAllDeploymentResponse) GetDeployment() []Deployment {
+func (m *QueryAllDeploymentMetaResponse) GetDeploymentMeta() []DeploymentMeta {
 	if m != nil {
-		return m.Deployment
+		return m.DeploymentMeta
 	}
 	return nil
 }
 
-func (m *QueryAllDeploymentResponse) GetPagination() *query.PageResponse {
+func (m *QueryAllDeploymentMetaResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryDeploymentFileNamesRequest struct {
+	Creator    string             `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	SiteName   string             `protobuf:"bytes,2,opt,name=siteName,proto3" json:"siteName,omitempty"`
+	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryDeploymentFileNamesRequest) Reset()         { *m = QueryDeploymentFileNamesRequest{} }
+func (m *QueryDeploymentFileNamesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryDeploymentFileNamesRequest) ProtoMessage()    {}
+func (*QueryDeploymentFileNamesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1eaa93c58141bbd6, []int{6}
+}
+func (m *QueryDeploymentFileNamesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDeploymentFileNamesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDeploymentFileNamesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDeploymentFileNamesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDeploymentFileNamesRequest.Merge(m, src)
+}
+func (m *QueryDeploymentFileNamesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDeploymentFileNamesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDeploymentFileNamesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDeploymentFileNamesRequest proto.InternalMessageInfo
+
+func (m *QueryDeploymentFileNamesRequest) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *QueryDeploymentFileNamesRequest) GetSiteName() string {
+	if m != nil {
+		return m.SiteName
+	}
+	return ""
+}
+
+func (m *QueryDeploymentFileNamesRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryDeploymentFileNamesResponse struct {
+	Meta       []*FileMeta         `protobuf:"bytes,1,rep,name=meta,proto3" json:"meta,omitempty"`
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryDeploymentFileNamesResponse) Reset()         { *m = QueryDeploymentFileNamesResponse{} }
+func (m *QueryDeploymentFileNamesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryDeploymentFileNamesResponse) ProtoMessage()    {}
+func (*QueryDeploymentFileNamesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1eaa93c58141bbd6, []int{7}
+}
+func (m *QueryDeploymentFileNamesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDeploymentFileNamesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDeploymentFileNamesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDeploymentFileNamesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDeploymentFileNamesResponse.Merge(m, src)
+}
+func (m *QueryDeploymentFileNamesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDeploymentFileNamesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDeploymentFileNamesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDeploymentFileNamesResponse proto.InternalMessageInfo
+
+func (m *QueryDeploymentFileNamesResponse) GetMeta() []*FileMeta {
+	if m != nil {
+		return m.Meta
+	}
+	return nil
+}
+
+func (m *QueryDeploymentFileNamesResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -306,8 +426,8 @@ func (m *QueryAllDeploymentResponse) GetPagination() *query.PageResponse {
 }
 
 type QueryGetDeploymentFileContentRequest struct {
-	SiteName string `protobuf:"bytes,1,opt,name=siteName,proto3" json:"siteName,omitempty"`
-	Creator  string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	Creator  string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	SiteName string `protobuf:"bytes,2,opt,name=siteName,proto3" json:"siteName,omitempty"`
 	FileName string `protobuf:"bytes,3,opt,name=fileName,proto3" json:"fileName,omitempty"`
 }
 
@@ -315,7 +435,7 @@ func (m *QueryGetDeploymentFileContentRequest) Reset()         { *m = QueryGetDe
 func (m *QueryGetDeploymentFileContentRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetDeploymentFileContentRequest) ProtoMessage()    {}
 func (*QueryGetDeploymentFileContentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1eaa93c58141bbd6, []int{6}
+	return fileDescriptor_1eaa93c58141bbd6, []int{8}
 }
 func (m *QueryGetDeploymentFileContentRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -344,16 +464,16 @@ func (m *QueryGetDeploymentFileContentRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryGetDeploymentFileContentRequest proto.InternalMessageInfo
 
-func (m *QueryGetDeploymentFileContentRequest) GetSiteName() string {
+func (m *QueryGetDeploymentFileContentRequest) GetCreator() string {
 	if m != nil {
-		return m.SiteName
+		return m.Creator
 	}
 	return ""
 }
 
-func (m *QueryGetDeploymentFileContentRequest) GetCreator() string {
+func (m *QueryGetDeploymentFileContentRequest) GetSiteName() string {
 	if m != nil {
-		return m.Creator
+		return m.SiteName
 	}
 	return ""
 }
@@ -365,103 +485,68 @@ func (m *QueryGetDeploymentFileContentRequest) GetFileName() string {
 	return ""
 }
 
-type QueryGetDeploymentFileContentResponse struct {
-	Content []byte `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`
-}
-
-func (m *QueryGetDeploymentFileContentResponse) Reset()         { *m = QueryGetDeploymentFileContentResponse{} }
-func (m *QueryGetDeploymentFileContentResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetDeploymentFileContentResponse) ProtoMessage()    {}
-func (*QueryGetDeploymentFileContentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1eaa93c58141bbd6, []int{7}
-}
-func (m *QueryGetDeploymentFileContentResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryGetDeploymentFileContentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryGetDeploymentFileContentResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryGetDeploymentFileContentResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetDeploymentFileContentResponse.Merge(m, src)
-}
-func (m *QueryGetDeploymentFileContentResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryGetDeploymentFileContentResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetDeploymentFileContentResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryGetDeploymentFileContentResponse proto.InternalMessageInfo
-
-func (m *QueryGetDeploymentFileContentResponse) GetContent() []byte {
-	if m != nil {
-		return m.Content
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "ghostcloud.ghostcloud.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "ghostcloud.ghostcloud.QueryParamsResponse")
 	proto.RegisterType((*QueryGetDeploymentRequest)(nil), "ghostcloud.ghostcloud.QueryGetDeploymentRequest")
 	proto.RegisterType((*QueryGetDeploymentResponse)(nil), "ghostcloud.ghostcloud.QueryGetDeploymentResponse")
-	proto.RegisterType((*QueryAllDeploymentRequest)(nil), "ghostcloud.ghostcloud.QueryAllDeploymentRequest")
-	proto.RegisterType((*QueryAllDeploymentResponse)(nil), "ghostcloud.ghostcloud.QueryAllDeploymentResponse")
+	proto.RegisterType((*QueryAllDeploymentMetaRequest)(nil), "ghostcloud.ghostcloud.QueryAllDeploymentMetaRequest")
+	proto.RegisterType((*QueryAllDeploymentMetaResponse)(nil), "ghostcloud.ghostcloud.QueryAllDeploymentMetaResponse")
+	proto.RegisterType((*QueryDeploymentFileNamesRequest)(nil), "ghostcloud.ghostcloud.QueryDeploymentFileNamesRequest")
+	proto.RegisterType((*QueryDeploymentFileNamesResponse)(nil), "ghostcloud.ghostcloud.QueryDeploymentFileNamesResponse")
 	proto.RegisterType((*QueryGetDeploymentFileContentRequest)(nil), "ghostcloud.ghostcloud.QueryGetDeploymentFileContentRequest")
-	proto.RegisterType((*QueryGetDeploymentFileContentResponse)(nil), "ghostcloud.ghostcloud.QueryGetDeploymentFileContentResponse")
 }
 
 func init() { proto.RegisterFile("ghostcloud/ghostcloud/query.proto", fileDescriptor_1eaa93c58141bbd6) }
 
 var fileDescriptor_1eaa93c58141bbd6 = []byte{
-	// 598 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xcf, 0x6e, 0xd3, 0x40,
-	0x10, 0xc6, 0xe3, 0xfe, 0x09, 0x30, 0xc0, 0x65, 0x69, 0xa5, 0x60, 0x11, 0x97, 0x18, 0x5a, 0x68,
-	0x0e, 0x5e, 0x12, 0x90, 0x90, 0x28, 0x1c, 0x52, 0xaa, 0x54, 0x48, 0x08, 0x15, 0x1f, 0xb9, 0x6d,
-	0xd2, 0xc5, 0x58, 0x72, 0xbc, 0x6e, 0x76, 0x83, 0x1a, 0x45, 0xb9, 0x70, 0xe0, 0x8c, 0xc4, 0x03,
-	0xf0, 0x04, 0xf0, 0x16, 0x48, 0x3d, 0x56, 0xe2, 0xc2, 0x09, 0x55, 0x09, 0x0f, 0x82, 0xbc, 0xbb,
-	0xae, 0x5d, 0xe2, 0x24, 0x6d, 0x6f, 0xbb, 0xeb, 0xf9, 0xe6, 0xfb, 0xed, 0xcc, 0x8e, 0xa1, 0xe2,
-	0x7d, 0x60, 0x5c, 0xb4, 0x03, 0xd6, 0xdb, 0xc7, 0x99, 0xe5, 0x41, 0x8f, 0x76, 0xfb, 0x4e, 0xd4,
-	0x65, 0x82, 0xa1, 0xd5, 0xf4, 0xdc, 0x49, 0x97, 0xe6, 0x8a, 0xc7, 0x3c, 0x26, 0x23, 0x70, 0xbc,
-	0x52, 0xc1, 0xe6, 0x1d, 0x8f, 0x31, 0x2f, 0xa0, 0x98, 0x44, 0x3e, 0x26, 0x61, 0xc8, 0x04, 0x11,
-	0x3e, 0x0b, 0xb9, 0xfe, 0x5a, 0x6d, 0x33, 0xde, 0x61, 0x1c, 0xb7, 0x08, 0xa7, 0xca, 0x03, 0x7f,
-	0xac, 0xb5, 0xa8, 0x20, 0x35, 0x1c, 0x11, 0xcf, 0x0f, 0x65, 0xb0, 0x8e, 0xb5, 0xf3, 0xc9, 0x22,
-	0xd2, 0x25, 0x9d, 0x24, 0xdf, 0x46, 0x7e, 0xcc, 0x3e, 0x8d, 0x02, 0xd6, 0xef, 0xd0, 0x50, 0xa8,
-	0x38, 0x7b, 0x05, 0xd0, 0xdb, 0xd8, 0x6d, 0x4f, 0x8a, 0x5d, 0x7a, 0xd0, 0xa3, 0x5c, 0xd8, 0x2e,
-	0xdc, 0x3a, 0x73, 0xca, 0x23, 0x16, 0x72, 0x8a, 0xb6, 0xa0, 0xa8, 0x4c, 0x4a, 0xc6, 0x5d, 0xe3,
-	0xe1, 0xf5, 0x7a, 0xd9, 0xc9, 0x2d, 0x80, 0xa3, 0x64, 0xdb, 0x4b, 0x47, 0x7f, 0xd6, 0x0a, 0xae,
-	0x96, 0xd8, 0xaf, 0xe0, 0xb6, 0xcc, 0xb9, 0x4b, 0xc5, 0xce, 0x29, 0x85, 0x36, 0x44, 0x08, 0x96,
-	0x42, 0xd2, 0xa1, 0x32, 0xef, 0x35, 0x57, 0xae, 0x51, 0x09, 0xae, 0xb4, 0xbb, 0x94, 0x08, 0xd6,
-	0x2d, 0x2d, 0xc8, 0xe3, 0x64, 0x6b, 0x53, 0x30, 0xf3, 0x52, 0x69, 0xca, 0x5d, 0x80, 0xf4, 0x9a,
-	0x9a, 0xb4, 0x32, 0x85, 0x34, 0x95, 0x6b, 0xda, 0x8c, 0xd4, 0x6e, 0x6b, 0xe2, 0x46, 0x10, 0x4c,
-	0x12, 0x37, 0x01, 0xd2, 0xc6, 0x68, 0x97, 0x0d, 0x47, 0x75, 0xd1, 0x89, 0xbb, 0xe8, 0xa8, 0x97,
-	0xa2, 0xbb, 0xe8, 0xec, 0x11, 0x8f, 0x6a, 0xad, 0x9b, 0x51, 0xda, 0x3f, 0x0c, 0x7d, 0x99, 0xff,
-	0x5c, 0xa6, 0x5c, 0x66, 0xf1, 0x92, 0x97, 0x89, 0x13, 0x65, 0x78, 0x17, 0x24, 0xef, 0x83, 0xb9,
-	0xbc, 0x8a, 0xe2, 0x0c, 0xf0, 0x21, 0xdc, 0x9f, 0x2c, 0x7e, 0xd3, 0x0f, 0xe8, 0x4b, 0x16, 0x8a,
-	0x4c, 0x81, 0x4c, 0xb8, 0xca, 0x7d, 0x41, 0xdf, 0xa4, 0x6d, 0x3d, 0xdd, 0x4f, 0x6f, 0x6d, 0xac,
-	0x7a, 0xef, 0x07, 0x4a, 0xb5, 0xa8, 0x54, 0xc9, 0xde, 0x6e, 0xc0, 0xfa, 0x1c, 0x67, 0x5d, 0xb4,
-	0x38, 0xbd, 0x3a, 0x92, 0xce, 0x37, 0xdc, 0x64, 0x5b, 0xff, 0xb9, 0x0c, 0xcb, 0x32, 0x07, 0xfa,
-	0x6c, 0x40, 0x51, 0xbd, 0x53, 0xb4, 0x39, 0xa5, 0x9e, 0x93, 0x83, 0x61, 0x56, 0xcf, 0x13, 0xaa,
-	0x28, 0xec, 0xf5, 0x4f, 0xbf, 0xfe, 0x7e, 0x5d, 0x58, 0x43, 0x65, 0x3c, 0x6b, 0x5e, 0xd1, 0x77,
-	0x03, 0x20, 0xbd, 0x0e, 0x7a, 0x34, 0xcb, 0x21, 0x6f, 0x76, 0xcc, 0xda, 0x05, 0x14, 0x1a, 0xed,
-	0x99, 0x44, 0x7b, 0x82, 0xea, 0x78, 0xde, 0x6f, 0x02, 0x0f, 0x74, 0x67, 0x86, 0x78, 0x10, 0x4f,
-	0xe5, 0x10, 0x7d, 0x33, 0xe0, 0x66, 0x9a, 0xb2, 0x11, 0x04, 0xb3, 0x91, 0xf3, 0x86, 0x67, 0x36,
-	0x72, 0xee, 0x20, 0xd8, 0x9b, 0x12, 0xf9, 0x1e, 0xaa, 0xcc, 0x45, 0x46, 0x27, 0x06, 0xac, 0xe6,
-	0x3e, 0x10, 0xb4, 0x75, 0xee, 0x52, 0x4d, 0x3e, 0x68, 0xf3, 0xf9, 0xe5, 0xc4, 0x9a, 0xff, 0xb5,
-	0xe4, 0x6f, 0xa2, 0x9d, 0x0b, 0x95, 0x3c, 0x99, 0x98, 0x21, 0x1e, 0x24, 0x63, 0xf0, 0xa2, 0x5a,
-	0x1d, 0x6e, 0x3f, 0x3d, 0x1a, 0x59, 0xc6, 0xf1, 0xc8, 0x32, 0x4e, 0x46, 0x96, 0xf1, 0x65, 0x6c,
-	0x15, 0x8e, 0xc7, 0x56, 0xe1, 0xf7, 0xd8, 0x2a, 0xbc, 0x2b, 0x67, 0x72, 0x1e, 0x66, 0x0d, 0x44,
-	0x3f, 0xa2, 0xbc, 0x55, 0x94, 0xbf, 0xfd, 0xc7, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0xe3, 0x99,
-	0xcc, 0x43, 0xde, 0x06, 0x00, 0x00,
+	// 724 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x4f, 0xd4, 0x40,
+	0x14, 0xc7, 0x77, 0x76, 0x11, 0xf0, 0x91, 0x98, 0x38, 0x40, 0x82, 0x8d, 0xdb, 0xc5, 0x46, 0x70,
+	0x5d, 0x93, 0x56, 0x16, 0x94, 0x44, 0xe2, 0x81, 0x1f, 0x81, 0x70, 0xd0, 0x60, 0xf5, 0xc4, 0xc5,
+	0x0c, 0xcb, 0x58, 0x37, 0x69, 0x3b, 0x65, 0x3b, 0x18, 0x08, 0xd9, 0x8b, 0x07, 0xcf, 0x26, 0xde,
+	0xd5, 0x7f, 0x40, 0xe3, 0x5f, 0xe0, 0x99, 0x23, 0x46, 0x0f, 0x9e, 0x8c, 0x01, 0xff, 0x10, 0xd3,
+	0x99, 0x59, 0xba, 0x0b, 0xfd, 0x01, 0xe2, 0x6d, 0xda, 0x7e, 0xdf, 0x7c, 0x3f, 0xef, 0xed, 0x7b,
+	0x2f, 0x0b, 0x37, 0x9c, 0x97, 0x2c, 0xe4, 0x0d, 0x97, 0x6d, 0x6f, 0x5a, 0x5d, 0xc7, 0xad, 0x6d,
+	0xda, 0xda, 0x35, 0x83, 0x16, 0xe3, 0x0c, 0x8f, 0xc6, 0xef, 0xcd, 0xf8, 0xa8, 0x8d, 0x38, 0xcc,
+	0x61, 0x42, 0x61, 0x45, 0x27, 0x29, 0xd6, 0xae, 0x3b, 0x8c, 0x39, 0x2e, 0xb5, 0x48, 0xd0, 0xb4,
+	0x88, 0xef, 0x33, 0x4e, 0x78, 0x93, 0xf9, 0xa1, 0xfa, 0x5a, 0x6b, 0xb0, 0xd0, 0x63, 0xa1, 0xb5,
+	0x41, 0x42, 0x2a, 0x3d, 0xac, 0x57, 0x53, 0x1b, 0x94, 0x93, 0x29, 0x2b, 0x20, 0x4e, 0xd3, 0x17,
+	0x62, 0xa5, 0xad, 0x26, 0x93, 0xbd, 0x68, 0xba, 0xf4, 0x79, 0x83, 0xf9, 0x9c, 0xfa, 0x5c, 0x29,
+	0x27, 0x32, 0x94, 0x1e, 0xe5, 0x44, 0xc9, 0x8c, 0x64, 0x59, 0x40, 0x5a, 0xc4, 0xeb, 0x00, 0x4e,
+	0x26, 0x6b, 0x36, 0x69, 0xe0, 0xb2, 0x5d, 0x2f, 0xb6, 0xbc, 0x93, 0xa7, 0xeb, 0x32, 0x36, 0x46,
+	0x00, 0x3f, 0x89, 0x72, 0x5d, 0x13, 0x4e, 0x36, 0xdd, 0xda, 0xa6, 0x21, 0x37, 0x6c, 0x18, 0xee,
+	0x79, 0x1b, 0x06, 0xcc, 0x0f, 0x29, 0x9e, 0x83, 0x7e, 0x49, 0x34, 0x86, 0xc6, 0x51, 0x75, 0xa8,
+	0x5e, 0x36, 0x13, 0xcb, 0x6f, 0xca, 0xb0, 0x85, 0xbe, 0xfd, 0x5f, 0x95, 0x82, 0xad, 0x42, 0x8c,
+	0x55, 0xb8, 0x26, 0xee, 0x5c, 0xa1, 0x7c, 0xe9, 0x18, 0x45, 0x19, 0xe2, 0x31, 0x18, 0x68, 0xb4,
+	0x28, 0xe1, 0xac, 0x25, 0xae, 0xbe, 0x6c, 0x77, 0x1e, 0x31, 0x86, 0x3e, 0x9f, 0x78, 0x74, 0xac,
+	0x28, 0x5e, 0x8b, 0xb3, 0xf1, 0x19, 0x81, 0x96, 0x74, 0x97, 0xc2, 0x7c, 0x0a, 0x57, 0xe2, 0x64,
+	0x1f, 0x51, 0x4e, 0x14, 0xee, 0x44, 0x0a, 0xee, 0x52, 0x8f, 0x58, 0x61, 0x9f, 0xb8, 0x02, 0xcf,
+	0xc1, 0x60, 0xf4, 0xa3, 0x89, 0xeb, 0x8a, 0xe3, 0xa5, 0xea, 0x50, 0xbd, 0x92, 0x72, 0xdd, 0xb2,
+	0x92, 0xd9, 0xc7, 0x01, 0x86, 0x03, 0x65, 0xc1, 0x3b, 0xef, 0xba, 0xbd, 0x66, 0x9d, 0xfc, 0x97,
+	0x01, 0xe2, 0x26, 0x53, 0xb8, 0x93, 0xa6, 0xec, 0x48, 0x33, 0xea, 0x48, 0x53, 0x76, 0xbd, 0xea,
+	0x48, 0x73, 0x8d, 0x38, 0x54, 0xc5, 0xda, 0x5d, 0x91, 0xc6, 0x57, 0x04, 0x7a, 0x9a, 0x53, 0x46,
+	0x75, 0x4a, 0x17, 0xad, 0xce, 0x4a, 0x0f, 0x7f, 0x51, 0xf0, 0xdf, 0xca, 0xe5, 0x97, 0x44, 0x3d,
+	0x09, 0x7c, 0x40, 0x50, 0x11, 0x09, 0xc4, 0xb6, 0x51, 0x3d, 0x1f, 0x13, 0x8f, 0x86, 0xf9, 0xcd,
+	0xa2, 0xc1, 0x60, 0xd8, 0xe4, 0x42, 0xad, 0x1a, 0xe6, 0xf8, 0xf9, 0x44, 0x89, 0x4b, 0xff, 0x5c,
+	0xe2, 0x8f, 0x08, 0xc6, 0xd3, 0x09, 0x55, 0x91, 0xa7, 0xa1, 0xcf, 0x8b, 0x4b, 0x9b, 0xdb, 0x29,
+	0x42, 0xfc, 0xff, 0x8a, 0xb8, 0x03, 0x37, 0x4f, 0x8f, 0x47, 0x64, 0xb6, 0x28, 0x77, 0xd3, 0xc5,
+	0x0a, 0xa9, 0xc9, 0x49, 0x10, 0xdf, 0x4a, 0xf2, 0x5b, 0xe7, 0xb9, 0xfe, 0x7e, 0x00, 0x2e, 0x09,
+	0x6b, 0xfc, 0x06, 0x41, 0xbf, 0xdc, 0x03, 0xf8, 0x76, 0x4a, 0xfa, 0xa7, 0x17, 0x8f, 0x56, 0x3b,
+	0x8b, 0x54, 0x66, 0x6c, 0x4c, 0xbc, 0xfe, 0xfe, 0xe7, 0x5d, 0xb1, 0x82, 0xcb, 0x56, 0xd6, 0xf2,
+	0xc4, 0x9f, 0x10, 0x40, 0x5c, 0x05, 0x7c, 0x37, 0xcb, 0x21, 0x69, 0x37, 0x69, 0x53, 0xe7, 0x88,
+	0x50, 0x68, 0x0f, 0x04, 0xda, 0x0c, 0xae, 0x5b, 0x79, 0xbb, 0xd8, 0xda, 0x53, 0x25, 0x6f, 0x5b,
+	0x7b, 0xd1, 0x6e, 0x6b, 0xe3, 0x2f, 0x08, 0xae, 0xf6, 0xce, 0xdc, 0xbc, 0xeb, 0xe2, 0x99, 0x2c,
+	0x88, 0xb4, 0xb5, 0xa2, 0xdd, 0x3b, 0x67, 0x94, 0xc2, 0x37, 0x05, 0x7e, 0x15, 0x4f, 0xe6, 0xe3,
+	0x8b, 0xc6, 0xfd, 0x86, 0x60, 0x38, 0x61, 0x1a, 0xf0, 0xfd, 0x2c, 0xfb, 0xf4, 0x01, 0xd7, 0x66,
+	0xcf, 0x1d, 0xa7, 0xc0, 0x57, 0x05, 0xf8, 0x22, 0x9e, 0xcf, 0x07, 0x8f, 0x5a, 0x36, 0x14, 0xf8,
+	0xdd, 0x3f, 0x41, 0xa7, 0xc9, 0xdb, 0xf8, 0x07, 0x82, 0xd1, 0xc4, 0xe1, 0xc1, 0x73, 0x67, 0xee,
+	0x87, 0xd3, 0x23, 0xa7, 0x19, 0x19, 0xab, 0x40, 0x49, 0x8d, 0x75, 0x91, 0xc5, 0x33, 0x6c, 0x9f,
+	0x35, 0x0b, 0xf5, 0x97, 0x23, 0x31, 0x11, 0x6b, 0xaf, 0x33, 0x9c, 0x0f, 0x6b, 0xb5, 0xf6, 0xc2,
+	0xec, 0xfe, 0xa1, 0x8e, 0x0e, 0x0e, 0x75, 0xf4, 0xfb, 0x50, 0x47, 0x6f, 0x8f, 0xf4, 0xc2, 0xc1,
+	0x91, 0x5e, 0xf8, 0x79, 0xa4, 0x17, 0xd6, 0xcb, 0x5d, 0x0e, 0x3b, 0xdd, 0x76, 0x7c, 0x37, 0xa0,
+	0xe1, 0x46, 0xbf, 0xf8, 0xbf, 0x30, 0xfd, 0x37, 0x00, 0x00, 0xff, 0xff, 0x13, 0x21, 0x79, 0x7b,
+	0x95, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -478,12 +563,12 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of Deployment items.
 	Deployment(ctx context.Context, in *QueryGetDeploymentRequest, opts ...grpc.CallOption) (*QueryGetDeploymentResponse, error)
-	// Queries a list of all Deployment.
-	DeploymentAll(ctx context.Context, in *QueryAllDeploymentRequest, opts ...grpc.CallOption) (*QueryAllDeploymentResponse, error)
+	// Queries a list of all Deployment meta.
+	DeploymentMetaAll(ctx context.Context, in *QueryAllDeploymentMetaRequest, opts ...grpc.CallOption) (*QueryAllDeploymentMetaResponse, error)
+	DeploymentFileNames(ctx context.Context, in *QueryDeploymentFileNamesRequest, opts ...grpc.CallOption) (*QueryDeploymentFileNamesResponse, error)
 	// Queries a deployment file content.
-	DeploymentFileContent(ctx context.Context, in *QueryGetDeploymentFileContentRequest, opts ...grpc.CallOption) (*QueryGetDeploymentFileContentResponse, error)
+	DeploymentFileContent(ctx context.Context, in *QueryGetDeploymentFileContentRequest, opts ...grpc.CallOption) (*FileContent, error)
 }
 
 type queryClient struct {
@@ -512,17 +597,26 @@ func (c *queryClient) Deployment(ctx context.Context, in *QueryGetDeploymentRequ
 	return out, nil
 }
 
-func (c *queryClient) DeploymentAll(ctx context.Context, in *QueryAllDeploymentRequest, opts ...grpc.CallOption) (*QueryAllDeploymentResponse, error) {
-	out := new(QueryAllDeploymentResponse)
-	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Query/DeploymentAll", in, out, opts...)
+func (c *queryClient) DeploymentMetaAll(ctx context.Context, in *QueryAllDeploymentMetaRequest, opts ...grpc.CallOption) (*QueryAllDeploymentMetaResponse, error) {
+	out := new(QueryAllDeploymentMetaResponse)
+	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Query/DeploymentMetaAll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) DeploymentFileContent(ctx context.Context, in *QueryGetDeploymentFileContentRequest, opts ...grpc.CallOption) (*QueryGetDeploymentFileContentResponse, error) {
-	out := new(QueryGetDeploymentFileContentResponse)
+func (c *queryClient) DeploymentFileNames(ctx context.Context, in *QueryDeploymentFileNamesRequest, opts ...grpc.CallOption) (*QueryDeploymentFileNamesResponse, error) {
+	out := new(QueryDeploymentFileNamesResponse)
+	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Query/DeploymentFileNames", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) DeploymentFileContent(ctx context.Context, in *QueryGetDeploymentFileContentRequest, opts ...grpc.CallOption) (*FileContent, error) {
+	out := new(FileContent)
 	err := c.cc.Invoke(ctx, "/ghostcloud.ghostcloud.Query/DeploymentFileContent", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -534,12 +628,12 @@ func (c *queryClient) DeploymentFileContent(ctx context.Context, in *QueryGetDep
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of Deployment items.
 	Deployment(context.Context, *QueryGetDeploymentRequest) (*QueryGetDeploymentResponse, error)
-	// Queries a list of all Deployment.
-	DeploymentAll(context.Context, *QueryAllDeploymentRequest) (*QueryAllDeploymentResponse, error)
+	// Queries a list of all Deployment meta.
+	DeploymentMetaAll(context.Context, *QueryAllDeploymentMetaRequest) (*QueryAllDeploymentMetaResponse, error)
+	DeploymentFileNames(context.Context, *QueryDeploymentFileNamesRequest) (*QueryDeploymentFileNamesResponse, error)
 	// Queries a deployment file content.
-	DeploymentFileContent(context.Context, *QueryGetDeploymentFileContentRequest) (*QueryGetDeploymentFileContentResponse, error)
+	DeploymentFileContent(context.Context, *QueryGetDeploymentFileContentRequest) (*FileContent, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -552,10 +646,13 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 func (*UnimplementedQueryServer) Deployment(ctx context.Context, req *QueryGetDeploymentRequest) (*QueryGetDeploymentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Deployment not implemented")
 }
-func (*UnimplementedQueryServer) DeploymentAll(ctx context.Context, req *QueryAllDeploymentRequest) (*QueryAllDeploymentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeploymentAll not implemented")
+func (*UnimplementedQueryServer) DeploymentMetaAll(ctx context.Context, req *QueryAllDeploymentMetaRequest) (*QueryAllDeploymentMetaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeploymentMetaAll not implemented")
 }
-func (*UnimplementedQueryServer) DeploymentFileContent(ctx context.Context, req *QueryGetDeploymentFileContentRequest) (*QueryGetDeploymentFileContentResponse, error) {
+func (*UnimplementedQueryServer) DeploymentFileNames(ctx context.Context, req *QueryDeploymentFileNamesRequest) (*QueryDeploymentFileNamesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeploymentFileNames not implemented")
+}
+func (*UnimplementedQueryServer) DeploymentFileContent(ctx context.Context, req *QueryGetDeploymentFileContentRequest) (*FileContent, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeploymentFileContent not implemented")
 }
 
@@ -599,20 +696,38 @@ func _Query_Deployment_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_DeploymentAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllDeploymentRequest)
+func _Query_DeploymentMetaAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllDeploymentMetaRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).DeploymentAll(ctx, in)
+		return srv.(QueryServer).DeploymentMetaAll(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ghostcloud.ghostcloud.Query/DeploymentAll",
+		FullMethod: "/ghostcloud.ghostcloud.Query/DeploymentMetaAll",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).DeploymentAll(ctx, req.(*QueryAllDeploymentRequest))
+		return srv.(QueryServer).DeploymentMetaAll(ctx, req.(*QueryAllDeploymentMetaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DeploymentFileNames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDeploymentFileNamesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DeploymentFileNames(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ghostcloud.ghostcloud.Query/DeploymentFileNames",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DeploymentFileNames(ctx, req.(*QueryDeploymentFileNamesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -648,8 +763,12 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Deployment_Handler,
 		},
 		{
-			MethodName: "DeploymentAll",
-			Handler:    _Query_DeploymentAll_Handler,
+			MethodName: "DeploymentMetaAll",
+			Handler:    _Query_DeploymentMetaAll_Handler,
+		},
+		{
+			MethodName: "DeploymentFileNames",
+			Handler:    _Query_DeploymentFileNames_Handler,
 		},
 		{
 			MethodName: "DeploymentFileContent",
@@ -736,17 +855,17 @@ func (m *QueryGetDeploymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0x12
-	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -773,8 +892,22 @@ func (m *QueryGetDeploymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	_ = i
 	var l int
 	_ = l
+	if len(m.FileMeta) > 0 {
+		for iNdEx := len(m.FileMeta) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.FileMeta[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
 	{
-		size, err := m.Deployment.MarshalToSizedBuffer(dAtA[:i])
+		size, err := m.DeploymentMeta.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -786,7 +919,7 @@ func (m *QueryGetDeploymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllDeploymentRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllDeploymentMetaRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -796,12 +929,12 @@ func (m *QueryAllDeploymentRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllDeploymentRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllDeploymentMetaRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllDeploymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllDeploymentMetaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -821,7 +954,7 @@ func (m *QueryAllDeploymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllDeploymentResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryAllDeploymentMetaResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -831,12 +964,12 @@ func (m *QueryAllDeploymentResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllDeploymentResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryAllDeploymentMetaResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllDeploymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryAllDeploymentMetaResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -853,10 +986,108 @@ func (m *QueryAllDeploymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Deployment) > 0 {
-		for iNdEx := len(m.Deployment) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.DeploymentMeta) > 0 {
+		for iNdEx := len(m.DeploymentMeta) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.Deployment[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.DeploymentMeta[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDeploymentFileNamesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDeploymentFileNamesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDeploymentFileNamesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.SiteName) > 0 {
+		i -= len(m.SiteName)
+		copy(dAtA[i:], m.SiteName)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.SiteName)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDeploymentFileNamesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDeploymentFileNamesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDeploymentFileNamesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Meta) > 0 {
+		for iNdEx := len(m.Meta) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Meta[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -897,47 +1128,17 @@ func (m *QueryGetDeploymentFileContentRequest) MarshalToSizedBuffer(dAtA []byte)
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0x12
-	}
 	if len(m.SiteName) > 0 {
 		i -= len(m.SiteName)
 		copy(dAtA[i:], m.SiteName)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.SiteName)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x12
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryGetDeploymentFileContentResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryGetDeploymentFileContentResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryGetDeploymentFileContentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Content) > 0 {
-		i -= len(m.Content)
-		copy(dAtA[i:], m.Content)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Content)))
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -981,11 +1182,11 @@ func (m *QueryGetDeploymentRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Name)
+	l = len(m.Creator)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.Creator)
+	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -998,12 +1199,18 @@ func (m *QueryGetDeploymentResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = m.Deployment.Size()
+	l = m.DeploymentMeta.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	if len(m.FileMeta) > 0 {
+		for _, e := range m.FileMeta {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
-func (m *QueryAllDeploymentRequest) Size() (n int) {
+func (m *QueryAllDeploymentMetaRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1016,14 +1223,54 @@ func (m *QueryAllDeploymentRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllDeploymentResponse) Size() (n int) {
+func (m *QueryAllDeploymentMetaResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.Deployment) > 0 {
-		for _, e := range m.Deployment {
+	if len(m.DeploymentMeta) > 0 {
+		for _, e := range m.DeploymentMeta {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryDeploymentFileNamesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.SiteName)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryDeploymentFileNamesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Meta) > 0 {
+		for _, e := range m.Meta {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
@@ -1041,28 +1288,15 @@ func (m *QueryGetDeploymentFileContentRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.SiteName)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
 	l = len(m.Creator)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.FileName)
+	l = len(m.SiteName)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	return n
-}
-
-func (m *QueryGetDeploymentFileContentResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Content)
+	l = len(m.FileName)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1239,38 +1473,6 @@ func (m *QueryGetDeploymentRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
 			}
 			var stringLen uint64
@@ -1300,6 +1502,38 @@ func (m *QueryGetDeploymentRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1353,7 +1587,7 @@ func (m *QueryGetDeploymentResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Deployment", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DeploymentMeta", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1380,7 +1614,41 @@ func (m *QueryGetDeploymentResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Deployment.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.DeploymentMeta.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FileMeta", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FileMeta = append(m.FileMeta, &FileMeta{})
+			if err := m.FileMeta[len(m.FileMeta)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1405,7 +1673,7 @@ func (m *QueryGetDeploymentResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllDeploymentRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryAllDeploymentMetaRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1428,10 +1696,10 @@ func (m *QueryAllDeploymentRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllDeploymentRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllDeploymentMetaRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllDeploymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllDeploymentMetaRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1491,7 +1759,7 @@ func (m *QueryAllDeploymentRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllDeploymentResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryAllDeploymentMetaResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1514,15 +1782,15 @@ func (m *QueryAllDeploymentResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllDeploymentResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryAllDeploymentMetaResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllDeploymentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryAllDeploymentMetaResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Deployment", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DeploymentMeta", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1549,8 +1817,278 @@ func (m *QueryAllDeploymentResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Deployment = append(m.Deployment, Deployment{})
-			if err := m.Deployment[len(m.Deployment)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.DeploymentMeta = append(m.DeploymentMeta, DeploymentMeta{})
+			if err := m.DeploymentMeta[len(m.DeploymentMeta)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDeploymentFileNamesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDeploymentFileNamesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDeploymentFileNamesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SiteName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SiteName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDeploymentFileNamesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDeploymentFileNamesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDeploymentFileNamesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Meta = append(m.Meta, &FileMeta{})
+			if err := m.Meta[len(m.Meta)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1642,38 +2180,6 @@ func (m *QueryGetDeploymentFileContentRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SiteName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.SiteName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
 			}
 			var stringLen uint64
@@ -1703,6 +2209,38 @@ func (m *QueryGetDeploymentFileContentRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SiteName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SiteName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -1735,90 +2273,6 @@ func (m *QueryGetDeploymentFileContentRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.FileName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryGetDeploymentFileContentResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetDeploymentFileContentResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetDeploymentFileContentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Content = append(m.Content[:0], dAtA[iNdEx:postIndex]...)
-			if m.Content == nil {
-				m.Content = []byte{}
-			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

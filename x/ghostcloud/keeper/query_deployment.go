@@ -14,24 +14,24 @@ import (
 
 const InvalidRequest = "invalid request"
 
-func (k Keeper) DeploymentAll(goCtx context.Context, req *types.QueryAllDeploymentRequest) (*types.QueryAllDeploymentResponse, error) {
+func (k Keeper) DeploymentMetaAll(goCtx context.Context, req *types.QueryAllDeploymentMetaRequest) (*types.QueryAllDeploymentMetaResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
 	}
 
-	var deployments []types.Deployment
+	var metas []types.DeploymentMeta
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
-	deploymentStore := prefix.NewStore(store, types.DeploymentKeyPrefix)
+	deploymentStore := prefix.NewStore(store, types.DeploymentMetaKeyPrefix)
 
 	pageRes, err := query.Paginate(deploymentStore, req.Pagination, func(key []byte, value []byte) error {
-		var deployment types.Deployment
-		if err := k.cdc.Unmarshal(value, &deployment); err != nil {
+		var meta types.DeploymentMeta
+		if err := k.cdc.Unmarshal(value, &meta); err != nil {
 			return err
 		}
 
-		deployments = append(deployments, deployment)
+		metas = append(metas, meta)
 		return nil
 	})
 
@@ -39,7 +39,7 @@ func (k Keeper) DeploymentAll(goCtx context.Context, req *types.QueryAllDeployme
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllDeploymentResponse{Deployment: deployments, Pagination: pageRes}, nil
+	return &types.QueryAllDeploymentMetaResponse{DeploymentMeta: metas, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentRequest) (*types.QueryGetDeploymentResponse, error) {
@@ -52,7 +52,7 @@ func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentR
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	val, found := k.GetDeployment(
+	deploymentMeta, found := k.GetDeploymentMeta(
 		ctx,
 		addr,
 		req.Name,
@@ -61,10 +61,41 @@ func (k Keeper) Deployment(goCtx context.Context, req *types.QueryGetDeploymentR
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetDeploymentResponse{Deployment: val}, nil
+	filesMeta, found := k.GetDeploymentFileMeta(
+		ctx,
+		addr,
+		req.Name,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryGetDeploymentResponse{DeploymentMeta: deploymentMeta, FileMeta: filesMeta}, nil
 }
 
-func (k Keeper) DeploymentFileContent(goCtx context.Context, req *types.QueryGetDeploymentFileContentRequest) (*types.QueryGetDeploymentFileContentResponse, error) {
+func (k Keeper) DeploymentFileNames(goCtx context.Context, req *types.QueryDeploymentFileNamesRequest) (*types.QueryDeploymentFileNamesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	addr, err := sdk.AccAddressFromBech32(req.Creator)
+	if err != nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+
+	fileMeta, found := k.GetDeploymentFileMeta(
+		ctx,
+		addr,
+		req.SiteName,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryDeploymentFileNamesResponse{Meta: fileMeta}, nil
+}
+
+func (k Keeper) DeploymentFileContent(goCtx context.Context, req *types.QueryGetDeploymentFileContentRequest) (*types.FileContent, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, InvalidRequest)
 	}
@@ -84,5 +115,5 @@ func (k Keeper) DeploymentFileContent(goCtx context.Context, req *types.QueryGet
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryGetDeploymentFileContentResponse{Content: val}, nil
+	return &val, nil
 }

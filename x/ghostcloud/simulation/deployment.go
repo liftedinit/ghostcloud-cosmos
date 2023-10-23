@@ -29,9 +29,8 @@ func SimulateMsgCreateDeployment(
 
 		i := r.Int()
 		msg := &types.MsgCreateDeployment{
-			Creator: simAccount.Address.String(),
-			Meta:    sample.GetDeploymentMeta(i),
-			Files:   sample.GetDeploymentFiles(i),
+			Meta:  sample.GetDeploymentMeta(simAccount.Address.String(), i),
+			Files: sample.GetDeploymentFiles(i),
 		}
 
 		_, found := k.GetDeployment(ctx, simAccount.Address, msg.Meta.Name)
@@ -66,8 +65,7 @@ func SimulateMsgCreateDeploymentArchive(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 		msg := &types.MsgCreateDeploymentArchive{
-			Creator:        simAccount.Address.String(),
-			Meta:           sample.GetDeploymentMeta(r.Int()),
+			Meta:           sample.GetDeploymentMeta(simAccount.Address.String(), r.Int()),
 			WebsiteArchive: sample.CreateZipWithHTML(),
 		}
 
@@ -103,9 +101,9 @@ func SimulateMsgUpdateDeployment(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount    = simtypes.Account{}
-			deployment    = types.Deployment{}
+			deployment    = types.DeploymentMeta{}
 			msg           = &types.MsgUpdateDeployment{}
-			allDeployment = k.GetAllDeployment(ctx)
+			allDeployment = k.GetAllDeploymentMeta(ctx)
 			found         = false
 		)
 		for _, obj := range allDeployment {
@@ -118,8 +116,7 @@ func SimulateMsgUpdateDeployment(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), DeploymentCreatorNotFound), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Meta = sample.GetDeploymentNameMeta(deployment.Meta.Name, r.Int())
+		msg.Meta = sample.GetDeploymentNameMeta(simAccount.Address.String(), deployment.Name, r.Int())
 		msg.Files = sample.GetDeploymentFiles(r.Int())
 
 		txCtx := simulation.OperationInput{
@@ -155,7 +152,7 @@ func SimulateMsgUpdateDeploymentMeta(
 			found         = false
 		)
 		for _, obj := range allDeployment {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Meta.Creator)
 			if found {
 				deployment = obj
 				break
@@ -164,8 +161,7 @@ func SimulateMsgUpdateDeploymentMeta(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), DeploymentCreatorNotFound), nil, nil
 		}
-		msg.Creator = simAccount.Address.String()
-		msg.Meta = sample.GetDeploymentNameMeta(deployment.Meta.Name, r.Int())
+		msg.Meta = sample.GetDeploymentNameMeta(simAccount.Address.String(), deployment.Meta.Name, r.Int())
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -200,7 +196,7 @@ func SimulateMsgDeleteDeployment(
 			found         = false
 		)
 		for _, obj := range allDeployment {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Meta.Creator)
 			if found {
 				deployment = obj
 				break

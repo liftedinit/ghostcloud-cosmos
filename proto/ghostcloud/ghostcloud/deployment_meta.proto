@@ -4,7 +4,8 @@ package ghostcloud.ghostcloud;
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 message DeploymentMeta {
-  string name        = 1;
-  string description = 2;
-  string domain      = 3;
+  string creator     = 1;
+  string name        = 2;
+  string description = 3;
+  string domain      = 4;
 }

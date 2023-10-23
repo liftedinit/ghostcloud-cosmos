@@ -17,7 +17,7 @@ const InvalidCreatorAddr = "invalid creator address (%s)"
 func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateDeployment) (*types.MsgCreateDeploymentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
@@ -33,9 +33,8 @@ func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateD
 	}
 
 	var deployment = types.Deployment{
-		Creator: msg.Creator,
-		Meta:    msg.Meta,
-		Files:   msg.Files,
+		Meta:  msg.Meta,
+		Files: msg.Files,
 	}
 
 	k.SetDeployment(
@@ -76,7 +75,7 @@ func filesFromArchiveBytes(archive []byte) ([]*types.File, error) {
 			Meta: &types.FileMeta{
 				Name: file.Name,
 			},
-			Content: content,
+			Content: &types.FileContent{Content: content},
 		})
 	}
 
@@ -86,7 +85,7 @@ func filesFromArchiveBytes(archive []byte) ([]*types.File, error) {
 func (k msgServer) CreateDeploymentArchive(goCtx context.Context, msg *types.MsgCreateDeploymentArchive) (*types.MsgCreateDeploymentArchiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
@@ -107,9 +106,8 @@ func (k msgServer) CreateDeploymentArchive(goCtx context.Context, msg *types.Msg
 	}
 
 	var deployment = types.Deployment{
-		Creator: msg.Creator,
-		Meta:    msg.Meta,
-		Files:   files,
+		Meta:  msg.Meta,
+		Files: files,
 	}
 
 	k.SetDeployment(ctx, deployment)
@@ -119,7 +117,7 @@ func (k msgServer) CreateDeploymentArchive(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateDeployment) (*types.MsgUpdateDeploymentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
@@ -135,14 +133,13 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Creator {
+	if msg.Meta.Creator != valFound.Meta.Creator {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	var deployment = types.Deployment{
-		Creator: msg.Creator,
-		Meta:    msg.Meta,
-		Files:   msg.Files,
+		Meta:  msg.Meta,
+		Files: msg.Files,
 	}
 
 	k.SetDeployment(ctx, deployment)
@@ -152,7 +149,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 
 func (k msgServer) UpdateDeploymentMeta(goCtx context.Context, msg *types.MsgUpdateDeploymentMeta) (*types.MsgUpdateDeploymentMetaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	addr, err := sdk.AccAddressFromBech32(msg.Creator)
+	addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
@@ -191,7 +188,7 @@ func (k msgServer) DeleteDeployment(goCtx context.Context, msg *types.MsgDeleteD
 	}
 
 	// Checks if the the msg creator is the same as the current owner
-	if msg.Creator != valFound.Creator {
+	if msg.Creator != valFound.Meta.Creator {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 

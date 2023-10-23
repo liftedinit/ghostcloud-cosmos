@@ -21,16 +21,18 @@ func AccAddress() string {
 	return sdk.AccAddress(addr).String()
 }
 
-func GetDeploymentMeta(i int) *types.DeploymentMeta {
+func GetDeploymentMeta(addr string, i int) *types.DeploymentMeta {
 	return &types.DeploymentMeta{
+		Creator:     addr,
 		Name:        strconv.Itoa(i),
 		Description: strconv.Itoa(i),
 		Domain:      strconv.Itoa(i),
 	}
 }
 
-func GetDeploymentNameMeta(name string, i int) *types.DeploymentMeta {
+func GetDeploymentNameMeta(addr string, name string, i int) *types.DeploymentMeta {
 	return &types.DeploymentMeta{
+		Creator:     addr,
 		Name:        name,
 		Description: strconv.Itoa(i),
 		Domain:      strconv.Itoa(i),
@@ -41,31 +43,30 @@ func GetDeploymentFiles(i int) []*types.File {
 	return []*types.File{
 		{
 			Meta:    &types.FileMeta{Name: strconv.Itoa(i)},
-			Content: []byte{byte(i)},
+			Content: &types.FileContent{Content: []byte{byte(i)}},
 		},
 	}
 }
 
-func GetDeployment(i int) types.Deployment {
+func GetDeployment(addr string, i int) types.Deployment {
 	return types.Deployment{
-		Creator: AccAddress(),
-		Meta:    GetDeploymentMeta(i),
-		Files:   GetDeploymentFiles(i),
+		Meta:  GetDeploymentMeta(addr, i),
+		Files: GetDeploymentFiles(i),
 	}
 }
 
-func GetDeploymentList(i int) []types.Deployment {
-	deployments := make([]types.Deployment, 0, i)
-	for j := 0; j < i; j++ {
-		deployments = append(deployments, GetDeployment(j))
-	}
-	return deployments
-}
-
-func GetDuplicatedDeploymentList() []types.Deployment {
-	elem := GetDeployment(0)
-	return []types.Deployment{elem, elem}
-}
+//func GetDeploymentList(i int) []types.Deployment {
+//	deployments := make([]types.Deployment, 0, i)
+//	for j := 0; j < i; j++ {
+//		deployments = append(deployments, GetDeployment(j))
+//	}
+//	return deployments
+//}
+//
+//func GetDuplicatedDeploymentList() []types.Deployment {
+//	elem := GetDeployment(0)
+//	return []types.Deployment{elem, elem}
+//}
 
 // generateRandomData generates a string with random data.
 func generateRandomData(length int) string {

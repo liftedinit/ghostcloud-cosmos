@@ -42,7 +42,7 @@ func ReadWebsiteRoot(path string) ([]*types.File, error) {
 		}
 		files = append(files, &types.File{
 			Meta:    &types.FileMeta{Name: info.Name()},
-			Content: fileBytes,
+			Content: &types.FileContent{Content: fileBytes},
 		})
 
 		if err != nil {
@@ -82,13 +82,13 @@ func CmdCreateDeployment() *cobra.Command {
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.DeploymentMeta{
+				Creator:     clientCtx.GetFromAddress().String(), // TODO: Use []byte?
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,
 			}
 
 			msg := types.NewMsgCreateDeployment(
-				clientCtx.GetFromAddress().String(),
 				&meta,
 				websiteFiles,
 			)
@@ -166,13 +166,13 @@ func CmdCreateDeploymentArchive() *cobra.Command {
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.DeploymentMeta{
+				Creator:     clientCtx.GetFromAddress().String(), // TODO: Use []byte here?
 				Name:        argName,
 				Description: argDescription,
 				Domain:      argDomain,
 			}
 
 			msg := types.NewMsgCreateDeploymentArchive(
-				clientCtx.GetFromAddress().String(),
 				&meta,
 				websiteArchiveBytes,
 			)
@@ -213,13 +213,13 @@ func CmdUpdateDeployment() *cobra.Command {
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.DeploymentMeta{
+				Creator:     clientCtx.GetFromAddress().String(), // TODO: Use []byte here?
 				Name:        indexName,
 				Description: argDescription,
 				Domain:      argDomain,
 			}
 
 			msg := types.NewMsgUpdateDeployment(
-				clientCtx.GetFromAddress().String(),
 				&meta,
 				websiteFiles,
 			)

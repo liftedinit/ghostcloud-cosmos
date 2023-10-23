@@ -22,13 +22,17 @@ func TestMsgCreateDeployment_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateDeployment{
-				Creator: "invalid_address",
+				Meta: &DeploymentMeta{
+					Creator: "invalid_address",
+				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateDeployment{
-				Creator: addr1,
+				Meta: &DeploymentMeta{
+					Creator: addr1,
+				},
 			},
 		},
 	}
@@ -53,13 +57,17 @@ func TestMsgCreateDeploymentArchive_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgCreateDeploymentArchive{
-				Creator: "invalid_address",
+				Meta: &DeploymentMeta{
+					Creator: "invalid_address",
+				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgCreateDeploymentArchive{
-				Creator: addr1,
+				Meta: &DeploymentMeta{
+					Creator: addr1,
+				},
 			},
 		},
 	}
@@ -84,13 +92,17 @@ func TestMsgUpdateDeployment_ValidateBasic(t *testing.T) {
 		{
 			name: "invalid address",
 			msg: MsgUpdateDeployment{
-				Creator: "invalid_address",
+				Meta: &DeploymentMeta{
+					Creator: "invalid_address",
+				},
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
 			msg: MsgUpdateDeployment{
-				Creator: addr1,
+				Meta: &DeploymentMeta{
+					Creator: addr1,
+				},
 			},
 		},
 	}

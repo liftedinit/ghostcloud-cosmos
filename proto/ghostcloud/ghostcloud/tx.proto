@@ -17,24 +17,21 @@ service Msg {
   rpc CreateDeploymentArchive (MsgCreateDeploymentArchive) returns (MsgCreateDeploymentArchiveResponse);
 }
 message MsgCreateDeployment {
-           string         creator = 1;
-           DeploymentMeta meta    = 2;
-  repeated File           files   = 3;
+           DeploymentMeta meta    = 1;
+  repeated File           files   = 2;
 }
 
 message MsgCreateDeploymentResponse {}
 
 message MsgUpdateDeployment {
-           string         creator = 1;
-           DeploymentMeta meta    = 2;
-  repeated File           files   = 3;
+           DeploymentMeta meta    = 1;
+  repeated File           files   = 2;
 }
 
 message MsgUpdateDeploymentResponse {}
 
 message MsgUpdateDeploymentMeta {
-  string         creator = 1;
-  DeploymentMeta meta    = 2;
+  DeploymentMeta meta    = 1;
 }
 
 message MsgUpdateDeploymentMetaResponse {}
@@ -47,9 +44,8 @@ message MsgDeleteDeployment {
 message MsgDeleteDeploymentResponse {}
 
 message MsgCreateDeploymentArchive {
-  string creator       = 1;
-  DeploymentMeta meta  = 2;
-  bytes websiteArchive = 3;
+  DeploymentMeta meta  = 1;
+  bytes websiteArchive = 2;
 }
 
 message MsgCreateDeploymentArchiveResponse {}

@@ -5,34 +5,39 @@ package ghostcloud.ghostcloud;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "ghostcloud/ghostcloud/file_content.proto";
+import "ghostcloud/ghostcloud/file_meta.proto";
 import "ghostcloud/ghostcloud/params.proto";
 import "ghostcloud/ghostcloud/deployment.proto";
+import "ghostcloud/ghostcloud/deployment_meta.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  
+
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/params";
 
   }
-  
-  // Queries a list of Deployment items.
-  rpc Deployment    (QueryGetDeploymentRequest) returns (QueryGetDeploymentResponse) {
+
+  rpc Deployment (QueryGetDeploymentRequest) returns (QueryGetDeploymentResponse) {
     option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{creator}/{name}";
+  }
   
+  // Queries a list of all Deployment meta.
+  rpc DeploymentMetaAll (QueryAllDeploymentMetaRequest) returns (QueryAllDeploymentMetaResponse) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/meta";
   }
 
-  // Queries a list of all Deployment.
-  rpc DeploymentAll (QueryAllDeploymentRequest) returns (QueryAllDeploymentResponse) {
-    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment";
+  rpc DeploymentFileNames (QueryDeploymentFileNamesRequest) returns (QueryDeploymentFileNamesResponse) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/files/meta/{creator}/{siteName}";
   }
 
   // Queries a deployment file content.
-  rpc DeploymentFileContent (QueryGetDeploymentFileContentRequest) returns (QueryGetDeploymentFileContentResponse) {
-    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/{creator}/{siteName}/{fileName=**}";
+  rpc DeploymentFileContent (QueryGetDeploymentFileContentRequest) returns (FileContent) {
+    option (google.api.http).get = "/ghostcloud/ghostcloud/deployment/files/content/{creator}/{siteName}/{fileName=**}";
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -46,29 +51,37 @@ message QueryParamsResponse {
 }
 
 message QueryGetDeploymentRequest {
-  string name = 1;
-  string creator = 2;
+  string creator = 1;
+  string name = 2;
 }
 
 message QueryGetDeploymentResponse {
-  Deployment deployment = 1 [(gogoproto.nullable) = false];
+  DeploymentMeta deploymentMeta = 1 [(gogoproto.nullable) = false];
+  repeated FileMeta fileMeta = 2;
 }
 
-message QueryAllDeploymentRequest {
+message QueryAllDeploymentMetaRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message QueryAllDeploymentResponse {
-  repeated Deployment                             deployment = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryAllDeploymentMetaResponse {
+  repeated DeploymentMeta                deploymentMeta = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryDeploymentFileNamesRequest {
+  string                                creator = 1;
+  string                                siteName = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+}
+
+message QueryDeploymentFileNamesResponse {
+  repeated FileMeta                      meta = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryGetDeploymentFileContentRequest {
-  string siteName = 1;
-  string creator = 2;
+  string creator = 1;
+  string siteName = 2;
   string fileName = 3;
-}
-
-message QueryGetDeploymentFileContentResponse {
-  bytes content = 1;
 }

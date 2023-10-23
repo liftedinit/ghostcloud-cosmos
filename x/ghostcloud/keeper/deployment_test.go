@@ -17,7 +17,7 @@ func TestDeploymentGet(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	items := keepertest.CreateNDeployment(k, ctx, 10)
 	for _, item := range items {
-		addr, err := sdk.AccAddressFromBech32(item.Creator)
+		addr, err := sdk.AccAddressFromBech32(item.Meta.Creator)
 		require.NoError(t, err)
 		rst, found := k.GetDeployment(ctx,
 			addr,
@@ -34,7 +34,7 @@ func TestDeploymentRemove(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	items := keepertest.CreateNDeployment(k, ctx, 10)
 	for _, item := range items {
-		addr, err := sdk.AccAddressFromBech32(item.Creator)
+		addr, err := sdk.AccAddressFromBech32(item.Meta.Creator)
 		require.NoError(t, err)
 		k.RemoveDeployment(ctx,
 			addr,

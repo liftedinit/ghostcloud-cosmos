@@ -15,8 +15,8 @@ var addr1 = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address()).String()
 
 func TestGenesisState_Validate(t *testing.T) {
 	deployment := types.Deployment{
-		Creator: addr1,
 		Meta: &types.DeploymentMeta{
+			Creator:     addr1,
 			Name:        "name",
 			Description: "description",
 			Domain:      "domain",
@@ -24,7 +24,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		Files: []*types.File{
 			{
 				Meta:    &types.FileMeta{Name: "name"},
-				Content: []byte{1},
+				Content: &types.FileContent{Content: []byte{1}},
 			},
 		},
 	}

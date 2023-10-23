@@ -21,18 +21,30 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// Check for duplicated index in deployment
-	deploymentIndexMap := make(map[string]struct{})
+	deploymentMetaIndexMap := make(map[string]struct{})
+	deploymentFileMetaIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.DeploymentList {
-		addr, err := sdk.AccAddressFromBech32(elem.Creator)
+		addr, err := sdk.AccAddressFromBech32(elem.Meta.Creator)
 		if err != nil {
 			return err
 		}
+
+		// Check for duplicate meta
 		index := string(DeploymentKey(addr, elem.Meta.Name))
-		if _, ok := deploymentIndexMap[index]; ok {
+		if _, ok := deploymentMetaIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for deployment")
 		}
-		deploymentIndexMap[index] = struct{}{}
+		deploymentMetaIndexMap[index] = struct{}{}
+
+		// Check for duplicate files
+		for _, file := range elem.Files {
+			index := string(DeploymentFileKey(addr, elem.Meta.Name, file.Meta.Name))
+			if _, ok := deploymentFileMetaIndexMap[index]; ok {
+				return fmt.Errorf("duplicated index for deployment")
+			}
+			deploymentFileMetaIndexMap[index] = struct{}{}
+		}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 
