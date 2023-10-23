@@ -142,7 +142,7 @@ func checkAndLoadWebsiteArchive(argWebsiteArchive string) (bool, []byte, error) 
 func CmdCreateDeploymentArchive() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-deployment-archive [name] [website-archive]",
-		Short: "Broadcast message create-deployment-archive",
+		Short: "Create a new deployment from a website zip archive",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argName := args[0]
