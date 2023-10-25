@@ -17,3 +17,12 @@ func CreateNDeployment(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.De
 	}
 	return items
 }
+
+func DeploymentFilesToFileMeta(deployment *types.Deployment) []*types.FileMeta {
+	meta := make([]*types.FileMeta, len(deployment.Files))
+	for i, x := range deployment.Files {
+		meta[i] = x.Meta
+	}
+
+	return meta
+}

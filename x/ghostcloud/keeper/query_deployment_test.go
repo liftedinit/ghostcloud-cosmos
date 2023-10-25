@@ -32,7 +32,7 @@ func TestDeploymentQuerySingle(t *testing.T) {
 				Name:    msgs[0].Meta.Name,
 				Creator: msgs[0].Meta.Creator,
 			},
-			response: &types.QueryGetDeploymentResponse{Deployment: msgs[0]},
+			response: &types.QueryGetDeploymentResponse{DeploymentMeta: *msgs[0].Meta, FileMeta: keepertest.DeploymentFilesToFileMeta(&msgs[0])},
 		},
 		{
 			desc: "Second",
@@ -40,7 +40,7 @@ func TestDeploymentQuerySingle(t *testing.T) {
 				Name:    msgs[1].Meta.Name,
 				Creator: msgs[1].Meta.Creator,
 			},
-			response: &types.QueryGetDeploymentResponse{Deployment: msgs[1]},
+			response: &types.QueryGetDeploymentResponse{DeploymentMeta: *msgs[1].Meta, FileMeta: keepertest.DeploymentFilesToFileMeta(&msgs[1])},
 		},
 		{
 			desc: "KeyNotFound",
