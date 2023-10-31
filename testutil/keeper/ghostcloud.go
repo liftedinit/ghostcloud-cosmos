@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"ghostcloud/testutil/sample"
 	"testing"
 
 	"ghostcloud/x/ghostcloud/keeper"
@@ -49,4 +50,12 @@ func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k.SetParams(ctx, types.DefaultParams())
 
 	return k, ctx
+}
+
+func CreateAndSetNDeployments(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
+	metas, datasets := sample.CreateNDeployments(numDeployment, datasetSize)
+	for i := 0; i < len(metas); i++ {
+		k.SetDeployment(ctx, metas[i], datasets[i])
+	}
+	return metas, datasets
 }

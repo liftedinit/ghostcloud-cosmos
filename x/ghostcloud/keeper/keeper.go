@@ -47,7 +47,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 func (k Keeper) HasDeployment(ctx sdk.Context, creator sdk.AccAddress, name string) bool {
-	store := ctx.KVStore(k.storeKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentMetaKeyPrefix)
 	return store.Has(types.DeploymentKey(creator, name))
 }
 
