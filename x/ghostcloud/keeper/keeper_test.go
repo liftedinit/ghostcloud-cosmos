@@ -9,8 +9,8 @@ import (
 
 func TestSet_GetMeta(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
-	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 10, 5)
-	require.Len(t, metas, 10)
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	require.Len(t, metas, keepertest.NUM_DEPLOYMENT)
 
 	for _, meta := range metas {
 		creator, err := sdk.AccAddressFromBech32(meta.GetCreator())
@@ -24,8 +24,8 @@ func TestSet_GetMeta(t *testing.T) {
 
 func TestSet_HasDeployment(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
-	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 10, 5)
-	require.Len(t, metas, 10)
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	require.Len(t, metas, keepertest.NUM_DEPLOYMENT)
 
 	for _, meta := range metas {
 		creator, err := sdk.AccAddressFromBech32(meta.GetCreator())
@@ -38,10 +38,10 @@ func TestSet_HasDeployment(t *testing.T) {
 
 func TestSet_GetAllMeta(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
-	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 10, 5)
-	require.Len(t, metas, 10)
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	require.Len(t, metas, keepertest.NUM_DEPLOYMENT)
 
 	all := k.GetAllMeta(ctx)
-	require.Len(t, all, 10)
+	require.Len(t, all, keepertest.NUM_DEPLOYMENT)
 	require.ElementsMatch(t, metas, all)
 }

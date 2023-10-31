@@ -1,6 +1,8 @@
 package sample
 
 import (
+	"archive/zip"
+	"bytes"
 	"ghostcloud/x/ghostcloud/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,6 +16,24 @@ func AccAddress() string {
 	return sdk.AccAddress(addr).String()
 }
 
+func CreateNDatasetPayloads(n int, datasetSize int) ([]*types.Meta, []*types.Payload) {
+	metas := make([]*types.Meta, n)
+	payloads := make([]*types.Payload, n)
+	for i := 0; i < n; i++ {
+		metas[i], payloads[i] = CreateDatasetPayload(i, datasetSize)
+	}
+	return metas, payloads
+}
+
+func CreateNArchivePayloads(n int) ([]*types.Meta, []*types.Payload) {
+	metas := make([]*types.Meta, n)
+	payloads := make([]*types.Payload, n)
+	for i := 0; i < n; i++ {
+		metas[i], payloads[i] = CreateArchivePayload(i)
+	}
+	return metas, payloads
+}
+
 func CreateNDeployments(n int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
 	metas := make([]*types.Meta, n)
 	datasets := make([]*types.Dataset, n)
@@ -21,6 +41,18 @@ func CreateNDeployments(n int, datasetSize int) ([]*types.Meta, []*types.Dataset
 		metas[i], datasets[i] = CreateDeployment(i, datasetSize)
 	}
 	return metas, datasets
+}
+
+func CreateDatasetPayload(i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return CreateMeta(i), &types.Payload{
+		PayloadOption: &types.Payload_Dataset{Dataset: CreateDataset(datasetSize)},
+	}
+}
+
+func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
+	return CreateMeta(i), &types.Payload{
+		PayloadOption: &types.Payload_Archive{Archive: CreateArchive()},
+	}
 }
 
 func CreateDeployment(i int, datasetSize int) (*types.Meta, *types.Dataset) {
@@ -40,6 +72,17 @@ func CreateDataset(n int) *types.Dataset {
 	return &types.Dataset{Items: CreateNItems(n)}
 }
 
+func CreateArchive() *types.Archive {
+	return &types.Archive{
+		Type:    types.ArchiveType_Zip,
+		Content: CreateZip(),
+	}
+}
+
+func CreateZip() []byte {
+	return createInMemoryZip()
+}
+
 func CreateItem(i int) *types.Item {
 	return &types.Item{
 		Meta:    &types.ItemMeta{Path: strconv.Itoa(i)},
@@ -53,4 +96,40 @@ func CreateNItems(n int) []*types.Item {
 		items[i] = CreateItem(i)
 	}
 	return items
+}
+
+func createInMemoryZip() []byte {
+	// Step 1: Create a buffer to hold the zip archive's data in memory
+	var buffer bytes.Buffer
+
+	// Step 2: Create a new zip archive writing to the buffer
+	zipWriter := zip.NewWriter(&buffer)
+
+	// Dummy data to put into the zip file
+	files := []struct {
+		Name, Body string
+	}{
+		{"index.html", "<html><body>Hello World!</body></html>"},
+	}
+
+	// Step 3: Add files to the archive
+	for _, file := range files {
+		f, err := zipWriter.Create(file.Name)
+		if err != nil {
+			panic(err)
+		}
+		_, err = f.Write([]byte(file.Body))
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// Step 4: Close the zip archive
+	err := zipWriter.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	// Step 5: Convert buffer's contents to bytes
+	return buffer.Bytes()
 }

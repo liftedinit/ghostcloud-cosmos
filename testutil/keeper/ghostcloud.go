@@ -18,6 +18,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const (
+	NUM_DEPLOYMENT = 10
+	DATASET_SIZE   = 5
+)
+
 func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
