@@ -8,5 +8,5 @@ option go_package = "ghostcloud/x/ghostcloud/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  
+  int64 max_archive_size = 1;
 }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+enum ArchiveType {
+  Zip = 0;
+}
+
+message Archive {
+  ArchiveType type = 1;
+  bytes content = 2; // This can be large
+}
+
