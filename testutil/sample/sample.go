@@ -54,10 +54,18 @@ func CreateNMetaDataset(n int, datasetSize int) ([]*types.Meta, []*types.Dataset
 	return metas, datasets
 }
 
-func CreateDatasetPayload(i int, datasetSize int) (*types.Meta, *types.Payload) {
-	return CreateMeta(i), &types.Payload{
+func createDatasetPayload(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return CreateMetaWithAddr(addr, i), &types.Payload{
 		PayloadOption: &types.Payload_Dataset{Dataset: CreateDataset(datasetSize)},
 	}
+}
+
+func CreateDatasetPayload(i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return createDatasetPayload(AccAddress(), i, datasetSize)
+}
+
+func CreateDatasetPayloadWithAddr(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return createDatasetPayload(addr, i, datasetSize)
 }
 
 func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
@@ -66,24 +74,38 @@ func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
 	}
 }
 
-func CreateDeployment(i int, datasetSize int) *types.Deployment {
+func createDeployment(addr string, i int, datasetSize int) *types.Deployment {
 	return &types.Deployment{
-		Meta:    CreateMeta(i),
+		Meta:    CreateMetaWithAddr(addr, i),
 		Dataset: CreateDataset(datasetSize),
 	}
+}
+func CreateDeployment(i int, datasetSize int) *types.Deployment {
+	return createDeployment(AccAddress(), i, datasetSize)
+}
+
+func CreateDeploymentWithAddr(addr string, i int, datasetSize int) *types.Deployment {
+	return createDeployment(addr, i, datasetSize)
 }
 
 func CreateMetaDataset(i int, datasetSize int) (*types.Meta, *types.Dataset) {
 	return CreateMeta(i), CreateDataset(datasetSize)
 }
 
-func CreateMeta(i int) *types.Meta {
+func createMeta(addr string, i int) *types.Meta {
 	return &types.Meta{
-		Creator:     AccAddress(),
+		Creator:     addr,
 		Name:        strconv.Itoa(i),
 		Description: strconv.Itoa(i),
 		Domain:      strconv.Itoa(i),
 	}
+}
+func CreateMeta(i int) *types.Meta {
+	return createMeta(AccAddress(), i)
+}
+
+func CreateMetaWithAddr(addr string, i int) *types.Meta {
+	return createMeta(addr, i)
 }
 
 func CreateMetaInvalidAddress() *types.Meta {

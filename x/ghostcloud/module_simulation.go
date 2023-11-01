@@ -1,6 +1,7 @@
 package ghostcloud
 
 import (
+	keepertest "ghostcloud/testutil/keeper"
 	"math/rand"
 
 	"ghostcloud/testutil/sample"
@@ -23,7 +24,10 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateDeployment = "op_weight_msg_deployment"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateDeployment int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -33,7 +37,8 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		accs[i] = acc.Address.String()
 	}
 	ghostcloudGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
+		Params:      types.DefaultParams(),
+		Deployments: []*types.Deployment{sample.CreateDeploymentWithAddr(accs[0], 0, keepertest.DATASET_SIZE)},
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&ghostcloudGenesis)
@@ -51,6 +56,17 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
+	var weightMsgCreateDeployment int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateDeployment, &weightMsgCreateDeployment, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateDeployment = defaultWeightMsgCreateDeployment
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateDeployment,
+		ghostcloudsimulation.SimulateMsgCreateDeployment(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -60,5 +76,13 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
 	return []simtypes.WeightedProposalMsg{
 		// this line is used by starport scaffolding # simapp/module/OpMsg
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreateDeployment,
+			defaultWeightMsgCreateDeployment,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				ghostcloudsimulation.SimulateMsgCreateDeployment(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
 	}
 }
