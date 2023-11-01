@@ -3,9 +3,10 @@ package keeper_test
 import (
 	testkeeper "ghostcloud/testutil/keeper"
 	"ghostcloud/x/ghostcloud/types"
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestMetaQuery(t *testing.T) {

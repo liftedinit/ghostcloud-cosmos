@@ -3,9 +3,10 @@ package types_test
 import (
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/types"
+	"testing"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestMsgCreateDeployment_ValidateBasic(t *testing.T) {

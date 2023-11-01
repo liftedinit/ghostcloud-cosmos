@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"ghostcloud/x/ghostcloud/types"
+
 	"github.com/stretchr/testify/require"
 )
 

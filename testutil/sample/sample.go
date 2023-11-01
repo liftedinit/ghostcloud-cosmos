@@ -5,11 +5,12 @@ import (
 	"bytes"
 	"fmt"
 	"ghostcloud/x/ghostcloud/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // AccAddress returns a sample account address

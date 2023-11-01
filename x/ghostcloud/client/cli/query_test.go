@@ -7,11 +7,12 @@ import (
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
 	"ghostcloud/x/ghostcloud/types"
+	"testing"
+
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/status"
-	"testing"
 )
 
 func networkWithDeploymentObjects(t *testing.T, n int) (*network.Network, []*types.Deployment) {

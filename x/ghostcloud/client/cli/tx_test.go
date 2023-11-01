@@ -1,18 +1,19 @@
 package cli_test
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"fmt"
 	"ghostcloud/testutil/network"
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
+	"os"
+	"strconv"
+	"testing"
+
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"os"
-	"strconv"
-	"testing"
 )
 
 func TestCreateDeployment(t *testing.T) {

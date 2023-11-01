@@ -115,6 +115,7 @@ import (
 	ghostcloudmodule "ghostcloud/x/ghostcloud"
 	ghostcloudmodulekeeper "ghostcloud/x/ghostcloud/keeper"
 	ghostcloudmoduletypes "ghostcloud/x/ghostcloud/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "ghostcloud/app/params"
