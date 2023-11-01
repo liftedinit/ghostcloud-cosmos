@@ -69,7 +69,7 @@ func isDir(path string) bool {
 func loadArchive(path string) []byte {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to stat website archive: %w", err))
+		log.Fatal(fmt.Sprintf("unable to stat website archive: %v", err))
 	}
 	if fileInfo.Size() > types.DefaultMaxArchiveSize {
 		log.Fatal(fmt.Sprintf("Website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize))
@@ -78,13 +78,13 @@ func loadArchive(path string) []byte {
 	// Read website archive
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to read website archive: %w", err))
+		log.Fatal(fmt.Sprintf("unable to read website archive: %v", err))
 	}
 
 	r := bytes.NewReader(data)
 	zipReader, err := zip.NewReader(r, int64(len(data)))
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to create website archive reader: %w", err))
+		log.Fatal(fmt.Sprintf("unable to create website archive reader: %v", err))
 	}
 
 	found := false
@@ -110,7 +110,7 @@ func loadFolder(path string) []*types.Item {
 		}
 		content, err := os.ReadFile(path)
 		if err != nil {
-			log.Fatal(fmt.Sprintf("unable to read file: %w", err))
+			log.Fatal(fmt.Sprintf("unable to read file: %v", err))
 		}
 		items = append(items, &types.Item{
 			Meta: &types.ItemMeta{
@@ -124,7 +124,7 @@ func loadFolder(path string) []*types.Item {
 		return nil
 	})
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to walk through website folder: %w", err))
+		log.Fatal(fmt.Sprintf("unable to walk through website folder: %v", err))
 	}
 
 	return items

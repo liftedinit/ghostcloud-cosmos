@@ -27,13 +27,13 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	}
 
 	cmd.AddCommand(CmdQueryParams())
-	cmd.AddCommand(CmdListDeploymentFile())
+	cmd.AddCommand(CmdListDeployments())
 	// this line is used by starport scaffolding # 1
 
 	return cmd
 }
 
-func CmdListDeploymentFile() *cobra.Command {
+func CmdListDeployments() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "list all deployments",

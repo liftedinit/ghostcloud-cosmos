@@ -58,7 +58,7 @@ func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 }
 
 func CreateAndSetNDeployments(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
-	metas, datasets := sample.CreateNDeployments(numDeployment, datasetSize)
+	metas, datasets := sample.CreateNMetaDataset(numDeployment, datasetSize)
 	for i := 0; i < len(metas); i++ {
 		k.SetDeployment(ctx, metas[i], datasets[i])
 	}

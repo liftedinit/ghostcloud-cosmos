@@ -3,9 +3,12 @@ package sample
 import (
 	"archive/zip"
 	"bytes"
+	"fmt"
 	"ghostcloud/x/ghostcloud/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -34,11 +37,19 @@ func CreateNArchivePayloads(n int) ([]*types.Meta, []*types.Payload) {
 	return metas, payloads
 }
 
-func CreateNDeployments(n int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
+func CreateNDeployments(n int, datasetSize int) []*types.Deployment {
+	deployments := make([]*types.Deployment, n)
+	for i := 0; i < n; i++ {
+		deployments[i] = CreateDeployment(i, datasetSize)
+	}
+	return deployments
+}
+
+func CreateNMetaDataset(n int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
 	metas := make([]*types.Meta, n)
 	datasets := make([]*types.Dataset, n)
 	for i := 0; i < n; i++ {
-		metas[i], datasets[i] = CreateDeployment(i, datasetSize)
+		metas[i], datasets[i] = CreateMetaDataset(i, datasetSize)
 	}
 	return metas, datasets
 }
@@ -55,7 +66,14 @@ func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
 	}
 }
 
-func CreateDeployment(i int, datasetSize int) (*types.Meta, *types.Dataset) {
+func CreateDeployment(i int, datasetSize int) *types.Deployment {
+	return &types.Deployment{
+		Meta:    CreateMeta(i),
+		Dataset: CreateDataset(datasetSize),
+	}
+}
+
+func CreateMetaDataset(i int, datasetSize int) (*types.Meta, *types.Dataset) {
 	return CreateMeta(i), CreateDataset(datasetSize)
 }
 
@@ -65,6 +83,15 @@ func CreateMeta(i int) *types.Meta {
 		Name:        strconv.Itoa(i),
 		Description: strconv.Itoa(i),
 		Domain:      strconv.Itoa(i),
+	}
+}
+
+func CreateMetaInvalidAddress() *types.Meta {
+	return &types.Meta{
+		Creator:     "invalid_address",
+		Name:        "name",
+		Description: "description",
+		Domain:      "domain",
 	}
 }
 
@@ -132,4 +159,34 @@ func createInMemoryZip() []byte {
 
 	// Step 5: Convert buffer's contents to bytes
 	return buffer.Bytes()
+}
+
+func CreateTempDataset() (dir string, err error) {
+	dir, err = os.MkdirTemp("", "example")
+	if err != nil {
+		return dir, fmt.Errorf("error creating temporary directory: %v", err)
+	}
+
+	indexFilePath := filepath.Join(dir, "index.html")
+	_, err = os.Create(indexFilePath)
+	if err != nil {
+		return dir, fmt.Errorf("error creating index.html file: %v", err)
+	}
+
+	return dir, nil
+}
+
+func CreateTempArchive() (file *os.File, err error) {
+	file, err = os.CreateTemp("", "test-archive-*.zip")
+	if err != nil {
+		return file, fmt.Errorf("error creating temporary file: %v", err)
+	}
+
+	data := CreateZip()
+	_, err = file.Write(data)
+	if err != nil {
+		return file, fmt.Errorf("error writing to temporary file: %v", err)
+	}
+
+	return file, nil
 }

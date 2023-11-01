@@ -13,18 +13,8 @@ import (
 
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
-		Params: types.DefaultParams(),
-
-		Deployments: []*types.Deployment{
-			{
-				Meta:    sample.CreateMeta(0),
-				Dataset: sample.CreateDataset(5),
-			},
-			{
-				Meta:    sample.CreateMeta(1),
-				Dataset: sample.CreateDataset(5),
-			},
-		},
+		Params:      types.DefaultParams(),
+		Deployments: sample.CreateNDeployments(keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE),
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
