@@ -1,11 +1,13 @@
 package keeper_test
 
 import (
-	keepertest "ghostcloud/testutil/keeper"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	keepertest "ghostcloud/testutil/keeper"
+
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestSet_GetMeta(t *testing.T) {

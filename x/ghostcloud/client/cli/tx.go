@@ -10,26 +10,17 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
+	"ghostcloud/x/ghostcloud/types"
+
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 
 	"github.com/spf13/cobra"
-
-	"github.com/cosmos/cosmos-sdk/client"
-	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"ghostcloud/x/ghostcloud/types"
-)
-
-var (
-	DefaultRelativePacketTimeoutTimestamp = uint64((time.Duration(10) * time.Minute).Nanoseconds())
 )
 
 const (
-	flagPacketTimeoutTimestamp = "packet-timeout-timestamp"
-	listSeparator              = ","
-
 	FlagDescription  = "description"
 	FlagDomain       = "domain"
 	zipArchiveSuffix = ".zip"
@@ -62,7 +53,7 @@ func GetTxCmd() *cobra.Command {
 func isDir(path string) bool {
 	info, err := os.Stat(path)
 	if errors.Is(err, fs.ErrNotExist) {
-		log.Fatal(fmt.Sprintf("File does not exist: %s", path))
+		log.Fatalf("File does not exist: %s", path)
 	}
 	return info.IsDir()
 }
@@ -70,22 +61,22 @@ func isDir(path string) bool {
 func loadArchive(path string) []byte {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to stat website archive: %v", err))
+		log.Fatalf("unable to stat website archive: %v", err)
 	}
 	if fileInfo.Size() > types.DefaultMaxArchiveSize {
-		log.Fatal(fmt.Sprintf("Website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize))
+		log.Fatalf("Website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize)
 	}
 
 	// Read website archive
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to read website archive: %v", err))
+		log.Fatalf("unable to read website archive: %v", err)
 	}
 
 	r := bytes.NewReader(data)
 	zipReader, err := zip.NewReader(r, int64(len(data)))
 	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to create website archive reader: %v", err))
+		log.Fatalf("unable to create website archive reader: %v", err)
 	}
 
 	found := false
@@ -105,13 +96,13 @@ func loadArchive(path string) []byte {
 func loadFolder(path string) []*types.Item {
 	// Walk through the directory and process each file
 	var items []*types.Item
-	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	werr := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
 		}
-		content, err := os.ReadFile(path)
-		if err != nil {
-			log.Fatal(fmt.Sprintf("unable to read file: %v", err))
+		content, rerr := os.ReadFile(path)
+		if rerr != nil {
+			log.Fatalf("unable to read file: %v", rerr)
 		}
 		items = append(items, &types.Item{
 			Meta: &types.ItemMeta{
@@ -124,8 +115,8 @@ func loadFolder(path string) []*types.Item {
 
 		return nil
 	})
-	if err != nil {
-		log.Fatal(fmt.Sprintf("unable to walk through website folder: %v", err))
+	if werr != nil {
+		log.Fatalf("unable to walk through website folder: %v", werr)
 	}
 
 	return items

@@ -1,11 +1,12 @@
 package cli
 
 import (
+	"ghostcloud/x/ghostcloud/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cobra"
 
-	"ghostcloud/x/ghostcloud/types"
+	"github.com/spf13/cobra"
 )
 
 func CmdQueryParams() *cobra.Command {

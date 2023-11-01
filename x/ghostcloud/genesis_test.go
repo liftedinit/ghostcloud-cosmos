@@ -1,8 +1,9 @@
 package ghostcloud_test
 
 import (
-	"ghostcloud/testutil/sample"
 	"testing"
+
+	"ghostcloud/testutil/sample"
 
 	keepertest "ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/nullify"

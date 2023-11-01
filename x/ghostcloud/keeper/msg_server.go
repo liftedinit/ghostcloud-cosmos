@@ -5,8 +5,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"ghostcloud/x/ghostcloud/types"
 	"io"
+
+	errorsmod "cosmossdk.io/errors"
+
+	"ghostcloud/x/ghostcloud/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -86,17 +89,17 @@ func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateD
 
 	addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
+		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
 
 	// Check if the value already exists
 	if k.HasDeployment(ctx, addr, msg.Meta.Name) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
 	}
 
 	dataset, err := handlePayload(msg.Payload)
 	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	k.SetDeployment(

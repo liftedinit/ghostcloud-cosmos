@@ -1,11 +1,13 @@
 package types_test
 
 import (
-	"ghostcloud/testutil/sample"
-	"ghostcloud/x/ghostcloud/types"
 	"testing"
 
+	"ghostcloud/testutil/sample"
+	"ghostcloud/x/ghostcloud/types"
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/stretchr/testify/require"
 )
 

@@ -1,10 +1,10 @@
 package types_test
 
 import (
-	"ghostcloud/testutil/keeper"
-	"ghostcloud/testutil/sample"
 	"testing"
 
+	"ghostcloud/testutil/keeper"
+	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/types"
 
 	"github.com/stretchr/testify/require"

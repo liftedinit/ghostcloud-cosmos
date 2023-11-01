@@ -2,15 +2,17 @@ package keeper_test
 
 import (
 	"context"
-	"ghostcloud/testutil/sample"
 	"testing"
+
+	"ghostcloud/testutil/sample"
 
 	keepertest "ghostcloud/testutil/keeper"
 	"ghostcloud/x/ghostcloud/keeper"
 	"ghostcloud/x/ghostcloud/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func setupMsgServer(t testing.TB) (types.MsgServer, context.Context) {

@@ -1,9 +1,9 @@
 package ghostcloud
 
 import (
-	keepertest "ghostcloud/testutil/keeper"
 	"math/rand"
 
+	keepertest "ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/sample"
 	ghostcloudsimulation "ghostcloud/x/ghostcloud/simulation"
 	"ghostcloud/x/ghostcloud/types"
@@ -49,7 +49,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 
 // ProposalContents doesn't return any content functions for governance proposals.
-func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
+func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalMsg {
 	return nil
 }
 
