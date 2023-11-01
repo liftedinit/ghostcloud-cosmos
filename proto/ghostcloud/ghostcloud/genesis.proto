@@ -2,11 +2,19 @@ syntax = "proto3";
 package ghostcloud.ghostcloud;
 
 import "gogoproto/gogo.proto";
+import "ghostcloud/ghostcloud/dataset.proto";
+import "ghostcloud/ghostcloud/meta.proto";
 import "ghostcloud/ghostcloud/params.proto";
 
 option go_package = "ghostcloud/x/ghostcloud/types";
 
+message Deployment {
+  Meta meta = 1;
+  Dataset dataset = 2;
+}
+
 // GenesisState defines the ghostcloud module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated Deployment deployments = 2;
 }

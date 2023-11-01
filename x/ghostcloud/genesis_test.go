@@ -1,6 +1,7 @@
 package ghostcloud_test
 
 import (
+	"ghostcloud/testutil/sample"
 	"testing"
 
 	keepertest "ghostcloud/testutil/keeper"
@@ -14,6 +15,16 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
+		Deployments: []*types.Deployment{
+			{
+				Meta:    sample.CreateMeta(0),
+				Dataset: sample.CreateDataset(5),
+			},
+			{
+				Meta:    sample.CreateMeta(1),
+				Dataset: sample.CreateDataset(5),
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -25,5 +36,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
+	require.ElementsMatch(t, genesisState.Deployments, got.Deployments)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

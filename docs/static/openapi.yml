@@ -70701,12 +70701,9 @@ definitions:
                 path:
                   type: string
             content:
-              type: object
-              properties:
-                content:
-                  type: string
-                  format: byte
-                  title: This can be large
+              type: string
+              format: byte
+              title: ItemContent content = 2;
   ghostcloud.ghostcloud.Item:
     type: object
     properties:
@@ -70716,19 +70713,9 @@ definitions:
           path:
             type: string
       content:
-        type: object
-        properties:
-          content:
-            type: string
-            format: byte
-            title: This can be large
-  ghostcloud.ghostcloud.ItemContent:
-    type: object
-    properties:
-      content:
         type: string
         format: byte
-        title: This can be large
+        title: ItemContent content = 2;
   ghostcloud.ghostcloud.ItemMeta:
     type: object
     properties:
@@ -70771,12 +70758,9 @@ definitions:
                     path:
                       type: string
                 content:
-                  type: object
-                  properties:
-                    content:
-                      type: string
-                      format: byte
-                      title: This can be large
+                  type: string
+                  format: byte
+                  title: ItemContent content = 2;
       archive:
         type: object
         properties:
