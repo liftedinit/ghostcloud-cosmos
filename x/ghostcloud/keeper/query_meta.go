@@ -51,10 +51,11 @@ func (k Keeper) Metas(goCtx context.Context, req *types.QueryMetasRequest) (*typ
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// TODO: Only get Meta that matches the filters
+	//       Things are not very efficient here, but it's ok for demonstration purposes
 	metas := k.GetAllMeta(ctx)
 
 	var filteredMetas []*types.Meta
-	// Filter the result if necessary
 	if req.Filters != nil {
 		for _, meta := range metas {
 			if metaPassesAllFilters(meta, req.Filters) {
