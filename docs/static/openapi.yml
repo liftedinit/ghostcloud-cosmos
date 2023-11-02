@@ -70701,9 +70701,51 @@ definitions:
                 path:
                   type: string
             content:
-              type: string
-              format: byte
-              title: ItemContent content = 2;
+              type: object
+              properties:
+                content:
+                  type: string
+                  format: byte
+                  title: This can be large
+  ghostcloud.ghostcloud.Filter:
+    type: object
+    properties:
+      field:
+        type: string
+        enum:
+          - CREATOR
+        default: CREATOR
+      operator:
+        type: string
+        enum:
+          - EQUAL
+          - NOT_EQUAL
+          - GREATER_THAN
+          - LESS_THAN
+          - GREATER_THAN_OR_EQUAL
+          - LESS_THAN_OR_EQUAL
+          - CONTAINS
+          - NOT_CONTAINS
+        default: EQUAL
+      value:
+        type: string
+  ghostcloud.ghostcloud.Filter.Field:
+    type: string
+    enum:
+      - CREATOR
+    default: CREATOR
+  ghostcloud.ghostcloud.Filter.Operator:
+    type: string
+    enum:
+      - EQUAL
+      - NOT_EQUAL
+      - GREATER_THAN
+      - LESS_THAN
+      - GREATER_THAN_OR_EQUAL
+      - LESS_THAN_OR_EQUAL
+      - CONTAINS
+      - NOT_CONTAINS
+    default: EQUAL
   ghostcloud.ghostcloud.Item:
     type: object
     properties:
@@ -70713,9 +70755,19 @@ definitions:
           path:
             type: string
       content:
+        type: object
+        properties:
+          content:
+            type: string
+            format: byte
+            title: This can be large
+  ghostcloud.ghostcloud.ItemContent:
+    type: object
+    properties:
+      content:
         type: string
         format: byte
-        title: ItemContent content = 2;
+        title: This can be large
   ghostcloud.ghostcloud.ItemMeta:
     type: object
     properties:
@@ -70758,9 +70810,12 @@ definitions:
                     path:
                       type: string
                 content:
-                  type: string
-                  format: byte
-                  title: ItemContent content = 2;
+                  type: object
+                  properties:
+                    content:
+                      type: string
+                      format: byte
+                      title: This can be large
       archive:
         type: object
         properties:
