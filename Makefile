@@ -51,3 +51,11 @@ coverage:
 	@echo "--> Running coverage complete"
 
 .PHONY: coverage
+
+#### TEST ####
+
+test:
+	@echo "--> Running tests"
+	@go test -race -cpu=$$(nproc) $$(go list ./x/...)
+
+.PHONY: test
