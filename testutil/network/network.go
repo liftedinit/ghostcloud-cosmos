@@ -2,9 +2,16 @@ package network
 
 import (
 	"fmt"
+	"ghostcloud/testutil/keeper"
+	"ghostcloud/testutil/sample"
+	"ghostcloud/x/ghostcloud/types"
 	"testing"
 	"time"
 
+	sdkmath "cosmossdk.io/math"
+	tmcli "github.com/cometbft/cometbft/libs/cli"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/stretchr/testify/require"
 
 	tmdb "github.com/cometbft/cometbft-db"
@@ -18,6 +25,7 @@ import (
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/cosmos/cosmos-sdk/testutil/network"
+	cosmosnetwork "github.com/cosmos/cosmos-sdk/testutil/network"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -26,7 +34,62 @@ import (
 type (
 	Network = network.Network
 	Config  = network.Config
+	Context struct {
+		Net *network.Network
+		Val *cosmosnetwork.Validator
+		Ctx client.Context
+	}
 )
+
+const flagPattern = "--%s=%s"
+
+func setupCommon(t *testing.T, cfg Config) *Context {
+	t.Helper()
+	net := New(t, cfg)
+	val := net.Validators[0]
+	ctx := val.ClientCtx
+	return &Context{
+		Net: net,
+		Val: val,
+		Ctx: ctx,
+	}
+}
+
+func SetupTxCommonFlags(t *testing.T, nc *Context) []string {
+	t.Helper()
+	return []string{
+		fmt.Sprintf(flagPattern, flags.FlagFrom, nc.Val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf(flagPattern, flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf(flagPattern, flags.FlagFees, sdk.NewCoins(sdk.NewCoin(nc.Net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+	}
+}
+
+func SetupQueryCommonFlags(t *testing.T) []string {
+	t.Helper()
+	return []string{
+		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+	}
+}
+
+func Setup(t *testing.T) *Context {
+	return setupCommon(t, DefaultConfig())
+}
+
+func SetupWithDeployments(t *testing.T, n int) (*Context, []*types.Deployment) {
+	t.Helper()
+	cfg := DefaultConfig()
+	state := types.GenesisState{
+		Params:      types.DefaultParams(),
+		Deployments: sample.CreateNDeployments(n, keeper.DATASET_SIZE),
+	}
+	buf, err := cfg.Codec.MarshalJSON(&state)
+	require.NoError(t, err)
+	cfg.GenesisState[types.ModuleName] = buf
+
+	ctx := setupCommon(t, cfg)
+	return ctx, state.Deployments
+}
 
 // New creates instance with fully configured cosmos network.
 // Accepts optional config, that will be used in place of the DefaultConfig() if provided.
