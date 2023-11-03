@@ -29,6 +29,10 @@ func CmdUpdateDeployment() *cobra.Command {
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 			argWebsitePayload := cmd.Flag(FlagWebsitePayload).Value.String()
 
+			if argDescription == "" && argDomain == "" && argWebsitePayload == "" {
+				return fmt.Errorf("at least one of the following flags must be set: --description, --domain, --website-payload")
+			}
+
 			meta := types.Meta{
 				Creator: clientCtx.GetFromAddress().String(),
 				Name:    argName,

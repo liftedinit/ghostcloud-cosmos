@@ -197,6 +197,7 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 		if err != nil {
 			return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 		}
+		k.RemoveDataset(ctx, addr, msg.Meta.Name)
 		k.SetDataset(ctx, addr, msg.Meta.Name, dataset)
 	}
 
