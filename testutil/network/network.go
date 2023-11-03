@@ -2,17 +2,19 @@ package network
 
 import (
 	"fmt"
+	"testing"
+	"time"
+
 	"ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/types"
-	"testing"
-	"time"
+
+	"github.com/stretchr/testify/require"
 
 	sdkmath "cosmossdk.io/math"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/stretchr/testify/require"
 
 	tmdb "github.com/cometbft/cometbft-db"
 	tmrand "github.com/cometbft/cometbft/libs/rand"

@@ -9,6 +9,7 @@ option go_package = "ghostcloud/x/ghostcloud/types";
 // Msg defines the Msg service.
 service Msg {
   rpc CreateDeployment(MsgCreateDeploymentRequest) returns (MsgCreateDeploymentResponse);
+  rpc UpdateDeployment(MsgUpdateDeploymentRequest) returns (MsgUpdateDeploymentResponse);
 }
 
 message MsgCreateDeploymentRequest {
@@ -17,3 +18,10 @@ message MsgCreateDeploymentRequest {
 }
 
 message MsgCreateDeploymentResponse {}
+
+message MsgUpdateDeploymentRequest {
+  Meta meta = 1;
+  Payload payload = 2;
+}
+
+message MsgUpdateDeploymentResponse {}

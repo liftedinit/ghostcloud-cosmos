@@ -70786,6 +70786,8 @@ definitions:
         type: string
   ghostcloud.ghostcloud.MsgCreateDeploymentResponse:
     type: object
+  ghostcloud.ghostcloud.MsgUpdateDeploymentResponse:
+    type: object
   ghostcloud.ghostcloud.Params:
     type: object
     properties:

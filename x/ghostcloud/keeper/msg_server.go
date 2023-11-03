@@ -109,3 +109,29 @@ func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateD
 	)
 	return &types.MsgCreateDeploymentResponse{}, nil
 }
+
+func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateDeploymentRequest) (*types.MsgUpdateDeploymentResponse, error) {
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//
+	//addr, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
+	//if err != nil {
+	//	return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
+	//}
+	//
+	// Check if the value already exists
+	//if !k.HasDeployment(ctx, addr, msg.Meta.Name) {
+	//	return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+	//}
+	//
+	//dataset, err := handlePayload(msg.Payload)
+	//if err != nil {
+	//	return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	//}
+	//
+	//k.SetDeployment(
+	//	ctx,
+	//	msg.Meta,
+	//	dataset,
+	//)
+	return &types.MsgUpdateDeploymentResponse{}, nil
+}
