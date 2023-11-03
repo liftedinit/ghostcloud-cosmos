@@ -12,16 +12,6 @@ const (
 
 var _ sdk.Msg = &MsgUpdateDeploymentRequest{}
 
-func NewMsgUpdateDeploymentRequest(
-	meta *Meta,
-	payload *Payload,
-) *MsgUpdateDeploymentRequest {
-	return &MsgUpdateDeploymentRequest{
-		Meta:    meta,
-		Payload: payload,
-	}
-}
-
 func (msg *MsgUpdateDeploymentRequest) Route() string {
 	return RouterKey
 }

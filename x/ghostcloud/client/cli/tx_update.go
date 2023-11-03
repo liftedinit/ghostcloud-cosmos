@@ -16,9 +16,8 @@ func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update name",
 		Short: "Update a deployment",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
 			argName := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -30,22 +29,28 @@ func CmdUpdateDeployment() *cobra.Command {
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 			argWebsitePayload := cmd.Flag(FlagWebsitePayload).Value.String()
 
-			payload, err := createPayload(argWebsitePayload)
-			if err != nil {
-				return fmt.Errorf("unable to create payload: %v", err)
-			}
-
 			meta := types.Meta{
-				Creator:     clientCtx.GetFromAddress().String(),
-				Name:        argName,
-				Description: argDescription,
-				Domain:      argDomain,
+				Creator: clientCtx.GetFromAddress().String(),
+				Name:    argName,
+			}
+			if argDomain != "" {
+				meta.Domain = argDomain
+			}
+			if argDescription != "" {
+				meta.Description = argDescription
+			}
+			msg := &types.MsgUpdateDeploymentRequest{
+				Meta: &meta,
 			}
 
-			msg := types.NewMsgUpdateDeploymentRequest(
-				&meta,
-				payload,
-			)
+			if argWebsitePayload != "" {
+				payload, err := createPayload(argWebsitePayload)
+				if err != nil {
+					return fmt.Errorf("unable to create payload: %v", err)
+				}
+				msg.Payload = payload
+			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

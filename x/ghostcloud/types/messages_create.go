@@ -9,21 +9,9 @@ import (
 
 const (
 	TypeMsgCreateDeploymentRequest = "create_deployment"
-
-	InvalidCreatorAddress = "invalid creator address (%s)"
 )
 
 var _ sdk.Msg = &MsgCreateDeploymentRequest{}
-
-func NewMsgCreateDeploymentRequest(
-	meta *Meta,
-	payload *Payload,
-) *MsgCreateDeploymentRequest {
-	return &MsgCreateDeploymentRequest{
-		Meta:    meta,
-		Payload: payload,
-	}
-}
 
 func (msg *MsgCreateDeploymentRequest) Route() string {
 	return RouterKey

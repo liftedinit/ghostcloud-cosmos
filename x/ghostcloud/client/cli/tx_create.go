@@ -42,10 +42,10 @@ func CmdCreateDeployment() *cobra.Command {
 				Domain:      argDomain,
 			}
 
-			msg := types.NewMsgCreateDeploymentRequest(
-				&meta,
-				payload,
-			)
+			msg := &types.MsgCreateDeploymentRequest{
+				Meta:    &meta,
+				Payload: payload,
+			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
