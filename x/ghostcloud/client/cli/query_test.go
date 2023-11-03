@@ -1,33 +1,24 @@
 package cli_test
 
 import (
-	"fmt"
 	"testing"
 
 	"ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/network"
-	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
 	"ghostcloud/x/ghostcloud/types"
 
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/status"
 
-	tmcli "github.com/cometbft/cometbft/libs/cli"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 )
 
-func networkWithDeploymentObjects(t *testing.T, n int) (*network.Network, []*types.Deployment) {
-	t.Helper()
-	cfg := network.DefaultConfig()
-	state := types.GenesisState{
-		Params:      types.DefaultParams(),
-		Deployments: sample.CreateNDeployments(n, keeper.DATASET_SIZE),
-	}
-	buf, err := cfg.Codec.MarshalJSON(&state)
-	require.NoError(t, err)
-	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), state.Deployments
+type QueryTestCase struct {
+	name  string
+	args  []string
+	err   error
+	metas []*types.Meta
 }
 
 func metasFromDeployments(deployments []*types.Deployment) []*types.Meta {
@@ -38,42 +29,37 @@ func metasFromDeployments(deployments []*types.Deployment) []*types.Meta {
 	return metas
 }
 
-func TestShowDeployment(t *testing.T) {
-	net, objs := networkWithDeploymentObjects(t, keeper.NUM_DEPLOYMENT)
-	metas := metasFromDeployments(objs)
+func runQueryTest(t *testing.T, nc *network.Context, tc *QueryTestCase) {
+	t.Run(tc.name, func(t *testing.T) {
+		var args []string
+		args = append(args, tc.args...)
+		out, err := clitestutil.ExecTestCLICmd(nc.Ctx, cli.CmdListDeployments(), args)
+		if tc.err != nil {
+			stat, ok := status.FromError(tc.err)
+			require.True(t, ok)
+			require.ErrorIs(t, stat.Err(), tc.err)
+		} else {
+			require.NoError(t, err)
+			var resp types.QueryMetasResponse
+			require.NoError(t, nc.Net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
+			require.NotNil(t, resp.Meta)
+			require.ElementsMatch(t, tc.metas, resp.Meta)
+		}
+	})
+}
 
-	ctx := net.Validators[0].ClientCtx
-	common := []string{
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-	}
-	tests := []struct {
-		desc  string
-		args  []string
-		err   error
-		metas []*types.Meta
-	}{
-		{
-			desc:  "found",
-			args:  common,
-			metas: metas,
-		},
-	}
-	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			var args []string
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListDeployments(), args)
-			if tc.err != nil {
-				stat, ok := status.FromError(tc.err)
-				require.True(t, ok)
-				require.ErrorIs(t, stat.Err(), tc.err)
-			} else {
-				require.NoError(t, err)
-				var resp types.QueryMetasResponse
-				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.Meta)
-				require.ElementsMatch(t, tc.metas, resp.Meta)
-			}
-		})
-	}
+func testListDeployments(t *testing.T, nc *network.Context, commonFlags []string, objs []*types.Deployment) {
+	metas := metasFromDeployments(objs)
+	runQueryTest(t, nc, &QueryTestCase{
+		name:  "found",
+		args:  commonFlags,
+		metas: metas,
+	})
+}
+
+func TestQueries(t *testing.T) {
+	nc, objs := network.SetupWithDeployments(t, keeper.NUM_DEPLOYMENT)
+	commonFlags := network.SetupQueryCommonFlags(t)
+
+	testListDeployments(t, nc, commonFlags, objs)
 }

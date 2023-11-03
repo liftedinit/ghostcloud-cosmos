@@ -126,12 +126,12 @@ func CreateDataset(n int) *types.Dataset {
 func CreateArchive() *types.Archive {
 	return &types.Archive{
 		Type:    types.ArchiveType_Zip,
-		Content: CreateZip(),
+		Content: CreateZip("index.html"),
 	}
 }
 
-func CreateZip() []byte {
-	return createInMemoryZip()
+func CreateZip(fileName string) []byte {
+	return createInMemoryZip(fileName)
 }
 
 func CreateItem(i int) *types.Item {
@@ -149,7 +149,7 @@ func CreateNItems(n int) []*types.Item {
 	return items
 }
 
-func createInMemoryZip() []byte {
+func createInMemoryZip(fileName string) []byte {
 	// Step 1: Create a buffer to hold the zip archive's data in memory
 	var buffer bytes.Buffer
 
@@ -160,7 +160,7 @@ func createInMemoryZip() []byte {
 	files := []struct {
 		Name, Body string
 	}{
-		{"index.html", "<html><body>Hello World!</body></html>"},
+		{fileName, "<html><body>Hello World!</body></html>"},
 	}
 
 	// Step 3: Add files to the archive
@@ -200,13 +200,28 @@ func CreateTempDataset() (dir string, err error) {
 	return dir, nil
 }
 
-func CreateTempArchive() (file *os.File, err error) {
+func CreateTempArchive(fileName string) (file *os.File, err error) {
 	file, err = os.CreateTemp("", "test-archive-*.zip")
 	if err != nil {
 		return file, fmt.Errorf("error creating temporary file: %v", err)
 	}
 
-	data := CreateZip()
+	data := CreateZip(fileName)
+	_, err = file.Write(data)
+	if err != nil {
+		return file, fmt.Errorf("error writing to temporary file: %v", err)
+	}
+
+	return file, nil
+}
+
+func CreateCustomFakeArchive(size int64) (file *os.File, err error) {
+	file, err = os.CreateTemp("", "test-archive-*.zip")
+	if err != nil {
+		return file, fmt.Errorf("error creating temporary file: %v", err)
+	}
+
+	data := make([]byte, size)
 	_, err = file.Write(data)
 	if err != nil {
 		return file, fmt.Errorf("error writing to temporary file: %v", err)

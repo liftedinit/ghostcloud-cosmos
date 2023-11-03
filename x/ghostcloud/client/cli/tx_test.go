@@ -3,90 +3,120 @@ package cli_test
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"testing"
 
-	"ghostcloud/testutil/network"
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
+	"ghostcloud/x/ghostcloud/types"
+
+	"ghostcloud/testutil/network"
 
 	"github.com/stretchr/testify/require"
 
-	sdkmath "cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestCreateDeployment(t *testing.T) {
-	net := network.New(t)
-	val := net.Validators[0]
-	ctx := val.ClientCtx
+type TxTestCase struct {
+	name string
+	args []string
+	err  error
+	code uint32
+}
 
-	dir, err := sample.CreateTempDataset()
-	require.NoError(t, err)
-	defer os.RemoveAll(dir)
+func runTxTest(t *testing.T, nc *network.Context, tc *TxTestCase) {
+	t.Run(tc.name, func(t *testing.T) {
+		require.NoError(t, nc.Net.WaitForNextBlock())
 
-	file, err := sample.CreateTempArchive()
-	require.NoError(t, err)
-	defer file.Close()
-	defer os.Remove(file.Name())
-
-	tests := []struct {
-		desc   string
-		idName string
-
-		fields []string
-		args   []string
-		err    error
-		code   uint32
-	}{
-		{
-			idName: strconv.Itoa(0),
-
-			desc:   "valid dataset",
-			fields: []string{dir},
-			args: []string{
-				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
-				fmt.Sprintf("--%s=%s", cli.FlagDescription, strconv.Itoa(0)),
-				fmt.Sprintf("--%s=%s", cli.FlagDomain, strconv.Itoa(0)),
-			},
-		},
-		{
-			idName: strconv.Itoa(1),
-
-			desc:   "valid archive",
-			fields: []string{file.Name()},
-			args: []string{
-				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
-				fmt.Sprintf("--%s=%s", cli.FlagDescription, strconv.Itoa(0)),
-				fmt.Sprintf("--%s=%s", cli.FlagDomain, strconv.Itoa(0)),
-			},
-		},
-	}
-	for _, tc := range tests {
-		t.Run(tc.desc, func(t *testing.T) {
-			require.NoError(t, net.WaitForNextBlock())
-
-			args := []string{tc.idName}
-			args = append(args, tc.fields...)
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateDeployment(), args)
-			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
-				return
-			}
+		args := []string{tc.name}
+		args = append(args, tc.args...)
+		out, err := clitestutil.ExecTestCLICmd(nc.Ctx, cli.CmdCreateDeployment(), args)
+		if tc.err == nil {
 			require.NoError(t, err)
 
 			var resp sdk.TxResponse
-			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
-		})
-	}
+			require.NoError(t, nc.Ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
+			require.NoError(t, clitestutil.CheckTxCode(nc.Net, nc.Ctx, resp.TxHash, tc.code))
+		} else {
+			require.Error(t, err)
+			require.ErrorContains(t, err, tc.err.Error())
+		}
+	})
+}
+
+func TestCreateDeployment(t *testing.T) {
+	nc := network.Setup(t)
+	commonFlags := network.SetupTxCommonFlags(t, nc)
+
+	testValidDataset(t, nc, commonFlags)
+	testValidArchive(t, nc, commonFlags)
+	testInvalidDatasetPath(t, nc, commonFlags)
+	testInvalidArchivePath(t, nc, commonFlags)
+	testArchiveTooBig(t, nc, commonFlags)
+	testNoIndex(t, nc, commonFlags)
+}
+
+func testValidDataset(t *testing.T, nc *network.Context, commonFlags []string) {
+	data, err := sample.CreateTempDataset()
+	require.NoError(t, err)
+	defer os.RemoveAll(data)
+
+	runTxTest(t, nc, &TxTestCase{
+		name: "valid_dataset",
+		args: append([]string{data}, commonFlags...),
+	})
+}
+
+func testValidArchive(t *testing.T, nc *network.Context, commonFlags []string) {
+	data, err := sample.CreateTempArchive("index.html")
+	require.NoError(t, err)
+	defer data.Close()
+	defer os.Remove(data.Name())
+
+	runTxTest(t, nc, &TxTestCase{
+		name: "valid_archive",
+		args: append([]string{data.Name()}, commonFlags...),
+	})
+}
+
+func testInvalidDatasetPath(t *testing.T, nc *network.Context, commonFlags []string) {
+	runTxTest(t, nc, &TxTestCase{
+		name: "invalid_dataset_path",
+		args: append([]string{"some-invalid-path"}, commonFlags...),
+		err:  fmt.Errorf("unable to stat path"),
+	})
+}
+
+func testInvalidArchivePath(t *testing.T, nc *network.Context, commonFlags []string) {
+	runTxTest(t, nc, &TxTestCase{
+		name: "invalid_archive_path",
+		args: append([]string{"some-invalid-path.zip"}, commonFlags...),
+		err:  fmt.Errorf("unable to stat archive"),
+	})
+}
+
+func testArchiveTooBig(t *testing.T, nc *network.Context, commonFlags []string) {
+	data, err := sample.CreateCustomFakeArchive(types.DefaultMaxArchiveSize + 1)
+	require.NoError(t, err)
+	defer data.Close()
+	defer os.Remove(data.Name())
+
+	runTxTest(t, nc, &TxTestCase{
+		name: "archive_too_big",
+		args: append([]string{data.Name()}, commonFlags...),
+		err:  fmt.Errorf("website archive is too big"),
+	})
+}
+
+func testNoIndex(t *testing.T, nc *network.Context, commonFlags []string) {
+	data, err := sample.CreateTempArchive("foobar.html")
+	require.NoError(t, err)
+	defer data.Close()
+	defer os.Remove(data.Name())
+
+	runTxTest(t, nc, &TxTestCase{
+		name: "no_index",
+		args: append([]string{data.Name()}, commonFlags...),
+		err:  fmt.Errorf("website archive does not contain `index.html` at its root"),
+	})
 }

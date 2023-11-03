@@ -3,9 +3,7 @@ package cli
 import (
 	"archive/zip"
 	"bytes"
-	"errors"
 	"fmt"
-	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -50,33 +48,39 @@ func GetTxCmd() *cobra.Command {
 }
 
 // isDir Check if a path is a directory. Panics if the path does not exist.
-func isDir(path string) bool {
+func isDir(path string) (bool, error) {
 	info, err := os.Stat(path)
-	if errors.Is(err, fs.ErrNotExist) {
-		log.Fatalf("File does not exist: %s", path)
+	if err != nil {
+		return false, fmt.Errorf("unable to stat path: %v", err)
 	}
-	return info.IsDir()
+	return info.IsDir(), nil
 }
 
-func loadArchive(path string) []byte {
+func loadArchive(path string) ([]byte, error) {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
-		log.Fatalf("unable to stat website archive: %v", err)
+		return nil, fmt.Errorf("unable to stat archive: %v", err)
 	}
 	if fileInfo.Size() > types.DefaultMaxArchiveSize {
-		log.Fatalf("Website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize)
+		return nil, fmt.Errorf("website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize)
 	}
 
 	// Read website archive
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalf("unable to read website archive: %v", err)
+		return nil, fmt.Errorf("unable to read website archive: %v", err)
+	}
+
+	// See zip.NewReader documentation for more details about why this is needed
+	err = os.Setenv("GODEBUG", "zipinsecurepath=0")
+	if err != nil {
+		return nil, fmt.Errorf("unable to set GODEBUG to zipinsecurepath=0: %v", err)
 	}
 
 	r := bytes.NewReader(data)
 	zipReader, err := zip.NewReader(r, int64(len(data)))
 	if err != nil {
-		log.Fatalf("unable to create website archive reader: %v", err)
+		return nil, fmt.Errorf("unable to create website archive reader: %v", err)
 	}
 
 	found := false
@@ -87,10 +91,10 @@ func loadArchive(path string) []byte {
 	}
 
 	if !found {
-		log.Fatal("Website archive does not contain `index.html` at its root")
+		return nil, fmt.Errorf("website archive does not contain `index.html` at its root")
 	}
 
-	return data
+	return data, nil
 }
 
 func loadFolder(path string) []*types.Item {
@@ -122,8 +126,11 @@ func loadFolder(path string) []*types.Item {
 	return items
 }
 
-func createArchivePayload(path string) *types.Payload {
-	data := loadArchive(path)
+func createArchivePayload(path string) (*types.Payload, error) {
+	data, err := loadArchive(path)
+	if err != nil {
+		return nil, fmt.Errorf("unable to load archive: %v", err)
+	}
 	return &types.Payload{
 		PayloadOption: &types.Payload_Archive{
 			Archive: &types.Archive{
@@ -131,7 +138,7 @@ func createArchivePayload(path string) *types.Payload {
 				Content: data,
 			},
 		},
-	}
+	}, nil
 }
 
 func createDatasetPayload(path string) *types.Payload {
@@ -145,15 +152,20 @@ func createDatasetPayload(path string) *types.Payload {
 	}
 }
 
-func createPayload(path string) *types.Payload {
+func createPayload(path string) (*types.Payload, error) {
 	if strings.HasSuffix(path, zipArchiveSuffix) {
-		return createArchivePayload(path)
-	} else if isDir(path) {
-		return createDatasetPayload(path)
+		payload, err := createArchivePayload(path)
+		if err != nil {
+			return nil, fmt.Errorf("unable to create archive payload: %v", err)
+		}
+		return payload, nil
+	} else if b, err := isDir(path); err != nil {
+		return nil, fmt.Errorf("unable to process path: %v", err)
+	} else if b {
+		return createDatasetPayload(path), nil
 	}
 
-	log.Fatal("Website payload must be a directory or a zip archive")
-	panic("unreachable")
+	return nil, nil
 }
 
 func CmdCreateDeployment() *cobra.Command {
@@ -171,7 +183,10 @@ func CmdCreateDeployment() *cobra.Command {
 				return err
 			}
 
-			payload := createPayload(argWebsitePayload)
+			payload, err := createPayload(argWebsitePayload)
+			if err != nil {
+				return fmt.Errorf("unable to create payload: %v", err)
+			}
 
 			argDescription := cmd.Flag(FlagDescription).Value.String()
 			argDomain := cmd.Flag(FlagDomain).Value.String()
