@@ -11,13 +11,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestParamsQuery(t *testing.T) {
+func TestMetaQuery(t *testing.T) {
 	keeper, ctx := testkeeper.GhostcloudKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	params := types.DefaultParams()
-	keeper.SetParams(ctx, params)
+	metas, _ := testkeeper.CreateAndSetNDeployments(ctx, keeper, testkeeper.NUM_DEPLOYMENT, testkeeper.DATASET_SIZE)
 
-	response, err := keeper.Params(wctx, &types.QueryParamsRequest{})
+	response, err := keeper.Metas(wctx, &types.QueryMetasRequest{})
 	require.NoError(t, err)
-	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
+	require.ElementsMatch(t, metas, response.Meta)
 }

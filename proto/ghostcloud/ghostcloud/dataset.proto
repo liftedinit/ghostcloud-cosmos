@@ -1,0 +1,21 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+message ItemMeta {
+  string path = 1;
+}
+
+message ItemContent {
+  bytes content = 1; // This can be large
+}
+
+message Item {
+  ItemMeta meta = 1;
+  ItemContent content = 2;
+}
+
+message Dataset {
+  repeated Item items = 1;
+}

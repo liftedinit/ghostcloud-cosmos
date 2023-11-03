@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ghostcloud.ghostcloud;
+
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "ghostcloud/x/ghostcloud/types";
+
+message Meta {
+  string creator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string name = 2;
+  string description = 3;
+  string domain = 4;
+}
+

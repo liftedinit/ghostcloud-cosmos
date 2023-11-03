@@ -5,6 +5,7 @@ import (
 
 	testkeeper "ghostcloud/testutil/keeper"
 	"ghostcloud/x/ghostcloud/types"
+
 	"github.com/stretchr/testify/require"
 )
 

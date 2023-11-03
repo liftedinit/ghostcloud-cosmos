@@ -3,10 +3,12 @@ package keeper
 import (
 	"context"
 
-	"ghostcloud/x/ghostcloud/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"ghostcloud/x/ghostcloud/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {

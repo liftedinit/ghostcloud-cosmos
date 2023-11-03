@@ -3,11 +3,15 @@ package types_test
 import (
 	"testing"
 
+	"ghostcloud/testutil/keeper"
+	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/types"
+
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenesisState_Validate(t *testing.T) {
+	deployment := sample.CreateDeployment(0, keeper.DATASET_SIZE)
 	tests := []struct {
 		desc     string
 		genState *types.GenesisState
@@ -19,12 +23,22 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
-
+				Params:      types.DefaultParams(),
+				Deployments: []*types.Deployment{deployment},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicate deployment entry",
+			genState: &types.GenesisState{
+				Params:      types.DefaultParams(),
+				Deployments: []*types.Deployment{deployment, deployment},
+				// this line is used by starport scaffolding # types/genesis/validField
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}

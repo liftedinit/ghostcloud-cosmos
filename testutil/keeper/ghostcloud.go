@@ -3,18 +3,27 @@ package keeper
 import (
 	"testing"
 
+	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/keeper"
 	"ghostcloud/x/ghostcloud/types"
-	tmdb "github.com/cometbft/cometbft-db"
-	"github.com/cometbft/cometbft/libs/log"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	tmdb "github.com/cometbft/cometbft-db"
+	"github.com/cometbft/cometbft/libs/log"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	"github.com/stretchr/testify/require"
+)
+
+const (
+	NUM_DEPLOYMENT = 10
+	DATASET_SIZE   = 5
 )
 
 func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
@@ -49,4 +58,12 @@ func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	k.SetParams(ctx, types.DefaultParams())
 
 	return k, ctx
+}
+
+func CreateAndSetNDeployments(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
+	metas, datasets := sample.CreateNMetaDataset(numDeployment, datasetSize)
+	for i := 0; i < len(metas); i++ {
+		k.SetDeployment(ctx, metas[i], datasets[i])
+	}
+	return metas, datasets
 }

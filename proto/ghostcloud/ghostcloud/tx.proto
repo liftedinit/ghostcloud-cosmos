@@ -1,7 +1,19 @@
 syntax = "proto3";
 package ghostcloud.ghostcloud;
 
+import "ghostcloud/ghostcloud/meta.proto";
+import "ghostcloud/ghostcloud/payload.proto";
+
 option go_package = "ghostcloud/x/ghostcloud/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateDeployment(MsgCreateDeploymentRequest) returns (MsgCreateDeploymentResponse);
+}
+
+message MsgCreateDeploymentRequest {
+  Meta meta = 1;
+  Payload payload = 2;
+}
+
+message MsgCreateDeploymentResponse {}
