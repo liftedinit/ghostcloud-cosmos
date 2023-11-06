@@ -11,16 +11,15 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdkmath "cosmossdk.io/math"
+	tmdb "github.com/cometbft/cometbft-db"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
+	tmrand "github.com/cometbft/cometbft/libs/rand"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	tmdb "github.com/cometbft/cometbft-db"
-	tmrand "github.com/cometbft/cometbft/libs/rand"
-
 	"ghostcloud/app"
 
+	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -64,10 +63,10 @@ func setupCommon(t *testing.T, cfg Config) *Context {
 	}
 }
 
-func setupTxCommonFlags(t *testing.T, nc *Context, addr string) []string {
+func setupTxCommonFlags(t *testing.T, nc *Context, from string) []string {
 	t.Helper()
 	return []string{
-		fmt.Sprintf(FlagPattern, flags.FlagFrom, addr),
+		fmt.Sprintf(FlagPattern, flags.FlagFrom, from),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf(FlagPattern, flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf(FlagPattern, flags.FlagFees, sdk.NewCoins(sdk.NewCoin(nc.Net.Config.BondDenom, sdkmath.NewInt(10))).String()),
