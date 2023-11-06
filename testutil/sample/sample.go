@@ -40,9 +40,13 @@ func CreateNArchivePayloads(n int) ([]*types.Meta, []*types.Payload) {
 }
 
 func CreateNDeployments(n int, datasetSize int) []*types.Deployment {
+	return CreateNDeploymentsWithAddr(AccAddress(), n, datasetSize)
+}
+
+func CreateNDeploymentsWithAddr(addr string, n int, datasetSize int) []*types.Deployment {
 	deployments := make([]*types.Deployment, n)
 	for i := 0; i < n; i++ {
-		deployments[i] = CreateDeployment(i, datasetSize)
+		deployments[i] = CreateDeploymentWithAddr(addr, i, datasetSize)
 	}
 	return deployments
 }
@@ -121,6 +125,24 @@ func CreateMetaInvalidAddress() *types.Meta {
 
 func CreateDataset(n int) *types.Dataset {
 	return &types.Dataset{Items: CreateNItems(n)}
+}
+
+func CreateDatasetWithItems(items []*types.Item) *types.Dataset {
+	return &types.Dataset{Items: items}
+}
+
+func CreateDatasetItemNoContent(path string) *types.Item {
+	return &types.Item{
+		Meta: &types.ItemMeta{Path: path},
+	}
+}
+
+func CreateDatasetFromStrings(paths []string) *types.Dataset {
+	items := make([]*types.Item, len(paths))
+	for i, path := range paths {
+		items[i] = CreateDatasetItemNoContent(path)
+	}
+	return CreateDatasetWithItems(items)
 }
 
 func CreateArchive() *types.Archive {
