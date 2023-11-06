@@ -55,7 +55,7 @@ func testCreateValidDataset(t *testing.T, nc *network.Context, commonFlags []str
 	defer os.RemoveAll(data)
 
 	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "valid_dataset",
+		Name: "valid_d",
 		Args: append([]string{data}, commonFlags...),
 	})
 }
@@ -67,24 +67,24 @@ func testCreateValidArchive(t *testing.T, nc *network.Context, commonFlags []str
 	defer os.Remove(data.Name())
 
 	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "valid_archive",
+		Name: "valid_a",
 		Args: append([]string{data.Name()}, commonFlags...),
 	})
 }
 
 func testCreateInvalidDatasetPath(t *testing.T, nc *network.Context, commonFlags []string) {
 	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "invalid_dataset_path",
+		Name: "invalid_d",
 		Args: append([]string{"some-invalid-path"}, commonFlags...),
-		Err:  fmt.Errorf("unable to stat path"),
+		Err:  fmt.Errorf("website payload does not exist"),
 	})
 }
 
 func testCreateInvalidArchivePath(t *testing.T, nc *network.Context, commonFlags []string) {
 	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "invalid_archive_path",
+		Name: "invalid_ah",
 		Args: append([]string{"some-invalid-path.zip"}, commonFlags...),
-		Err:  fmt.Errorf("unable to stat archive"),
+		Err:  fmt.Errorf("website payload does not exist"),
 	})
 }
 
@@ -95,7 +95,7 @@ func testCreateArchiveTooBig(t *testing.T, nc *network.Context, commonFlags []st
 	defer os.Remove(data.Name())
 
 	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "archive_too_big",
+		Name: "a_too_big",
 		Args: append([]string{data.Name()}, commonFlags...),
 		Err:  fmt.Errorf("website archive is too big"),
 	})

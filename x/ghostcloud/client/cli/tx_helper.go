@@ -11,6 +11,7 @@ import (
 
 	"ghostcloud/x/ghostcloud/types"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/spf13/cobra"
 )
 
@@ -153,4 +154,49 @@ func createPayload(path string) (*types.Payload, error) {
 	}
 
 	return nil, nil
+}
+
+func validateDomain(domain string) error {
+	if domain != "" {
+		if govalidator.IsDNSName(domain) {
+			return nil
+		}
+		return fmt.Errorf("invalid domain: %s", domain)
+	}
+	return nil
+}
+
+func validateName(name string) error {
+	if name == "" {
+		return fmt.Errorf("name should not be empty")
+	}
+	if govalidator.HasWhitespace(name) {
+		return fmt.Errorf("name should not contain whitespace: %s", name)
+	}
+	if !govalidator.IsASCII(name) {
+		return fmt.Errorf("name should contain ascii characters only: %s", name)
+	}
+	if int64(len(name)) > types.DefaultMaxNameSize {
+		return fmt.Errorf("name is too long: %s", name)
+	}
+	return nil
+}
+
+func validateDescription(description string) error {
+	if description != "" {
+		if int64(len(description)) > types.DefaultMaxDescriptionSize {
+			return fmt.Errorf("description is too long: %s", description)
+		}
+	}
+	return nil
+}
+
+func validateWebsitePayload(path string) error {
+	if path == "" {
+		return fmt.Errorf("website payload should not be empty")
+	}
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return fmt.Errorf("website payload does not exist: %s", path)
+	}
+	return nil
 }

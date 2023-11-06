@@ -12,6 +12,29 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 )
 
+func validateCreateParams(argName, argDescription, argDomain, argWebsitePayload string) error {
+	err := validateName(argName)
+	if err != nil {
+		return fmt.Errorf("unable to set name: %v", err)
+	}
+
+	err = validateDomain(argDomain)
+	if err != nil {
+		return fmt.Errorf("unable to set domain: %v", err)
+	}
+
+	err = validateDescription(argDescription)
+	if err != nil {
+		return fmt.Errorf("unable to set description: %v", err)
+	}
+
+	err = validateWebsitePayload(argWebsitePayload)
+	if err != nil {
+		return fmt.Errorf("unable to set website payload: %v", err)
+	}
+	return nil
+}
+
 func CmdCreateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create name website-payload",
@@ -21,6 +44,12 @@ func CmdCreateDeployment() *cobra.Command {
 			// Get indexes
 			argName := args[0]
 			argWebsitePayload := args[1]
+			argDescription := cmd.Flag(FlagDescription).Value.String()
+			argDomain := cmd.Flag(FlagDomain).Value.String()
+			err = validateCreateParams(argName, argDescription, argDomain, argWebsitePayload)
+			if err != nil {
+				return fmt.Errorf("unable to validate params: %v", err)
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -31,9 +60,6 @@ func CmdCreateDeployment() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("unable to create payload: %v", err)
 			}
-
-			argDescription := cmd.Flag(FlagDescription).Value.String()
-			argDomain := cmd.Flag(FlagDomain).Value.String()
 
 			meta := types.Meta{
 				Creator:     clientCtx.GetFromAddress().String(),

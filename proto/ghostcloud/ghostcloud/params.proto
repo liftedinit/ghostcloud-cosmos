@@ -9,4 +9,6 @@ option go_package = "ghostcloud/x/ghostcloud/types";
 message Params {
   option (gogoproto.goproto_stringer) = false;
   int64 max_archive_size = 1;
+  int64 max_name_size = 2;
+  int64 max_description_size = 3;
 }

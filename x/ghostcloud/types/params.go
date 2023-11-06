@@ -9,7 +9,9 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 const (
-	DefaultMaxArchiveSize int64 = 5242880
+	DefaultMaxArchiveSize     int64 = 5242880
+	DefaultMaxNameSize        int64 = 12
+	DefaultMaxDescriptionSize int64 = 512
 )
 
 // ParamKeyTable the param key table for launch module
@@ -20,7 +22,9 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		MaxArchiveSize: DefaultMaxArchiveSize,
+		MaxArchiveSize:     DefaultMaxArchiveSize,
+		MaxNameSize:        DefaultMaxNameSize,
+		MaxDescriptionSize: DefaultMaxDescriptionSize,
 	}
 }
 

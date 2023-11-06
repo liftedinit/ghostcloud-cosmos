@@ -12,6 +12,34 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 )
 
+func validateUpdateParams(argName, argDescription, argDomain, argWebsitePayload string) error {
+	if argDescription == "" && argDomain == "" && argWebsitePayload == "" {
+		return fmt.Errorf("at least one of the following flags must be set: --description, --domain, --website-payload")
+	}
+
+	err := validateName(argName)
+	if err != nil {
+		return fmt.Errorf("unable to set name: %v", err)
+	}
+
+	err = validateDomain(argDomain)
+	if err != nil {
+		return fmt.Errorf("unable to set domain: %v", err)
+	}
+
+	err = validateDescription(argDescription)
+	if err != nil {
+		return fmt.Errorf("unable to set description: %v", err)
+	}
+
+	if argWebsitePayload != "" {
+		err = validateWebsitePayload(argWebsitePayload)
+		if err != nil {
+			return fmt.Errorf("unable to set website payload: %v", err)
+		}
+	}
+	return nil
+}
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update name",
@@ -28,9 +56,9 @@ func CmdUpdateDeployment() *cobra.Command {
 			argDescription := cmd.Flag(FlagDescription).Value.String()
 			argDomain := cmd.Flag(FlagDomain).Value.String()
 			argWebsitePayload := cmd.Flag(FlagWebsitePayload).Value.String()
-
-			if argDescription == "" && argDomain == "" && argWebsitePayload == "" {
-				return fmt.Errorf("at least one of the following flags must be set: --description, --domain, --website-payload")
+			err = validateUpdateParams(argName, argDescription, argDomain, argWebsitePayload)
+			if err != nil {
+				return fmt.Errorf("unable to validate params: %v", err)
 			}
 
 			meta := types.Meta{
