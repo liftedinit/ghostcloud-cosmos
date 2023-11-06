@@ -153,6 +153,17 @@ func (k Keeper) GetMeta(ctx sdk.Context, addr sdk.AccAddress, name string) (meta
 	return meta, true
 }
 
+func (k Keeper) GetItemContent(ctx sdk.Context, addr sdk.AccAddress, name string, path string) (content types.ItemContent, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemContentPrefix)
+	b := store.Get(types.DeploymentItemKey(addr, name, path))
+	if b == nil {
+		return content, false
+	}
+
+	k.cdc.MustUnmarshal(b, &content)
+	return content, true
+}
+
 func (k Keeper) GetAllMeta(ctx sdk.Context) (metas []*types.Meta) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.DeploymentMetaKeyPrefix)
