@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"testing"
@@ -14,6 +15,13 @@ import (
 
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+const (
+	NewDescription = "new description"
+	NewDomain      = "newdomain"
+	NewContent     = "<h1>new content</h1>"
+	IndexHTML      = "index.html"
 )
 
 func runUpdateTxTest(t *testing.T, nc *network.Context, tc *network.TxTestCase, expected *types.Deployment) {
@@ -40,6 +48,14 @@ func runUpdateTxTest(t *testing.T, nc *network.Context, tc *network.TxTestCase, 
 			require.Contains(t, out.String(), expected.GetMeta().GetName())
 			require.Contains(t, out.String(), expected.GetMeta().GetCreator())
 
+			queryClient := types.NewQueryClient(nc.Val.ClientCtx)
+			response, qerr := queryClient.Content(context.Background(), &types.QueryContentRequest{
+				Creator: expected.GetMeta().GetCreator(),
+				Name:    expected.GetMeta().GetName(),
+				Path:    IndexHTML,
+			})
+			require.NoError(t, qerr)
+			require.Equal(t, response.Content, expected.GetDataset().GetItems()[0].Content.Content)
 		} else {
 			require.Error(t, err)
 			require.ErrorContains(t, err, tc.Err.Error())
@@ -53,17 +69,42 @@ func TestUpdateDeployment(t *testing.T) {
 
 	testUpdateDomain(t, nc, commonFlags)
 	testUpdateDescription(t, nc, commonFlags)
+	testUpdatePayload(t, nc, commonFlags)
 	testUpdateAll(t, nc, commonFlags)
 }
 
-func createDeployment(t *testing.T, nc *network.Context, commonFlags []string) *types.Deployment {
-	archive, err := sample.CreateTempArchive("index.html", sample.HelloWorldHTMLBody)
+func setNewDescription(expected *types.Deployment) (*types.Deployment, string) {
+	expected.Meta.Description = NewDescription
+	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDescription, NewDescription)
+}
+
+func setNewDomain(expected *types.Deployment) (*types.Deployment, string) {
+	expected.Meta.Domain = NewDomain
+	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDomain, NewDomain)
+}
+
+func setNewPayload(expected *types.Deployment, newArchivePath string) (*types.Deployment, string) {
+	expected.Dataset.Items[0].Content = &types.ItemContent{Content: []byte(NewContent)}
+	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagWebsitePayload, newArchivePath)
+}
+
+func createDeployment(t *testing.T, nc *network.Context, id int, commonFlags []string) *types.Deployment {
+	archive, err := sample.CreateTempArchive(IndexHTML, sample.HelloWorldHTMLBody)
 	require.NoError(t, err)
 	defer os.RemoveAll(archive.Name())
 
 	deployment := &types.Deployment{
-		Meta:    sample.CreateMetaWithAddr(nc.Val.Address.String(), 0),
-		Dataset: sample.CreateDatasetFromStrings([]string{"index.html"}),
+		Meta: sample.CreateMetaWithAddr(nc.Val.Address.String(), id),
+		Dataset: &types.Dataset{
+			Items: []*types.Item{
+				{
+					Meta: &types.ItemMeta{Path: IndexHTML},
+					Content: &types.ItemContent{
+						Content: []byte(sample.HelloWorldHTMLBody),
+					},
+				},
+			},
+		},
 	}
 
 	args := append([]string{deployment.GetMeta().GetName(), archive.Name()}, commonFlags...)
@@ -73,10 +114,8 @@ func createDeployment(t *testing.T, nc *network.Context, commonFlags []string) *
 }
 
 func testUpdateDomain(t *testing.T, nc *network.Context, commonFlags []string) {
-	obj := createDeployment(t, nc, commonFlags)
-	expected := obj
-	expected.Meta.Domain = "foobar"
-	flagDomain := fmt.Sprintf(network.FlagPattern, cli.FlagDomain, "foobar")
+	expected := createDeployment(t, nc, 0, commonFlags)
+	expected, flagDomain := setNewDomain(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update domain",
@@ -85,10 +124,8 @@ func testUpdateDomain(t *testing.T, nc *network.Context, commonFlags []string) {
 }
 
 func testUpdateDescription(t *testing.T, nc *network.Context, commonFlags []string) {
-	obj := createDeployment(t, nc, commonFlags)
-	expected := obj
-	expected.Meta.Description = "hey ho"
-	flagDescription := fmt.Sprintf(network.FlagPattern, cli.FlagDescription, "hey ho")
+	expected := createDeployment(t, nc, 1, commonFlags)
+	expected, flagDescription := setNewDescription(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update description",
@@ -96,18 +133,32 @@ func testUpdateDescription(t *testing.T, nc *network.Context, commonFlags []stri
 	}, expected)
 }
 
-func testUpdateAll(t *testing.T, nc *network.Context, commonFlags []string) {
-	obj := createDeployment(t, nc, commonFlags)
-	expected := obj
-	expected.Meta.Description = "new desc"
-	expected.Meta.Domain = "barfoo"
-	flagDescription := fmt.Sprintf(network.FlagPattern, cli.FlagDescription, "new desc")
-	flagDomain := fmt.Sprintf(network.FlagPattern, cli.FlagDomain, "barfoo")
+func testUpdatePayload(t *testing.T, nc *network.Context, commonFlags []string) {
+	newArchive, err := sample.CreateTempArchive(IndexHTML, NewContent)
+	require.NoError(t, err)
+	defer os.RemoveAll(newArchive.Name())
+
+	expected := createDeployment(t, nc, 2, commonFlags)
+	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
-		Name: "test update all",
-		Args: append([]string{flagDescription, flagDomain}, commonFlags...),
+		Name: "test update payload",
+		Args: append([]string{flagWebsitePayload}, commonFlags...),
 	}, expected)
 }
 
-// TODO: Test update payload
+func testUpdateAll(t *testing.T, nc *network.Context, commonFlags []string) {
+	newArchive, err := sample.CreateTempArchive(IndexHTML, NewContent)
+	require.NoError(t, err)
+	defer os.RemoveAll(newArchive.Name())
+
+	expected := createDeployment(t, nc, 3, commonFlags)
+	expected, flagDescription := setNewDescription(expected)
+	expected, flagDomain := setNewDomain(expected)
+	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
+
+	runUpdateTxTest(t, nc, &network.TxTestCase{
+		Name: "test update all",
+		Args: append([]string{flagDescription, flagDomain, flagWebsitePayload}, commonFlags...),
+	}, expected)
+}
