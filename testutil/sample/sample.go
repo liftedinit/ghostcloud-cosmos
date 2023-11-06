@@ -14,6 +14,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const HelloWorldHTMLBody = "<html><body>Hello World</body></html>"
+
 // AccAddress returns a sample account address
 func AccAddress() string {
 	pk := ed25519.GenPrivKey().PubKey()
@@ -148,12 +150,12 @@ func CreateDatasetFromStrings(paths []string) *types.Dataset {
 func CreateArchive() *types.Archive {
 	return &types.Archive{
 		Type:    types.ArchiveType_Zip,
-		Content: CreateZip("index.html"),
+		Content: CreateZip("index.html", HelloWorldHTMLBody),
 	}
 }
 
-func CreateZip(fileName string) []byte {
-	return createInMemoryZip(fileName)
+func CreateZip(fileName string, body string) []byte {
+	return createInMemoryZip(fileName, body)
 }
 
 func CreateItem(i int) *types.Item {
@@ -171,7 +173,7 @@ func CreateNItems(n int) []*types.Item {
 	return items
 }
 
-func createInMemoryZip(fileName string) []byte {
+func createInMemoryZip(fileName string, body string) []byte {
 	// Step 1: Create a buffer to hold the zip archive's data in memory
 	var buffer bytes.Buffer
 
@@ -182,7 +184,7 @@ func createInMemoryZip(fileName string) []byte {
 	files := []struct {
 		Name, Body string
 	}{
-		{fileName, "<html><body>Hello World!</body></html>"},
+		{fileName, body},
 	}
 
 	// Step 3: Add files to the archive
@@ -222,13 +224,13 @@ func CreateTempDataset() (dir string, err error) {
 	return dir, nil
 }
 
-func CreateTempArchive(fileName string) (file *os.File, err error) {
+func CreateTempArchive(fileName string, body string) (file *os.File, err error) {
 	file, err = os.CreateTemp("", "test-archive-*.zip")
 	if err != nil {
 		return file, fmt.Errorf("error creating temporary file: %v", err)
 	}
 
-	data := CreateZip(fileName)
+	data := CreateZip(fileName, body)
 	_, err = file.Write(data)
 	if err != nil {
 		return file, fmt.Errorf("error writing to temporary file: %v", err)

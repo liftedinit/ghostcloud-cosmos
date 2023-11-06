@@ -61,7 +61,7 @@ func testCreateValidDataset(t *testing.T, nc *network.Context, commonFlags []str
 }
 
 func testCreateValidArchive(t *testing.T, nc *network.Context, commonFlags []string) {
-	data, err := sample.CreateTempArchive("index.html")
+	data, err := sample.CreateTempArchive("index.html", sample.HelloWorldHTMLBody)
 	require.NoError(t, err)
 	defer data.Close()
 	defer os.Remove(data.Name())
@@ -102,7 +102,7 @@ func testCreateArchiveTooBig(t *testing.T, nc *network.Context, commonFlags []st
 }
 
 func testCreateNoIndex(t *testing.T, nc *network.Context, commonFlags []string) {
-	data, err := sample.CreateTempArchive("foobar.html")
+	data, err := sample.CreateTempArchive("foobar.html", sample.HelloWorldHTMLBody)
 	require.NoError(t, err)
 	defer data.Close()
 	defer os.Remove(data.Name())
