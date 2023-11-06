@@ -34923,6 +34923,52 @@ paths:
           format: int64
       tags:
         - Query
+  /ghostcloud/ghostcloud/content/{creator}/{name}/{path}:
+    get:
+      operationId: GhostcloudGhostcloudContent
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+                format: byte
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: creator
+          in: path
+          required: true
+          type: string
+        - name: name
+          in: path
+          required: true
+          type: string
+        - name: path
+          in: path
+          required: true
+          type: string
+          pattern: .+
+      tags:
+        - Query
   /ghostcloud/ghostcloud/deployments:
     get:
       operationId: GhostcloudGhostcloudMetas
@@ -70830,6 +70876,12 @@ definitions:
             type: string
             format: byte
             title: This can be large
+  ghostcloud.ghostcloud.QueryContentResponse:
+    type: object
+    properties:
+      content:
+        type: string
+        format: byte
   ghostcloud.ghostcloud.QueryMetasResponse:
     type: object
     properties:
