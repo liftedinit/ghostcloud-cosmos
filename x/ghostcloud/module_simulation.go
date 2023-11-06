@@ -29,6 +29,10 @@ const (
 	opWeightMsgCreateDeployment = "op_weight_msg_deployment"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgCreateDeployment int = 100
+
+	opWeightMsgUpdateDeployment = "op_weight_msg_deployment"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateDeployment int = 100
 )
 
 // GenerateGenesisState creates a randomized GenState of the module.
@@ -68,6 +72,16 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		ghostcloudsimulation.SimulateMsgCreateDeployment(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
+	var weightMsgUpdateDeployment int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDeployment, &weightMsgUpdateDeployment, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateDeployment = defaultWeightMsgUpdateDeployment
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateDeployment,
+		ghostcloudsimulation.SimulateMsgUpdateDeployment(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -82,6 +96,14 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgCreateDeployment,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				ghostcloudsimulation.SimulateMsgCreateDeployment(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUpdateDeployment,
+			defaultWeightMsgUpdateDeployment,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				ghostcloudsimulation.SimulateMsgUpdateDeployment(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),
