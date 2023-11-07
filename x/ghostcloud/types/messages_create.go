@@ -39,5 +39,21 @@ func (msg *MsgCreateDeploymentRequest) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
+
+	err = validateName(msg.Meta.Name)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidName, err)
+	}
+
+	err = validateDomain(msg.Meta.Domain)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDomain, err)
+	}
+
+	err = validateDescription(msg.Meta.Description)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDescription, err)
+	}
+
 	return nil
 }
