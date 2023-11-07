@@ -10,6 +10,7 @@ option go_package = "ghostcloud/x/ghostcloud/types";
 service Msg {
   rpc CreateDeployment(MsgCreateDeploymentRequest) returns (MsgCreateDeploymentResponse);
   rpc UpdateDeployment(MsgUpdateDeploymentRequest) returns (MsgUpdateDeploymentResponse);
+  rpc RemoveDeployment(MsgRemoveDeploymentRequest) returns (MsgRemoveDeploymentResponse);
 }
 
 message MsgCreateDeploymentRequest {
@@ -25,3 +26,11 @@ message MsgUpdateDeploymentRequest {
 }
 
 message MsgUpdateDeploymentResponse {}
+
+message MsgRemoveDeploymentRequest {
+  string creator = 1;
+  string name = 2;
+}
+
+message MsgRemoveDeploymentResponse {}
+

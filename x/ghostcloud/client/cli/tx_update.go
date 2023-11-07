@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+
 	"ghostcloud/x/ghostcloud/types"
 
 	"github.com/spf13/cobra"

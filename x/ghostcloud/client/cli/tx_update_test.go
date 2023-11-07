@@ -6,6 +6,7 @@ import (
 	"os"
 	"testing"
 
+	clihelper "ghostcloud/testutil/cli"
 	"ghostcloud/testutil/network"
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
@@ -15,13 +16,6 @@ import (
 
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-const (
-	NewDescription = "new description"
-	NewDomain      = "newdomain"
-	NewContent     = "<h1>new content</h1>"
-	IndexHTML      = "index.html"
 )
 
 func runUpdateTxTest(t *testing.T, nc *network.Context, tc *network.TxTestCase, expected *types.Deployment) {
@@ -52,7 +46,7 @@ func runUpdateTxTest(t *testing.T, nc *network.Context, tc *network.TxTestCase, 
 			response, qerr := queryClient.Content(context.Background(), &types.QueryContentRequest{
 				Creator: expected.GetMeta().GetCreator(),
 				Name:    expected.GetMeta().GetName(),
-				Path:    IndexHTML,
+				Path:    clihelper.IndexHTML,
 			})
 			require.NoError(t, qerr)
 			require.Equal(t, response.Content, expected.GetDataset().GetItems()[0].Content.Content)
@@ -74,47 +68,22 @@ func TestUpdateDeployment(t *testing.T) {
 }
 
 func setNewDescription(expected *types.Deployment) (*types.Deployment, string) {
-	expected.Meta.Description = NewDescription
-	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDescription, NewDescription)
+	expected.Meta.Description = clihelper.NewDescription
+	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDescription, clihelper.NewDescription)
 }
 
 func setNewDomain(expected *types.Deployment) (*types.Deployment, string) {
-	expected.Meta.Domain = NewDomain
-	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDomain, NewDomain)
+	expected.Meta.Domain = clihelper.NewDomain
+	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDomain, clihelper.NewDomain)
 }
 
 func setNewPayload(expected *types.Deployment, newArchivePath string) (*types.Deployment, string) {
-	expected.Dataset.Items[0].Content = &types.ItemContent{Content: []byte(NewContent)}
+	expected.Dataset.Items[0].Content = &types.ItemContent{Content: []byte(clihelper.NewContent)}
 	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagWebsitePayload, newArchivePath)
 }
 
-func createDeployment(t *testing.T, nc *network.Context, id int, commonFlags []string) *types.Deployment {
-	archive, err := sample.CreateTempArchive(IndexHTML, sample.HelloWorldHTMLBody)
-	require.NoError(t, err)
-	defer os.RemoveAll(archive.Name())
-
-	deployment := &types.Deployment{
-		Meta: sample.CreateMetaWithAddr(nc.Val.Address.String(), id),
-		Dataset: &types.Dataset{
-			Items: []*types.Item{
-				{
-					Meta: &types.ItemMeta{Path: IndexHTML},
-					Content: &types.ItemContent{
-						Content: []byte(sample.HelloWorldHTMLBody),
-					},
-				},
-			},
-		},
-	}
-
-	args := append([]string{deployment.GetMeta().GetName(), archive.Name()}, commonFlags...)
-	_, err = clitestutil.ExecTestCLICmd(nc.Ctx, cli.CmdCreateDeployment(), args)
-	require.NoError(t, err)
-	return deployment
-}
-
 func testUpdateDomain(t *testing.T, nc *network.Context, commonFlags []string) {
-	expected := createDeployment(t, nc, 0, commonFlags)
+	expected := clihelper.CreateDeployment(t, nc, 0, commonFlags)
 	expected, flagDomain := setNewDomain(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
@@ -124,7 +93,7 @@ func testUpdateDomain(t *testing.T, nc *network.Context, commonFlags []string) {
 }
 
 func testUpdateDescription(t *testing.T, nc *network.Context, commonFlags []string) {
-	expected := createDeployment(t, nc, 1, commonFlags)
+	expected := clihelper.CreateDeployment(t, nc, 1, commonFlags)
 	expected, flagDescription := setNewDescription(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
@@ -134,11 +103,11 @@ func testUpdateDescription(t *testing.T, nc *network.Context, commonFlags []stri
 }
 
 func testUpdatePayload(t *testing.T, nc *network.Context, commonFlags []string) {
-	newArchive, err := sample.CreateTempArchive(IndexHTML, NewContent)
+	newArchive, err := sample.CreateTempArchive(clihelper.IndexHTML, clihelper.NewContent)
 	require.NoError(t, err)
 	defer os.RemoveAll(newArchive.Name())
 
-	expected := createDeployment(t, nc, 2, commonFlags)
+	expected := clihelper.CreateDeployment(t, nc, 2, commonFlags)
 	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
@@ -148,11 +117,11 @@ func testUpdatePayload(t *testing.T, nc *network.Context, commonFlags []string) 
 }
 
 func testUpdateAll(t *testing.T, nc *network.Context, commonFlags []string) {
-	newArchive, err := sample.CreateTempArchive(IndexHTML, NewContent)
+	newArchive, err := sample.CreateTempArchive(clihelper.IndexHTML, clihelper.NewContent)
 	require.NoError(t, err)
 	defer os.RemoveAll(newArchive.Name())
 
-	expected := createDeployment(t, nc, 3, commonFlags)
+	expected := clihelper.CreateDeployment(t, nc, 3, commonFlags)
 	expected, flagDescription := setNewDescription(expected)
 	expected, flagDomain := setNewDomain(expected)
 	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
