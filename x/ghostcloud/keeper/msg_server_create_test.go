@@ -13,11 +13,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func testDeploymentMsgServerCreate(t *testing.T) {
+func testDeploymentMsgServerCreate(t *testing.T, payloadOption *types.Payload) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	metas, payloads := sample.CreateNDatasetPayloads(keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	var metas []*types.Meta
+	var payloads []*types.Payload
+	switch payloadOption.PayloadOption.(type) {
+	case *types.Payload_Dataset:
+		metas, payloads = sample.CreateNDatasetPayloads(keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	case *types.Payload_Archive:
+		metas, payloads = sample.CreateNArchivePayloads(keepertest.NUM_DEPLOYMENT)
+	}
 	require.Len(t, metas, keepertest.NUM_DEPLOYMENT)
 	require.Len(t, payloads, keepertest.NUM_DEPLOYMENT)
 
@@ -39,9 +46,9 @@ func testDeploymentMsgServerCreate(t *testing.T) {
 }
 
 func TestDeploymentMsgServerCreate_Dataset(t *testing.T) {
-	testDeploymentMsgServerCreate(t)
+	testDeploymentMsgServerCreate(t, &types.Payload{PayloadOption: &types.Payload_Dataset{}})
 }
 
 func TestDeploymentMsgServerCreate_Archive(t *testing.T) {
-	testDeploymentMsgServerCreate(t)
+	testDeploymentMsgServerCreate(t, &types.Payload{PayloadOption: &types.Payload_Archive{}})
 }
