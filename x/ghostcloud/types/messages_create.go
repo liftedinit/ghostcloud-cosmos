@@ -35,6 +35,9 @@ func (msg *MsgCreateDeploymentRequest) GetSignBytes() []byte {
 }
 
 func (msg *MsgCreateDeploymentRequest) ValidateBasic() error {
+	if msg.Meta == nil {
+		return errorsmod.Wrap(sdkerrors.ErrInvalidRequest, MetaIsRequired)
+	}
 	_, err := sdk.AccAddressFromBech32(msg.Meta.Creator)
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
