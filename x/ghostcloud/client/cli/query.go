@@ -158,7 +158,6 @@ func CmdListDeployments() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
-	addDeploymentFlags(cmd)
 	addFilterByFlags(cmd, &filterBy)
 	addFilterValueFlag(cmd, &filterByValue)
 	addFilterOperatorFlag(cmd, &filterByOperator)

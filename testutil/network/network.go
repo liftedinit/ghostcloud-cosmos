@@ -11,16 +11,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdkmath "cosmossdk.io/math"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
+	"ghostcloud/app"
+
 	tmdb "github.com/cometbft/cometbft-db"
 	tmrand "github.com/cometbft/cometbft/libs/rand"
 
-	"ghostcloud/app"
-
-	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -41,9 +41,16 @@ type (
 		Val *cosmosnetwork.Validator
 		Ctx client.Context
 	}
+
+	TxTestCase struct {
+		Name string
+		Args []string
+		Err  error
+		Code uint32
+	}
 )
 
-const flagPattern = "--%s=%s"
+const FlagPattern = "--%s=%s"
 
 func setupCommon(t *testing.T, cfg Config) *Context {
 	t.Helper()
@@ -57,14 +64,19 @@ func setupCommon(t *testing.T, cfg Config) *Context {
 	}
 }
 
-func SetupTxCommonFlags(t *testing.T, nc *Context) []string {
+func setupTxCommonFlags(t *testing.T, nc *Context, from string) []string {
 	t.Helper()
 	return []string{
-		fmt.Sprintf(flagPattern, flags.FlagFrom, nc.Val.Address.String()),
+		fmt.Sprintf(FlagPattern, flags.FlagFrom, from),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf(flagPattern, flags.FlagBroadcastMode, flags.BroadcastSync),
-		fmt.Sprintf(flagPattern, flags.FlagFees, sdk.NewCoins(sdk.NewCoin(nc.Net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+		fmt.Sprintf(FlagPattern, flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf(FlagPattern, flags.FlagFees, sdk.NewCoins(sdk.NewCoin(nc.Net.Config.BondDenom, sdkmath.NewInt(10))).String()),
 	}
+}
+
+func SetupTxCommonFlags(t *testing.T, nc *Context) []string {
+	t.Helper()
+	return setupTxCommonFlags(t, nc, nc.Val.Address.String())
 }
 
 func SetupQueryCommonFlags(t *testing.T) []string {
@@ -80,10 +92,15 @@ func Setup(t *testing.T) *Context {
 
 func SetupWithDeployments(t *testing.T, n int) (*Context, []*types.Deployment) {
 	t.Helper()
+	return SetupWithDeploymentsAndAddr(t, n, sample.AccAddress())
+}
+
+func SetupWithDeploymentsAndAddr(t *testing.T, n int, addr string) (*Context, []*types.Deployment) {
+	t.Helper()
 	cfg := DefaultConfig()
 	state := types.GenesisState{
 		Params:      types.DefaultParams(),
-		Deployments: sample.CreateNDeployments(n, keeper.DATASET_SIZE),
+		Deployments: sample.CreateNDeploymentsWithAddr(addr, n, keeper.DATASET_SIZE),
 	}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)

@@ -71,6 +71,24 @@ func (k Keeper) SetDataset(ctx sdk.Context, addr sdk.AccAddress, name string, da
 	}
 }
 
+func (k Keeper) RemoveDataset(ctx sdk.Context, addr sdk.AccAddress, name string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemMetaPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, types.DeploymentKey(addr, name))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+
+	store = prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemContentPrefix)
+	iterator = sdk.KVStorePrefixIterator(store, types.DeploymentKey(addr, name))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		store.Delete(iterator.Key())
+	}
+}
+
 func (k Keeper) SetItem(ctx sdk.Context, addr sdk.AccAddress, name string, item *types.Item) {
 	// Set Item meta
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemMetaPrefix)

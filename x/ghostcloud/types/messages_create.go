@@ -9,21 +9,9 @@ import (
 
 const (
 	TypeMsgCreateDeploymentRequest = "create_deployment"
-
-	InvalidCreatorAddress = "invalid creator address (%s)"
 )
 
 var _ sdk.Msg = &MsgCreateDeploymentRequest{}
-
-func NewMsgCreateDeploymentRequest(
-	meta *Meta,
-	payload *Payload,
-) *MsgCreateDeploymentRequest {
-	return &MsgCreateDeploymentRequest{
-		Meta:    meta,
-		Payload: payload,
-	}
-}
 
 func (msg *MsgCreateDeploymentRequest) Route() string {
 	return RouterKey
@@ -51,5 +39,21 @@ func (msg *MsgCreateDeploymentRequest) ValidateBasic() error {
 	if err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
+
+	err = validateName(msg.Meta.Name)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidName, err)
+	}
+
+	err = validateDomain(msg.Meta.Domain)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDomain, err)
+	}
+
+	err = validateDescription(msg.Meta.Description)
+	if err != nil {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDescription, err)
+	}
+
 	return nil
 }
