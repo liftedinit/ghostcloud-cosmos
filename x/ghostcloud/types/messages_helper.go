@@ -17,6 +17,7 @@ const (
 	NameShouldContainASCII         = "name should contain ascii characters only: %s"
 	NameTooLong                    = "name is too long: %s"
 	DescriptionTooLong             = "description is too long: %s"
+	MetaIsRequired                 = "meta is required"
 )
 
 func validateDomain(domain string) error {

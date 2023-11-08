@@ -13,7 +13,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func testDeploymentMsgServerCreate(t *testing.T, payloadOption *types.Payload) {
+func testDeploymentMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
@@ -39,9 +39,9 @@ func testDeploymentMsgServerCreate(t *testing.T, payloadOption *types.Payload) {
 }
 
 func TestDeploymentMsgServerCreate_Dataset(t *testing.T) {
-	testDeploymentMsgServerCreate(t, &types.Payload{PayloadOption: &types.Payload_Dataset{}})
+	testDeploymentMsgServerCreate(t)
 }
 
 func TestDeploymentMsgServerCreate_Archive(t *testing.T) {
-	testDeploymentMsgServerCreate(t, &types.Payload{PayloadOption: &types.Payload_Archive{}})
+	testDeploymentMsgServerCreate(t)
 }

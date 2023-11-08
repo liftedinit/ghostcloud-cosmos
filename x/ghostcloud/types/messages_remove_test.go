@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"strings"
 	"testing"
 
 	"ghostcloud/testutil/sample"
@@ -31,19 +32,24 @@ func TestMsgRemoveDeployment_ValidateBasic(t *testing.T) {
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{
-			name: "has whitespace",
+			name: "name has whitespace",
 			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foo bar"},
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{
-			name: "not ascii",
+			name: "name not ascii",
 			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foo👍bar"},
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{
-			name: "too long",
-			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "abcdefghijklm"},
+			name: "name too long",
+			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: strings.Repeat("a", 13)},
 			err:  sdkerrors.ErrInvalidRequest,
+		},
+		{
+			name: "empty request",
+			msg:  types.MsgRemoveDeploymentRequest{},
+			err:  sdkerrors.ErrInvalidAddress,
 		},
 	}
 	for _, tt := range tests {
