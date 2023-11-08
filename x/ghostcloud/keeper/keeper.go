@@ -71,6 +71,13 @@ func (k Keeper) SetDataset(ctx sdk.Context, addr sdk.AccAddress, name string, da
 	}
 }
 
+func (k Keeper) Remove(ctx sdk.Context, addr sdk.AccAddress, name string) {
+	k.RemoveDataset(ctx, addr, name)
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentMetaKeyPrefix)
+	store.Delete(types.DeploymentKey(addr, name))
+}
+
 func (k Keeper) RemoveDataset(ctx sdk.Context, addr sdk.AccAddress, name string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemMetaPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, types.DeploymentKey(addr, name))
