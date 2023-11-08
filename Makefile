@@ -53,7 +53,6 @@ coverage: ## Run coverage report
 	@echo "--> Coverage report available at coverage.html"
 	@echo "--> Cleaning up coverage files"
 	@rm coverage.out
-	@rm coverage-filtered.out
 	@echo "--> Running coverage complete"
 
 .PHONY: coverage
