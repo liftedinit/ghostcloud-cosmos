@@ -19,6 +19,15 @@ jobs:
       - run: make coverage
       - codecov/upload:
           file: coverage-filtered.out
+      - go/install-goreleaser
+      - run: goreleaser release --snapshot --clean
+      - run:
+          name: move artifacts
+          command: |
+              mkdir -p /tmp/artifacts
+              mv dist/ghostcloudd_*.tar.gz dist/ghostcloudd_*.txt /tmp/artifacts
+      - store_artifacts:
+            path: /tmp/artifacts
 workflows:
   main:
     jobs:
