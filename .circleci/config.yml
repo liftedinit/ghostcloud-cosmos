@@ -20,7 +20,7 @@ jobs:
       - codecov/upload:
           file: coverage-filtered.out
       - go/install-goreleaser:
-          version: 1.22.1
+          version: v1.22.1
       # Use go/goreleaser-release when GITHUB_TOKEN is set
       - run: goreleaser release --snapshot --clean
       - run:
