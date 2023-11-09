@@ -10,7 +10,7 @@ jobs:
   build:
     executor:
       name: go/default
-      tag: '1.19'
+      tag: '1.21'
     steps:
       - checkout
       - go/load-cache
@@ -19,6 +19,17 @@ jobs:
       - run: make coverage
       - codecov/upload:
           file: coverage-filtered.out
+      - go/install-goreleaser:
+          version: v1.22.1
+      # Use go/goreleaser-release when GITHUB_TOKEN is set
+      - run: goreleaser release --snapshot --clean
+      - run:
+          name: move artifacts
+          command: |
+              mkdir -p /tmp/artifacts
+              mv dist/ghostcloudd_*.tar.gz dist/ghostcloudd_*.txt /tmp/artifacts
+      - store_artifacts:
+            path: /tmp/artifacts
 workflows:
   main:
     jobs:
