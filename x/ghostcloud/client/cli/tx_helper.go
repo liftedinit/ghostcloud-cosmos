@@ -45,14 +45,6 @@ func isDir(path string) (bool, error) {
 }
 
 func loadArchive(path string) ([]byte, error) {
-	fileInfo, err := os.Stat(path)
-	if err != nil {
-		return nil, fmt.Errorf("unable to stat archive: %v", err)
-	}
-	if fileInfo.Size() > types.DefaultMaxArchiveSize {
-		return nil, fmt.Errorf("website archive is too big: %d > %d", fileInfo.Size(), types.DefaultMaxArchiveSize)
-	}
-
 	// Read website archive
 	data, err := os.ReadFile(path)
 	if err != nil {

@@ -18,7 +18,7 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	metas, payloads := sample.CreateNDatasetPayloads(keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
+	metas, payloads := sample.CreateNDatasetPayloadsWithIndexHtml(keepertest.NUM_DEPLOYMENT, keepertest.DATASET_SIZE)
 	require.Len(t, metas, keepertest.NUM_DEPLOYMENT)
 
 	for i := 0; i < keepertest.NUM_DEPLOYMENT; i++ {
@@ -38,7 +38,7 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 		newMeta := metas[i]
 		newMeta.Description = fmt.Sprintf("%s%s", newMeta.Description, "updated")
 		newMeta.Domain = fmt.Sprintf("%s%s", newMeta.Domain, "updated")
-		_, newPayload := sample.CreateDatasetPayload(100-i, 1)
+		_, newPayload := sample.CreateDatasetPayloadWithIndexHtml(100-i, 1)
 
 		_, err = srv.UpdateDeployment(wctx, &types.MsgUpdateDeploymentRequest{Meta: newMeta, Payload: newPayload})
 		require.NoError(t, err)

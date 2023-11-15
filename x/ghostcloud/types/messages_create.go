@@ -53,10 +53,5 @@ func (msg *MsgCreateDeploymentRequest) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDomain, err)
 	}
 
-	err = validateDescription(msg.Meta.Description)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidDescription, err)
-	}
-
 	return nil
 }

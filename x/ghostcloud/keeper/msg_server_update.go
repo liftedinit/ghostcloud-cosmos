@@ -24,12 +24,17 @@ func validateUpdateData(meta *types.Meta, payload *types.Payload) error {
 	return nil
 }
 
-func validateUpdateDeploymentRequest(msg *types.MsgUpdateDeploymentRequest) error {
-	if err := validateMeta(msg.Meta); err != nil {
-		return err
-	}
+func validateUpdateDeploymentRequest(msg *types.MsgUpdateDeploymentRequest, params types.Params) error {
 	if err := validateUpdateData(msg.Meta, msg.Payload); err != nil {
 		return err
+	}
+	if err := validateMeta(msg.Meta, params); err != nil {
+		return err
+	}
+	if msg.GetPayload() != nil {
+		if err := validatePayload(msg.Payload, params); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -40,12 +45,13 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 	if err != nil {
 		return nil, errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddr, err)
 	}
-	err = validateUpdateDeploymentRequest(msg)
+	params := k.GetParams(ctx)
+	err = validateUpdateDeploymentRequest(msg, params)
 	if err != nil {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	meta, found := k.GetMeta(ctx, addr, msg.Meta.Name)
+	meta, found := k.GetMeta(ctx, addr, msg.GetMeta().GetName())
 	if !found {
 		return nil, errorsmod.Wrap(sdkerrors.ErrInvalidRequest, "unable to update a non-existing deployment")
 	}
