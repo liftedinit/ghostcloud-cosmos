@@ -71,7 +71,7 @@ func datasetFromArchive(archive *types.Archive) (*types.Dataset, error) {
 	}
 }
 
-func handlePayload(payload *types.Payload) (*types.Dataset, error) {
+func HandlePayload(payload *types.Payload) (*types.Dataset, error) {
 	if archive := payload.GetArchive(); archive != nil {
 		return datasetFromArchive(archive)
 	} else if dataset := payload.GetDataset(); dataset != nil {
@@ -126,10 +126,6 @@ func validateMeta(meta *types.Meta, params types.Params) error {
 }
 
 func validatePayload(payload *types.Payload, params types.Params) error {
-	if payload == nil {
-		return fmt.Errorf(types.PayloadIsRequired)
-	}
-
 	if int64(payload.Size()) > params.MaxPayloadSize {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.PayloadTooBig, payload.Size(), params.MaxPayloadSize)
 	}

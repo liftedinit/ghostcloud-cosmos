@@ -22,6 +22,7 @@ const (
 	PayloadIsRequired              = "payload is required"
 	UncompressedSizeTooBig         = "total uncompressed size is too big: %d > %d"
 	IndexHtmlNotFound              = "index.html not found"
+	NothingToUpdate                = "nothing to update"
 )
 
 func validateDomain(domain string) error {

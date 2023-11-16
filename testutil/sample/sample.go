@@ -93,6 +93,18 @@ func CreateDatasetPayloadWithAddr(addr string, i int, datasetSize int) (*types.M
 	return createDatasetPayload(addr, i, datasetSize)
 }
 
+func CreateDatasetPayloadWithAddrAndIndexHtml(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return CreateMetaWithAddr(addr, i), &types.Payload{
+		PayloadOption: &types.Payload_Dataset{Dataset: CreateDatasetWithIndexHtml(datasetSize)},
+	}
+}
+
+func CreateArchivePayloadWithAddrAndIndexHtml(addr string, i int) (*types.Meta, *types.Payload) {
+	return CreateMetaWithAddr(addr, i), &types.Payload{
+		PayloadOption: &types.Payload_Archive{Archive: CreateArchive()},
+	}
+}
+
 func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
 	return CreateMeta(i), &types.Payload{
 		PayloadOption: &types.Payload_Archive{Archive: CreateArchive()},
@@ -287,23 +299,4 @@ func generateRandomBytes(n int) ([]byte, error) {
 		return nil, err
 	}
 	return b, nil
-}
-
-func CreateCustomFakeArchive(size int64) (file *os.File, err error) {
-	file, err = os.CreateTemp("", "test-archive-*.zip")
-	if err != nil {
-		return file, fmt.Errorf("error creating temporary file: %v", err)
-	}
-
-	body, err := generateRandomBytes(int(size))
-	if err != nil {
-		return file, fmt.Errorf("error generating random bytes: %v", err)
-	}
-	data := CreateZip("index.html", string(body))
-	_, err = file.Write(data)
-	if err != nil {
-		return file, fmt.Errorf("error writing to temporary file: %v", err)
-	}
-
-	return file, nil
 }
