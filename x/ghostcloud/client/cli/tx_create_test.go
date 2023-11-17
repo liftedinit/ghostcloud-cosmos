@@ -5,11 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"ghostcloud/testutil/network"
 	"ghostcloud/testutil/sample"
 	"ghostcloud/x/ghostcloud/client/cli"
-	"ghostcloud/x/ghostcloud/types"
-
-	"ghostcloud/testutil/network"
 
 	"github.com/stretchr/testify/require"
 
@@ -45,7 +43,6 @@ func TestCreateDeployment(t *testing.T) {
 	testCreateValidArchive(t, nc, commonFlags)
 	testCreateInvalidDatasetPath(t, nc, commonFlags)
 	testCreateInvalidArchivePath(t, nc, commonFlags)
-	testCreateArchiveTooBig(t, nc, commonFlags)
 	testCreateNoIndex(t, nc, commonFlags)
 }
 
@@ -85,19 +82,6 @@ func testCreateInvalidArchivePath(t *testing.T, nc *network.Context, commonFlags
 		Name: "invalid_ah",
 		Args: append([]string{"some-invalid-path.zip"}, commonFlags...),
 		Err:  fmt.Errorf("website payload does not exist"),
-	})
-}
-
-func testCreateArchiveTooBig(t *testing.T, nc *network.Context, commonFlags []string) {
-	data, err := sample.CreateCustomFakeArchive(types.DefaultMaxArchiveSize + 1)
-	require.NoError(t, err)
-	defer data.Close()
-	defer os.Remove(data.Name())
-
-	runCreateTxTest(t, nc, &network.TxTestCase{
-		Name: "a_too_big",
-		Args: append([]string{data.Name()}, commonFlags...),
-		Err:  fmt.Errorf("website archive is too big"),
 	})
 }
 

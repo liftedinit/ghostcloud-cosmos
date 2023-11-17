@@ -3,10 +3,12 @@ package sample
 import (
 	"archive/zip"
 	"bytes"
+	"crypto/rand"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"ghostcloud/x/ghostcloud/types"
 
@@ -28,6 +30,15 @@ func CreateNDatasetPayloads(n int, datasetSize int) ([]*types.Meta, []*types.Pay
 	payloads := make([]*types.Payload, n)
 	for i := 0; i < n; i++ {
 		metas[i], payloads[i] = CreateDatasetPayload(i, datasetSize)
+	}
+	return metas, payloads
+}
+
+func CreateNDatasetPayloadsWithIndexHtml(n int, datasetSize int) ([]*types.Meta, []*types.Payload) {
+	metas := make([]*types.Meta, n)
+	payloads := make([]*types.Payload, n)
+	for i := 0; i < n; i++ {
+		metas[i], payloads[i] = CreateDatasetPayloadWithIndexHtml(i, datasetSize)
 	}
 	return metas, payloads
 }
@@ -72,13 +83,53 @@ func CreateDatasetPayload(i int, datasetSize int) (*types.Meta, *types.Payload) 
 	return createDatasetPayload(AccAddress(), i, datasetSize)
 }
 
+func CreateDatasetPayloadWithIndexHtml(i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return CreateMeta(i), &types.Payload{
+		PayloadOption: &types.Payload_Dataset{Dataset: CreateDatasetWithIndexHtml(datasetSize)},
+	}
+}
+
 func CreateDatasetPayloadWithAddr(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
 	return createDatasetPayload(addr, i, datasetSize)
+}
+
+func CreateDatasetPayloadWithAddrAndIndexHtml(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
+	return CreateMetaWithAddr(addr, i), &types.Payload{
+		PayloadOption: &types.Payload_Dataset{Dataset: CreateDatasetWithIndexHtml(datasetSize)},
+	}
+}
+
+func CreateArchivePayloadWithAddrAndIndexHtml(addr string, i int) (*types.Meta, *types.Payload) {
+	return CreateMetaWithAddr(addr, i), &types.Payload{
+		PayloadOption: &types.Payload_Archive{Archive: CreateArchive()},
+	}
 }
 
 func CreateArchivePayload(i int) (*types.Meta, *types.Payload) {
 	return CreateMeta(i), &types.Payload{
 		PayloadOption: &types.Payload_Archive{Archive: CreateArchive()},
+	}
+}
+
+func CreateRandomArchivePayload(i int, size int64, name string) (*types.Meta, *types.Payload) {
+	body, err := generateRandomBytes(int(size))
+	if err != nil {
+		panic(err)
+	}
+	return CreateMeta(i), &types.Payload{
+		PayloadOption: &types.Payload_Archive{Archive: &types.Archive{
+			Type:    types.ArchiveType_Zip,
+			Content: CreateZip(name, string(body)),
+		}},
+	}
+}
+
+func CreateBombArchivePayload(i int, size int64, name string) (*types.Meta, *types.Payload) {
+	return CreateMeta(i), &types.Payload{
+		PayloadOption: &types.Payload_Archive{Archive: &types.Archive{
+			Type:    types.ArchiveType_Zip,
+			Content: CreateZip(name, strings.Repeat("a", int(size))),
+		}},
 	}
 }
 
@@ -129,22 +180,8 @@ func CreateDataset(n int) *types.Dataset {
 	return &types.Dataset{Items: CreateNItems(n)}
 }
 
-func CreateDatasetWithItems(items []*types.Item) *types.Dataset {
-	return &types.Dataset{Items: items}
-}
-
-func CreateDatasetItemNoContent(path string) *types.Item {
-	return &types.Item{
-		Meta: &types.ItemMeta{Path: path},
-	}
-}
-
-func CreateDatasetFromStrings(paths []string) *types.Dataset {
-	items := make([]*types.Item, len(paths))
-	for i, path := range paths {
-		items[i] = CreateDatasetItemNoContent(path)
-	}
-	return CreateDatasetWithItems(items)
+func CreateDatasetWithIndexHtml(n int) *types.Dataset {
+	return &types.Dataset{Items: CreateNItemsWithIndexHtml(n)}
 }
 
 func CreateArchive() *types.Archive {
@@ -165,9 +202,25 @@ func CreateItem(i int) *types.Item {
 	}
 }
 
+func CreateItemWithIndexHtml() *types.Item {
+	return &types.Item{
+		Meta:    &types.ItemMeta{Path: "index.html"},
+		Content: &types.ItemContent{Content: []byte{0x00}},
+	}
+}
+
 func CreateNItems(n int) []*types.Item {
 	items := make([]*types.Item, n)
 	for i := 0; i < n; i++ {
+		items[i] = CreateItem(i)
+	}
+	return items
+}
+
+func CreateNItemsWithIndexHtml(n int) []*types.Item {
+	items := make([]*types.Item, n)
+	items[0] = CreateItemWithIndexHtml()
+	for i := 1; i < n; i++ {
 		items[i] = CreateItem(i)
 	}
 	return items
@@ -239,17 +292,11 @@ func CreateTempArchive(fileName string, body string) (file *os.File, err error) 
 	return file, nil
 }
 
-func CreateCustomFakeArchive(size int64) (file *os.File, err error) {
-	file, err = os.CreateTemp("", "test-archive-*.zip")
+func generateRandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
 	if err != nil {
-		return file, fmt.Errorf("error creating temporary file: %v", err)
+		return nil, err
 	}
-
-	data := make([]byte, size)
-	_, err = file.Write(data)
-	if err != nil {
-		return file, fmt.Errorf("error writing to temporary file: %v", err)
-	}
-
-	return file, nil
+	return b, nil
 }

@@ -42,11 +42,6 @@ func TestMsgUpdateDeployment_ValidateBasic(t *testing.T) {
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{
-			name: "name too long",
-			msg:  types.MsgUpdateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: strings.Repeat("a", 13)}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
 			name: "invalid domain",
 			msg:  types.MsgUpdateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name", Domain: "invalid domain"}},
 			err:  sdkerrors.ErrInvalidRequest,
@@ -54,11 +49,6 @@ func TestMsgUpdateDeployment_ValidateBasic(t *testing.T) {
 		{
 			name: "domain too long",
 			msg:  types.MsgUpdateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name", Domain: strings.Repeat("a", 65)}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "invalid description",
-			msg:  types.MsgUpdateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name", Description: strings.Repeat("a", 513)}},
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{

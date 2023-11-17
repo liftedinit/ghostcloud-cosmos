@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"strings"
 	"testing"
 
 	"ghostcloud/testutil/sample"
@@ -39,11 +38,6 @@ func TestMsgRemoveDeployment_ValidateBasic(t *testing.T) {
 		{
 			name: "name not ascii",
 			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foo👍bar"},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "name too long",
-			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: strings.Repeat("a", 13)},
 			err:  sdkerrors.ErrInvalidRequest,
 		},
 		{

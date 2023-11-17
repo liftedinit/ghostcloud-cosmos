@@ -26,6 +26,13 @@ const (
 	DATASET_SIZE   = 5
 )
 
+type MsgServerTestCase struct {
+	Name     string
+	Metas    []*types.Meta
+	Payloads []*types.Payload
+	Err      error
+}
+
 func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)

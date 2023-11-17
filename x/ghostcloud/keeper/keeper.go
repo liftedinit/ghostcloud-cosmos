@@ -112,31 +112,6 @@ func (k Keeper) SetItem(ctx sdk.Context, addr sdk.AccAddress, name string, item 
 	store.Set(types.DeploymentItemKey(addr, name, path), b)
 }
 
-func (k Keeper) GetItem(ctx sdk.Context, addr sdk.AccAddress, name string, path string) (item *types.Item, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemMetaPrefix)
-	b := store.Get(types.DeploymentItemKey(addr, name, path))
-	if b == nil {
-		return nil, false
-	}
-
-	var meta types.ItemMeta
-	k.cdc.MustUnmarshal(b, &meta)
-
-	store = prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemContentPrefix)
-	b = store.Get(types.DeploymentItemKey(addr, name, path))
-	if b == nil {
-		return nil, false
-	}
-
-	var content types.ItemContent
-	k.cdc.MustUnmarshal(b, &content)
-
-	return &types.Item{
-		Meta:    &meta,
-		Content: &content,
-	}, true
-}
-
 func (k Keeper) GetDataset(ctx sdk.Context, addr sdk.AccAddress, name string) (dataset *types.Dataset) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentItemMetaPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, types.DeploymentKey(addr, name))

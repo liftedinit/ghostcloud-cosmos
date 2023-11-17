@@ -35082,13 +35082,16 @@ paths:
                 description: params holds all the parameters of this module.
                 type: object
                 properties:
-                  max_archive_size:
+                  max_payload_size:
                     type: string
                     format: int64
                   max_name_size:
                     type: string
                     format: int64
                   max_description_size:
+                    type: string
+                    format: int64
+                  max_uncompressed_size:
                     type: string
                     format: int64
             description: >-
@@ -70845,13 +70848,16 @@ definitions:
   ghostcloud.ghostcloud.Params:
     type: object
     properties:
-      max_archive_size:
+      max_payload_size:
         type: string
         format: int64
       max_name_size:
         type: string
         format: int64
       max_description_size:
+        type: string
+        format: int64
+      max_uncompressed_size:
         type: string
         format: int64
     description: Params defines the parameters for the module.
@@ -70919,13 +70925,16 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
         properties:
-          max_archive_size:
+          max_payload_size:
             type: string
             format: int64
           max_name_size:
             type: string
             format: int64
           max_description_size:
+            type: string
+            format: int64
+          max_uncompressed_size:
             type: string
             format: int64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
