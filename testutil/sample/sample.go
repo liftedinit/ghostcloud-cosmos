@@ -147,6 +147,13 @@ func CreateDeploymentWithAddr(addr string, i int, datasetSize int) *types.Deploy
 	return createDeployment(addr, i, datasetSize)
 }
 
+func CreateDeploymentWithAddrAndIndexHtml(addr string, i int, datasetSize int) *types.Deployment {
+	return &types.Deployment{
+		Meta:    CreateMetaWithAddr(addr, i),
+		Dataset: CreateDatasetWithIndexHtml(datasetSize),
+	}
+}
+
 func CreateMetaDataset(i int, datasetSize int) (*types.Meta, *types.Dataset) {
 	return CreateMeta(i), CreateDataset(datasetSize)
 }
