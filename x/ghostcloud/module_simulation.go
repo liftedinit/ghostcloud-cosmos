@@ -47,7 +47,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	ghostcloudGenesis := types.GenesisState{
 		Params:      types.DefaultParams(),
-		Deployments: []*types.Deployment{sample.CreateDeploymentWithAddr(accs[0], 0, keepertest.DATASET_SIZE)},
+		Deployments: []*types.Deployment{sample.CreateDeploymentWithAddrAndIndexHtml(accs[0], 0, keepertest.DATASET_SIZE)},
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&ghostcloudGenesis)

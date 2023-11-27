@@ -27,7 +27,7 @@ func SimulateMsgCreateDeployment(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Intn(5)
-		meta, payload := sample.CreateDatasetPayloadWithAddr(simAccount.Address.String(), i, keepertest.DATASET_SIZE)
+		meta, payload := sample.CreateDatasetPayloadWithAddrAndIndexHtml(simAccount.Address.String(), i, keepertest.DATASET_SIZE)
 		msg := &types.MsgCreateDeploymentRequest{
 			Meta:    meta,
 			Payload: payload,
@@ -66,7 +66,7 @@ func SimulateMsgUpdateDeployment(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Intn(5)
-		meta, payload := sample.CreateDatasetPayloadWithAddr(simAccount.Address.String(), i, keepertest.DATASET_SIZE)
+		meta, payload := sample.CreateDatasetPayloadWithAddrAndIndexHtml(simAccount.Address.String(), i, keepertest.DATASET_SIZE)
 		msg := &types.MsgUpdateDeploymentRequest{
 			Meta:    meta,
 			Payload: payload,
