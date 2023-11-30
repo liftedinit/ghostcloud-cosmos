@@ -1,16 +1,8 @@
 package types
 
-import (
-	"fmt"
-
-	"github.com/asaskevich/govalidator"
-)
-
 const (
 	InvalidCreatorAddress          = "invalid creator address: %s"
 	InvalidDomain                  = "invalid domain: %v"
-	InvalidName                    = "invalid name: %v"
-	InvalidDNSDomain               = "invalid DNS domain: %s"
 	CreatorShouldNotBeEmpty        = "creator should not be empty"
 	NameShouldNotBeEmpty           = "name should not be empty"
 	NameShouldNotContainWhitespace = "name should not contain whitespace: %s"
@@ -24,23 +16,3 @@ const (
 	IndexHtmlNotFound              = "index.html not found"
 	NothingToUpdate                = "nothing to update"
 )
-
-func validateDomain(domain string) error {
-	if domain != "" && !govalidator.IsDNSName(domain) {
-		return fmt.Errorf(InvalidDNSDomain, domain)
-	}
-	return nil
-}
-
-func validateName(name string) error {
-	if name == "" {
-		return fmt.Errorf(NameShouldNotBeEmpty)
-	}
-	if govalidator.HasWhitespace(name) {
-		return fmt.Errorf(NameShouldNotContainWhitespace, name)
-	}
-	if !govalidator.IsASCII(name) {
-		return fmt.Errorf(NameShouldContainASCII, name)
-	}
-	return nil
-}

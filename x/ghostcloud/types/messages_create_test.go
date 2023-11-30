@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"strings"
 	"testing"
 
 	"ghostcloud/testutil/sample"
@@ -25,36 +24,6 @@ func TestMsgCreateDeployment_ValidateBasic(t *testing.T) {
 		}, {
 			name: "valid address",
 			msg:  types.MsgCreateDeploymentRequest{Meta: sample.CreateMeta(0)},
-		},
-		{
-			name: "empty name",
-			msg:  types.MsgCreateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: ""}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "name with whitespace",
-			msg:  types.MsgCreateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name with whitespace"}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "name with non-ascii",
-			msg:  types.MsgCreateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "你好"}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "invalid domain",
-			msg:  types.MsgCreateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name", Domain: "invalid domain"}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "domain too long",
-			msg:  types.MsgCreateDeploymentRequest{Meta: &types.Meta{Creator: sample.AccAddress(), Name: "name", Domain: strings.Repeat("a", 65)}},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "empty request",
-			msg:  types.MsgCreateDeploymentRequest{},
-			err:  sdkerrors.ErrInvalidRequest,
 		},
 	}
 	for _, tt := range tests {

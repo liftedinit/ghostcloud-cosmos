@@ -8,6 +8,8 @@ import (
 
 	"ghostcloud/x/ghostcloud/types"
 
+	"github.com/asaskevich/govalidator"
+
 	errorsmod "cosmossdk.io/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -93,6 +95,12 @@ func validateName(name string, maxNameSize int64) error {
 	if name == "" {
 		return fmt.Errorf(types.NameShouldNotBeEmpty)
 	}
+	if govalidator.HasWhitespace(name) {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.NameShouldNotContainWhitespace, name)
+	}
+	if !govalidator.IsASCII(name) {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.NameShouldContainASCII, name)
+	}
 	if int64(len(name)) > maxNameSize {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.NameTooLong, name)
 	}
@@ -108,6 +116,13 @@ func validateDescription(description string, maxDescriptionSize int64) error {
 	return nil
 }
 
+func validateDomain(domain string) error {
+	if domain != "" && !govalidator.IsDNSName(domain) {
+		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.InvalidDomain, domain)
+	}
+	return nil
+}
+
 func validateMeta(meta *types.Meta, params types.Params) error {
 	if meta == nil {
 		return fmt.Errorf(types.MetaIsRequired)
@@ -119,6 +134,9 @@ func validateMeta(meta *types.Meta, params types.Params) error {
 		return err
 	}
 	if err := validateDescription(meta.Description, params.MaxDescriptionSize); err != nil {
+		return err
+	}
+	if err := validateDomain(meta.Domain); err != nil {
 		return err
 	}
 
