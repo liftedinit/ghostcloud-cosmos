@@ -69,12 +69,12 @@ func TestUpdateDeployment(t *testing.T) {
 
 func setNewDescription(expected *types.Deployment) (*types.Deployment, string) {
 	expected.Meta.Description = clihelper.NewDescription
-	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDescription, clihelper.NewDescription)
+	return expected, clihelper.NewDescription
 }
 
 func setNewDomain(expected *types.Deployment) (*types.Deployment, string) {
 	expected.Meta.Domain = clihelper.NewDomain
-	return expected, fmt.Sprintf(network.FlagPattern, cli.FlagDomain, clihelper.NewDomain)
+	return expected, clihelper.NewDomain
 }
 
 func setNewPayload(expected *types.Deployment, newArchivePath string) (*types.Deployment, string) {
@@ -84,21 +84,23 @@ func setNewPayload(expected *types.Deployment, newArchivePath string) (*types.De
 
 func testUpdateDomain(t *testing.T, nc *network.Context, commonFlags []string) {
 	expected := clihelper.CreateDeployment(t, nc, 0, commonFlags)
-	expected, flagDomain := setNewDomain(expected)
+	description := expected.GetMeta().GetDescription()
+	expected, domain := setNewDomain(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update domain",
-		Args: append([]string{flagDomain}, commonFlags...),
+		Args: append([]string{description, domain}, commonFlags...),
 	}, expected)
 }
 
 func testUpdateDescription(t *testing.T, nc *network.Context, commonFlags []string) {
 	expected := clihelper.CreateDeployment(t, nc, 1, commonFlags)
-	expected, flagDescription := setNewDescription(expected)
+	domain := expected.GetMeta().GetDomain()
+	expected, description := setNewDescription(expected)
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update description",
-		Args: append([]string{flagDescription}, commonFlags...),
+		Args: append([]string{description, domain}, commonFlags...),
 	}, expected)
 }
 
@@ -108,11 +110,13 @@ func testUpdatePayload(t *testing.T, nc *network.Context, commonFlags []string) 
 	defer os.RemoveAll(newArchive.Name())
 
 	expected := clihelper.CreateDeployment(t, nc, 2, commonFlags)
+	description := expected.GetMeta().GetDescription()
+	domain := expected.GetMeta().GetDomain()
 	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update payload",
-		Args: append([]string{flagWebsitePayload}, commonFlags...),
+		Args: append([]string{description, domain, flagWebsitePayload}, commonFlags...),
 	}, expected)
 }
 
@@ -122,12 +126,12 @@ func testUpdateAll(t *testing.T, nc *network.Context, commonFlags []string) {
 	defer os.RemoveAll(newArchive.Name())
 
 	expected := clihelper.CreateDeployment(t, nc, 3, commonFlags)
-	expected, flagDescription := setNewDescription(expected)
-	expected, flagDomain := setNewDomain(expected)
+	expected, description := setNewDescription(expected)
+	expected, domain := setNewDomain(expected)
 	expected, flagWebsitePayload := setNewPayload(expected, newArchive.Name())
 
 	runUpdateTxTest(t, nc, &network.TxTestCase{
 		Name: "test update all",
-		Args: append([]string{flagDescription, flagDomain, flagWebsitePayload}, commonFlags...),
+		Args: append([]string{description, domain, flagWebsitePayload}, commonFlags...),
 	}, expected)
 }

@@ -83,20 +83,6 @@ func testDeploymentMsgServerUpdateNoMeta(t *testing.T, k *keeper.Keeper, ctx sdk
 	testDeploymentMsgServerUpdate(t, k, ctx, tc)
 }
 
-func testDeploymentMsgServerUpdateNothing(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
-	keepertest.CreateAndSetNDeployments(ctx, k, 1, 3)
-	newMeta := sample.CreateMeta(0)
-	newMeta.Description = ""
-	newMeta.Domain = ""
-	tc := keepertest.MsgServerTestCase{
-		Name:     "update_nothing",
-		Metas:    []*types.Meta{newMeta},
-		Payloads: []*types.Payload{nil},
-		Err:      fmt.Errorf(types.NothingToUpdate),
-	}
-	testDeploymentMsgServerUpdate(t, k, ctx, tc)
-}
-
 func testDeploymentMsgServerUpdateEmptyName(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
 	keepertest.CreateAndSetNDeployments(ctx, k, 1, 3)
 	newMeta := sample.CreateMeta(0)
@@ -321,12 +307,33 @@ func testDeploymentMsgServerUpdateInvalidDomain(t *testing.T, k *keeper.Keeper, 
 	testDeploymentMsgServerUpdate(t, k, ctx, tc)
 }
 
+func testDeploymentMsgServerUpdateRemoveDomain(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	metas[0].Domain = ""
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_remove_domain",
+		Metas:    metas,
+		Payloads: []*types.Payload{nil},
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgServerUpdateRemoveDescription(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	metas[0].Description = ""
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_remove_description",
+		Metas:    metas,
+		Payloads: []*types.Payload{nil},
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
 func TestDeploymentMsgServerUpdate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 
 	testDeploymentMsgServerUpdateValidDataset(t, k, ctx)
 	testDeploymentMsgServerUpdateValidArchive(t, k, ctx)
-	testDeploymentMsgServerUpdateNothing(t, k, ctx)
 	testDeploymentMsgServerUpdateNoMeta(t, k, ctx)
 	testDeploymentMsgServerUpdateEmptyName(t, k, ctx)
 	testDeploymentMsgServerUpdateNameTooLong(t, k, ctx)
@@ -345,4 +352,6 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 	testDeploymentMsgServerUpdateNameWithWhitespace(t, k, ctx)
 	testDeploymentMsgServerUpdateNameAsciiOnly(t, k, ctx)
 	testDeploymentMsgServerUpdateInvalidDomain(t, k, ctx)
+	testDeploymentMsgServerUpdateRemoveDomain(t, k, ctx)
+	testDeploymentMsgServerUpdateRemoveDescription(t, k, ctx)
 }

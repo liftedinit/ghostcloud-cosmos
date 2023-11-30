@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	"ghostcloud/x/ghostcloud/types"
 
@@ -11,19 +10,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func validateUpdateNothing(meta *types.Meta, payload *types.Payload) error {
-	if meta.GetDescription() == "" && meta.GetDomain() == "" && payload == nil {
-		return fmt.Errorf(types.NothingToUpdate)
-	}
-
-	return nil
-}
-
 func validateUpdateDeploymentRequest(msg *types.MsgUpdateDeploymentRequest, params types.Params) error {
 	if err := validateMeta(msg.Meta, params); err != nil {
-		return err
-	}
-	if err := validateUpdateNothing(msg.Meta, msg.Payload); err != nil {
 		return err
 	}
 	if msg.GetPayload() != nil {
@@ -58,13 +46,8 @@ func (k msgServer) UpdateDeployment(goCtx context.Context, msg *types.MsgUpdateD
 		return nil, errorsmod.Wrap(sdkerrors.ErrUnauthorized, "unauthorized")
 	}
 
-	if msg.Meta.Description != "" {
-		meta.Description = msg.Meta.Description
-	}
-
-	if msg.Meta.Domain != "" {
-		meta.Domain = msg.Meta.Domain
-	}
+	meta.Description = msg.Meta.Description
+	meta.Domain = msg.Meta.Domain
 
 	k.SetMeta(ctx, addr, &meta)
 

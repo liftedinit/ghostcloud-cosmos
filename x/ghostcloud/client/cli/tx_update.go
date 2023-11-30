@@ -14,17 +14,15 @@ import (
 
 func CmdUpdateDeployment() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update name",
-		Short: "Update a deployment",
-		Args:  cobra.ExactArgs(1),
+		Use:   "update name description domain",
+		Short: "Update a deployment.",
+		Long:  "This command will overwrite the existing deployment with the new one.",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argName := args[0]
-			argDescription := cmd.Flag(FlagDescription).Value.String()
-			argDomain := cmd.Flag(FlagDomain).Value.String()
+			argDescription := args[1]
+			argDomain := args[2]
 			argWebsitePayload := cmd.Flag(FlagWebsitePayload).Value.String()
-			if argDescription == FlagDummyDefault && argDomain == FlagDummyDefault && argWebsitePayload == FlagDummyDefault {
-				return fmt.Errorf("at least one of the following flags must be set: --description, --domain, --website-payload")
-			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
