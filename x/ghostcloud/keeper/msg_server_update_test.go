@@ -83,20 +83,6 @@ func testDeploymentMsgServerUpdateNoMeta(t *testing.T, k *keeper.Keeper, ctx sdk
 	testDeploymentMsgServerUpdate(t, k, ctx, tc)
 }
 
-func testDeploymentMsgServerUpdateNothing(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
-	keepertest.CreateAndSetNDeployments(ctx, k, 1, 3)
-	newMeta := sample.CreateMeta(0)
-	newMeta.Description = ""
-	newMeta.Domain = ""
-	tc := keepertest.MsgServerTestCase{
-		Name:     "update_nothing",
-		Metas:    []*types.Meta{newMeta},
-		Payloads: []*types.Payload{nil},
-		Err:      fmt.Errorf(types.NothingToUpdate),
-	}
-	testDeploymentMsgServerUpdate(t, k, ctx, tc)
-}
-
 func testDeploymentMsgServerUpdateEmptyName(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
 	keepertest.CreateAndSetNDeployments(ctx, k, 1, 3)
 	newMeta := sample.CreateMeta(0)
@@ -282,12 +268,72 @@ func testDeploymentMsgServerUpdateUnsupportedArchiveType(t *testing.T, k *keeper
 	testDeploymentMsgServerUpdate(t, k, ctx, tc)
 }
 
+func testDeploymentMsgServerUpdateNameWithWhitespace(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	newMeta, _ := sample.CreateNDatasetPayloadsWithIndexHtml(1, 1)
+	newMeta[0].Name = "invalid name"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_name_with_whitespace",
+		Metas:    newMeta,
+		Payloads: []*types.Payload{nil},
+		Err:      fmt.Errorf("name should not contain whitespace"),
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgServerUpdateNameAsciiOnly(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	newMeta, _ := sample.CreateNDatasetPayloadsWithIndexHtml(1, 1)
+	newMeta[0].Name = "™"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_name_ascii_only",
+		Metas:    newMeta,
+		Payloads: []*types.Payload{nil},
+		Err:      fmt.Errorf("name should contain ascii characters only"),
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgServerUpdateInvalidDomain(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	newMeta, _ := sample.CreateNDatasetPayloadsWithIndexHtml(1, 1)
+	newMeta[0].Domain = "invalid domain"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_invalid_domain",
+		Metas:    newMeta,
+		Payloads: []*types.Payload{nil},
+		Err:      fmt.Errorf("invalid domain"),
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgServerUpdateRemoveDomain(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	metas[0].Domain = ""
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_remove_domain",
+		Metas:    metas,
+		Payloads: []*types.Payload{nil},
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgServerUpdateRemoveDescription(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	metas, _ := keepertest.CreateAndSetNDeployments(ctx, k, 1, 1)
+	metas[0].Description = ""
+	tc := keepertest.MsgServerTestCase{
+		Name:     "update_remove_description",
+		Metas:    metas,
+		Payloads: []*types.Payload{nil},
+	}
+	testDeploymentMsgServerUpdate(t, k, ctx, tc)
+}
+
 func TestDeploymentMsgServerUpdate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 
 	testDeploymentMsgServerUpdateValidDataset(t, k, ctx)
 	testDeploymentMsgServerUpdateValidArchive(t, k, ctx)
-	testDeploymentMsgServerUpdateNothing(t, k, ctx)
 	testDeploymentMsgServerUpdateNoMeta(t, k, ctx)
 	testDeploymentMsgServerUpdateEmptyName(t, k, ctx)
 	testDeploymentMsgServerUpdateNameTooLong(t, k, ctx)
@@ -303,4 +349,9 @@ func TestDeploymentMsgServerUpdate(t *testing.T) {
 	testDeploymentMsgServerUpdateNonExisting(t, k, ctx)
 	testDeploymentMsgServerUpdateUnsupportedPayloadType(t, k, ctx)
 	testDeploymentMsgServerUpdateUnsupportedArchiveType(t, k, ctx)
+	testDeploymentMsgServerUpdateNameWithWhitespace(t, k, ctx)
+	testDeploymentMsgServerUpdateNameAsciiOnly(t, k, ctx)
+	testDeploymentMsgServerUpdateInvalidDomain(t, k, ctx)
+	testDeploymentMsgServerUpdateRemoveDomain(t, k, ctx)
+	testDeploymentMsgServerUpdateRemoveDescription(t, k, ctx)
 }

@@ -39,10 +39,5 @@ func (msg *MsgRemoveDeploymentRequest) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, InvalidCreatorAddress, err)
 	}
 
-	err = validateName(msg.Name)
-	if err != nil {
-		return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, InvalidName, err)
-	}
-
 	return nil
 }

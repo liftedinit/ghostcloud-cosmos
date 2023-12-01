@@ -274,6 +274,42 @@ func testDeploymentMsgCreateServerIndexAlreadySet(t *testing.T, k *keeper.Keeper
 	testDeploymentMsgServerCreate(t, k, ctx, tc)
 }
 
+func testDeploymentMsgCreateServerNameHasWhitespace(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	meta, payload := sample.CreateNDatasetPayloadsWithIndexHtml(1, keepertest.DATASET_SIZE)
+	meta[0].Name = "name with whitespace"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "name_has_whitespace",
+		Metas:    []*types.Meta{meta[0]},
+		Payloads: []*types.Payload{payload[0]},
+		Err:      fmt.Errorf("name should not contain whitespace"),
+	}
+	testDeploymentMsgServerCreate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgCreateServerNameAsciiOnly(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	meta, payload := sample.CreateNDatasetPayloadsWithIndexHtml(1, keepertest.DATASET_SIZE)
+	meta[0].Name = "™"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "name_ascii_only",
+		Metas:    []*types.Meta{meta[0]},
+		Payloads: []*types.Payload{payload[0]},
+		Err:      fmt.Errorf("name should contain ascii characters only"),
+	}
+	testDeploymentMsgServerCreate(t, k, ctx, tc)
+}
+
+func testDeploymentMsgCreateServerInvalidDomain(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
+	meta, payload := sample.CreateNDatasetPayloadsWithIndexHtml(1, keepertest.DATASET_SIZE)
+	meta[0].Domain = "invalid domain"
+	tc := keepertest.MsgServerTestCase{
+		Name:     "invalid_domain",
+		Metas:    []*types.Meta{meta[0]},
+		Payloads: []*types.Payload{payload[0]},
+		Err:      fmt.Errorf("invalid domain"),
+	}
+	testDeploymentMsgServerCreate(t, k, ctx, tc)
+}
+
 func TestDeploymentMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.GhostcloudKeeper(t)
 
@@ -295,4 +331,7 @@ func TestDeploymentMsgServerCreate(t *testing.T) {
 	testDeploymentMsgCreateServerNoMeta(t, k, ctx)
 	testDeploymentMsgCreateServerInvalidCreator(t, k, ctx)
 	testDeploymentMsgCreateServerIndexAlreadySet(t, k, ctx)
+	testDeploymentMsgCreateServerNameHasWhitespace(t, k, ctx)
+	testDeploymentMsgCreateServerNameAsciiOnly(t, k, ctx)
+	testDeploymentMsgCreateServerInvalidDomain(t, k, ctx)
 }

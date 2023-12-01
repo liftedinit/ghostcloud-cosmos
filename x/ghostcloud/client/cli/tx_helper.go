@@ -30,8 +30,6 @@ func addCreateFlags(cmd *cobra.Command) {
 
 func addUpdateFlags(cmd *cobra.Command) {
 	f := cmd.Flags()
-	f.String(FlagDescription, FlagDummyDefault, "Description of the deployment")
-	f.String(FlagDomain, FlagDummyDefault, "Custom domain of the deployment")
 	f.String(FlagWebsitePayload, FlagDummyDefault, "Path to the website payload")
 }
 

@@ -25,26 +25,6 @@ func TestMsgRemoveDeployment_ValidateBasic(t *testing.T) {
 			name: "valid address",
 			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foobar"},
 		},
-		{
-			name: "empty name",
-			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: ""},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "name has whitespace",
-			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foo bar"},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "name not ascii",
-			msg:  types.MsgRemoveDeploymentRequest{Creator: sample.AccAddress(), Name: "foo👍bar"},
-			err:  sdkerrors.ErrInvalidRequest,
-		},
-		{
-			name: "empty request",
-			msg:  types.MsgRemoveDeploymentRequest{},
-			err:  sdkerrors.ErrInvalidAddress,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
