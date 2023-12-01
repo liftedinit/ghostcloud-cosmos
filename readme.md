@@ -73,28 +73,25 @@ The transaction is set to calculate the gas automatically and is confirmed witho
 ### Update an existing deployment
 
 ```shell
-ghostcloudd tx ghostcloud update [NAME] [flags] --from [KEY] --gas auto --yes
+ghostcloudd tx ghostcloud update [NAME] [DESCRIPTION] [DOMAIN] [flags] --from [KEY] --gas auto --yes
 ```
 
 where
 - `[NAME]` is the name of the deployment to update.
+- `[DESCRIPTION]` is the new description for the deployment.
+- `[DOMAIN]` is the new domain associated with the deployment.
 - `[KEY]` is the name of the key to use for signing the transaction.
 
 Available flags:
-At least one of the following flags must be provided to specify what aspect of the deployment you are updating:
-  - `--description "[DESCRIPTION]"` - (Optional) Update the description for the deployment.
-  - `--domain [DOMAIN]` - (Optional) Update the domain associated with the deployment.
   - `--website-payload [PATH]` - (Optional) Provide the path to the new website payload, which can be a directory or a zip file.
 
 Important considerations:
 - If using `--website-payload`, ensure that the payload contains an `index.html` file at its root and that the total size does not exceed 5MB.
-- You cannot execute the update command without specifying at least one flag to indicate what changes are being made.
+- `[NAME]`, `[DESCRIPTION]`, and `[DOMAIN]` must be provided together. If you do not wish to update a particular field, use the existing value.
 
 Example usage:
 ```shell
-ghostcloudd tx ghostcloud update myapp --website-payload ~/newapp.zip \
-  --description "Updated version" \
-  --domain "newexample.com" \
+ghostcloudd tx ghostcloud update myapp "Updated version" "newexample.com" --website-payload ~/newapp.zip \
   --from alice --gas auto --yes 
 ```
 
