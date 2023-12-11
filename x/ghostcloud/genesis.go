@@ -10,7 +10,8 @@ import (
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	for _, deployment := range genState.Deployments {
-		k.SetDeployment(ctx, deployment.Meta, deployment.Dataset)
+		addr := sdk.MustAccAddressFromBech32(deployment.Meta.Creator)
+		k.SetDeployment(ctx, addr, deployment.Meta, deployment.Dataset)
 	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)

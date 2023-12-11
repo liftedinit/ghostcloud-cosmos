@@ -1,7 +1,8 @@
 package ghostcloud
 
 import (
-	"math/rand"
+	// Using `math/rand` is okay for the simulation, but not in production.
+	"math/rand" // #nosec
 
 	keepertest "ghostcloud/testutil/keeper"
 	"ghostcloud/testutil/sample"

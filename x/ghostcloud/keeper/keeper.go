@@ -52,8 +52,7 @@ func (k Keeper) HasDeployment(ctx sdk.Context, creator sdk.AccAddress, name stri
 	return store.Has(types.DeploymentKey(creator, name))
 }
 
-func (k Keeper) SetDeployment(ctx sdk.Context, meta *types.Meta, dataset *types.Dataset) {
-	addr, _ := sdk.AccAddressFromBech32(meta.GetCreator())
+func (k Keeper) SetDeployment(ctx sdk.Context, addr sdk.AccAddress, meta *types.Meta, dataset *types.Dataset) {
 	k.SetMeta(ctx, addr, meta)
 	k.SetDataset(ctx, addr, meta.GetName(), dataset)
 }

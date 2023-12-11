@@ -47,6 +47,7 @@ func (k msgServer) CreateDeployment(goCtx context.Context, msg *types.MsgCreateD
 
 	k.SetDeployment(
 		ctx,
+		addr,
 		msg.Meta,
 		dataset,
 	)

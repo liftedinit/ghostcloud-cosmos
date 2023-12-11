@@ -9,10 +9,10 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 const (
-	DefaultMaxPayloadSize      int64 = 1024 * 1024 * 5 // 5MB
-	DefaultMaxNameSize         int64 = 12
-	DefaultMaxDescriptionSize  int64 = 512
-	DefaultMaxUncompressedSize int64 = 1024 * 1024 * 50 // 50MB
+	DefaultMaxPayloadSize      int64  = 1024 * 1024 * 5 // 5MB
+	DefaultMaxNameSize         int64  = 12
+	DefaultMaxDescriptionSize  int64  = 512
+	DefaultMaxUncompressedSize uint64 = 1024 * 1024 * 50 // 50MB
 )
 
 // ParamKeyTable the param key table for launch module
