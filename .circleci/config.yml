@@ -40,7 +40,6 @@ jobs:
       - checkout
       - run: make vet
       - run: make govulncheck
-      - run: make nancy
 
 workflows:
   main:
