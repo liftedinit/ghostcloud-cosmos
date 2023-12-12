@@ -64,3 +64,34 @@ test: ## Run tests
 	@go test -race -cpu=$$(nproc) $$(go list ./x/...)
 
 .PHONY: test
+
+#### VET ####
+
+vet: ## Run go vet
+	@echo "--> Running go vet"
+	@go vet ./...
+
+.PHONY: vet
+
+#### NANCY ###
+
+nancy: ## Run nancy
+	@echo "--> Running nancy (requires docker)"
+	@command -v docker >/dev/null 2>&1 || { echo >&2 "nancy requires docker but it's not installed.  Aborting."; exit 1; }
+	go list -json -deps ./... | docker run --rm -i sonatypecommunity/nancy:latest sleuth
+
+.PHONY: nancy
+
+
+#### GOVULNCHECK ####
+govulncheck_version=latest
+
+govulncheck-install:
+	@echo "--> Installing govulncheck $(govulncheck_version)"
+	@go install golang.org/x/vuln/cmd/govulncheck@$(govulncheck_version)
+	@echo "--> Installing govulncheck $(govulncheck_version) complete"
+
+govulncheck: ## Run govulncheck
+	@echo "--> Running govulncheck"
+	$(MAKE) govulncheck-install
+	@govulncheck ./...
