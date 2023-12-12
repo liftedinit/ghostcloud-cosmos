@@ -264,7 +264,8 @@ func testDeploymentMsgCreateServerInvalidCreator(t *testing.T, k *keeper.Keeper,
 
 func testDeploymentMsgCreateServerIndexAlreadySet(t *testing.T, k *keeper.Keeper, ctx sdk.Context) {
 	meta, payload := sample.CreateNDatasetPayloadsWithIndexHtml(1, keepertest.DATASET_SIZE)
-	k.SetDeployment(ctx, meta[0], payload[0].GetDataset())
+	addr := sdk.MustAccAddressFromBech32(meta[0].Creator)
+	k.SetDeployment(ctx, addr, meta[0], payload[0].GetDataset())
 	tc := keepertest.MsgServerTestCase{
 		Name:     "index_already_set",
 		Metas:    []*types.Meta{meta[0]},

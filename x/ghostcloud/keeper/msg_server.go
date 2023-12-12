@@ -169,7 +169,7 @@ func validatePayload(payload *types.Payload, params types.Params) error {
 	return nil
 }
 
-func verifyArchiveContent(archive []byte, maxUncompressedSize int64) error {
+func verifyArchiveContent(archive []byte, maxUncompressedSize uint64) error {
 	r := bytes.NewReader(archive)
 	zipReader, err := zip.NewReader(r, int64(len(archive)))
 	if err != nil {
@@ -183,7 +183,7 @@ func verifyArchiveContent(archive []byte, maxUncompressedSize int64) error {
 			continue
 		}
 		totalUncompressedSize += file.UncompressedSize64
-		if totalUncompressedSize > uint64(maxUncompressedSize) {
+		if totalUncompressedSize > maxUncompressedSize {
 			return errorsmod.Wrapf(sdkerrors.ErrInvalidRequest, types.UncompressedSizeTooBig, totalUncompressedSize, maxUncompressedSize)
 		}
 

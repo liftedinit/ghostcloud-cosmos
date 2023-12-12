@@ -11,5 +11,5 @@ message Params {
   int64 max_payload_size = 1;
   int64 max_name_size = 2;
   int64 max_description_size = 3;
-  int64 max_uncompressed_size = 4;
+  uint64 max_uncompressed_size = 4;
 }

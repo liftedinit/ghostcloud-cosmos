@@ -35093,7 +35093,7 @@ paths:
                     format: int64
                   max_uncompressed_size:
                     type: string
-                    format: int64
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -70859,7 +70859,7 @@ definitions:
         format: int64
       max_uncompressed_size:
         type: string
-        format: int64
+        format: uint64
     description: Params defines the parameters for the module.
   ghostcloud.ghostcloud.Payload:
     type: object
@@ -70936,7 +70936,7 @@ definitions:
             format: int64
           max_uncompressed_size:
             type: string
-            format: int64
+            format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse:
     type: object

@@ -124,7 +124,7 @@ func CreateRandomArchivePayload(i int, size int64, name string) (*types.Meta, *t
 	}
 }
 
-func CreateBombArchivePayload(i int, size int64, name string) (*types.Meta, *types.Payload) {
+func CreateBombArchivePayload(i int, size uint64, name string) (*types.Meta, *types.Payload) {
 	return CreateMeta(i), &types.Payload{
 		PayloadOption: &types.Payload_Archive{Archive: &types.Archive{
 			Type:    types.ArchiveType_Zip,
