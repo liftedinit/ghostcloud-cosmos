@@ -19,6 +19,8 @@ faucet:
 validators:
 - name: alice
   bonded: 100000000stake
+  app:
+    minimum-gas-prices: 0.000000025token
   config:
     rpc:
       max_body_bytes: "10485760"
