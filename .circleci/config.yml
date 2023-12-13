@@ -2,6 +2,8 @@
 # The Lifted Initiative
 version: 2.1
 
+GO_VERSION: &go_version '1.21'
+
 orbs:
   go: circleci/go@1.9.0
   codecov: codecov/codecov@3.3.0
@@ -10,7 +12,7 @@ jobs:
   build:
     executor:
       name: go/default
-      tag: '1.21'
+      tag: *go_version
     steps:
       - checkout
       - go/load-cache
@@ -30,7 +32,17 @@ jobs:
               mv dist/ghostcloudd_*.tar.gz dist/ghostcloudd_*.txt /tmp/artifacts
       - store_artifacts:
             path: /tmp/artifacts
+  security:
+    executor:
+      name: go/default
+      tag: *go_version
+    steps:
+      - checkout
+      - run: make vet
+      - run: make govulncheck
+
 workflows:
   main:
     jobs:
       - build
+      - security
