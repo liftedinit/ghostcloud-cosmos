@@ -73,6 +73,15 @@ func CreateNMetaDataset(n int, datasetSize int) ([]*types.Meta, []*types.Dataset
 	return metas, datasets
 }
 
+func CreateNMetaDatasetWithAddr(addr string, n int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
+	metas := make([]*types.Meta, n)
+	datasets := make([]*types.Dataset, n)
+	for i := 0; i < n; i++ {
+		metas[i], datasets[i] = CreateMetaDatasetWithAddr(addr, i, datasetSize)
+	}
+	return metas, datasets
+}
+
 func createDatasetPayload(addr string, i int, datasetSize int) (*types.Meta, *types.Payload) {
 	return CreateMetaWithAddr(addr, i), &types.Payload{
 		PayloadOption: &types.Payload_Dataset{Dataset: CreateDataset(datasetSize)},
@@ -156,6 +165,10 @@ func CreateDeploymentWithAddrAndIndexHtml(addr string, i int, datasetSize int) *
 
 func CreateMetaDataset(i int, datasetSize int) (*types.Meta, *types.Dataset) {
 	return CreateMeta(i), CreateDataset(datasetSize)
+}
+
+func CreateMetaDatasetWithAddr(addr string, i int, datasetSize int) (*types.Meta, *types.Dataset) {
+	return CreateMetaWithAddr(addr, i), CreateDataset(datasetSize)
 }
 
 func createMeta(addr string, i int) *types.Meta {

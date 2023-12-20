@@ -163,6 +163,10 @@ func (k Keeper) GetItemContent(ctx sdk.Context, addr sdk.AccAddress, name string
 	return content, true
 }
 
+func (k Keeper) getDeploymentMetaStore(ctx sdk.Context) prefix.Store {
+	return prefix.NewStore(ctx.KVStore(k.storeKey), types.DeploymentMetaKeyPrefix)
+}
+
 func (k Keeper) GetAllMeta(ctx sdk.Context) (metas []*types.Meta) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.DeploymentMetaKeyPrefix)

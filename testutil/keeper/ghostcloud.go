@@ -67,11 +67,20 @@ func GhostcloudKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	return k, ctx
 }
 
-func CreateAndSetNDeployments(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
-	metas, datasets := sample.CreateNMetaDataset(numDeployment, datasetSize)
+func setDeployments(ctx sdk.Context, k *keeper.Keeper, metas []*types.Meta, datasets []*types.Dataset) {
 	for i := 0; i < len(metas); i++ {
 		addr := sdk.MustAccAddressFromBech32(metas[i].Creator)
 		k.SetDeployment(ctx, addr, metas[i], datasets[i])
 	}
+}
+func CreateAndSetNDeployments(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int) ([]*types.Meta, []*types.Dataset) {
+	metas, datasets := sample.CreateNMetaDataset(numDeployment, datasetSize)
+	setDeployments(ctx, k, metas, datasets)
+	return metas, datasets
+}
+
+func CreateAndSetNDeploymentsWithAddr(ctx sdk.Context, k *keeper.Keeper, numDeployment int, datasetSize int, addr string) ([]*types.Meta, []*types.Dataset) {
+	metas, datasets := sample.CreateNMetaDatasetWithAddr(addr, numDeployment, datasetSize)
+	setDeployments(ctx, k, metas, datasets)
 	return metas, datasets
 }

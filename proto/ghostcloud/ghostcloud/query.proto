@@ -43,6 +43,7 @@ message QueryMetasRequest {
 
 message QueryMetasResponse {
   repeated Meta meta = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryContentRequest {
