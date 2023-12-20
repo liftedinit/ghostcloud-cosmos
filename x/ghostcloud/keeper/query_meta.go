@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/cosmos/cosmos-sdk/types/query"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -51,20 +53,31 @@ func (k Keeper) Metas(goCtx context.Context, req *types.QueryMetasRequest) (*typ
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Only get Meta that matches the filters
-	//       Things are not very efficient here, but it's ok for demonstration purposes
-	metas := k.GetAllMeta(ctx)
-
-	var filteredMetas []*types.Meta
-	if req.Filters != nil {
-		for _, meta := range metas {
-			if metaPassesAllFilters(meta, req.Filters) {
-				filteredMetas = append(filteredMetas, meta)
-			}
+	var metas []*types.Meta
+	store := k.getDeploymentMetaStore(ctx)
+	pageRes, err := query.FilteredPaginate(store, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var meta types.Meta
+		if err := k.cdc.Unmarshal(value, &meta); err != nil {
+			return false, err
 		}
-	} else {
-		filteredMetas = metas
+		if req.Filters != nil {
+			if metaPassesAllFilters(&meta, req.Filters) {
+				if accumulate {
+					metas = append(metas, &meta)
+				}
+				return true, nil
+			}
+		} else {
+			if accumulate {
+				metas = append(metas, &meta)
+			}
+			return true, nil
+		}
+		return false, nil
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "pagination error %v", err)
 	}
 
-	return &types.QueryMetasResponse{Meta: filteredMetas}, nil
+	return &types.QueryMetasResponse{Meta: metas, Pagination: pageRes}, nil
 }

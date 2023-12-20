@@ -50,10 +50,10 @@ func testRemove(t *testing.T, nc *network.Context, commonFlags []string) {
 	require.NoError(t, err)
 	defer os.RemoveAll(newArchive.Name())
 
-	clihelper.CreateDeployment(t, nc, 0, commonFlags)
+	clihelper.CreateDeployment(t, nc, 12345, commonFlags)
 
 	runRemoveTxTest(t, nc, &network.TxTestCase{
 		Name: "test remove",
-		Args: append([]string{"0"}, commonFlags...),
+		Args: append([]string{"12345"}, commonFlags...),
 	})
 }
